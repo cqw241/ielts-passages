@@ -1,0 +1,10 @@
+.preview/
+_site/
+旧版归档无需参考/
+*.docx
+*.png
+task_plan.md
+findings.md
+progress.md
+.DS_Store
+Thumbs.db
