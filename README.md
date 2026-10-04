@@ -21,7 +21,23 @@ For a local preview, run `python -m http.server 8765 --bind 127.0.0.1` in this d
 - Build source data with `node scripts/build-lesson.mjs 26.9.6` or `node scripts/build-lesson.mjs 26.9.7`. The default remains Day 1. Review teaching notes after source changes.
 - Each lesson's `images/` contains optimized WebP assets. Original reference images remain untouched.
 
-Reading progress, bookmarks, practice answers, recall attempts, writing drafts and speaking notes save to browser localStorage under separate lesson keys. Day 1 retains its original key. Self-marked recall records a learner's own assessment, not independently verified mastery. Records differ between browsers and between file and HTTP access. My review exports TXT study notes. Vocabulary audio uses browser speech synthesis and available voices.
+Reading progress, practice answers, recall attempts, writing drafts and speaking notes save to browser localStorage under separate lesson keys. Day 1 retains its original key. Bookmarks join the shared wordbook described below. Self-marked recall records a learner's own assessment, not independently verified mastery. Records differ between browsers and between file and HTTP access. My review exports TXT study notes. Vocabulary audio uses browser speech synthesis and available voices.
+
+## Shared wordbook
+
+[Wordbook](wordbook.html) collects words and short phrases across every lesson. Select learning text (including highlighted words, explanations, examples and writing drafts), then click **Add to wordbook**. The word, original sentence and a link to its lesson save immediately. Existing vocabulary bookmarks from all registered lessons migrate once when any course page opens. My review shows the current lesson's collection; home and lesson sidebars link to the shared wordbook.
+
+Preset words use the lesson's English definition. Other words are queried through [FreeDictionaryAPI.com](https://freedictionaryapi.com/). Choose the dictionary sense that fits the sentence, or write an English meaning and note. The dictionary does not infer the correct contextual meaning. Some phrases have no entries; inflected forms may need manual editing to a base form. Changing the entry retains its original selected text and context. Lookup has a 15-second timeout, cached results and manual retry; unavailable or empty results never prevent saving. Pending lookups resume after reopening the page. Pronunciation uses browser speech synthesis and available English voices; IPA is displayed when supplied.
+
+Entries deduplicate by case, surrounding punctuation and repeated whitespace, preserving separate word forms. Multiple contexts join the same entry. Removing a lesson bookmark unlinks that lesson; global deletion in Wordbook removes the entry and offers Undo. Recall hides meanings until revealed and records **Remembered / Practise again** self-assessments. There is no automatic review schedule.
+
+Wordbook uses the shared `passage-wordbook-v1` localStorage key at the current origin. Original lesson storage keys and unrelated progress/drafts are preserved. JSON export contains entries, meanings, notes, contexts, self-assessments, dictionary candidates and attribution. Import accepts Passage version 1 JSON backups up to 5 MB / 10,000 entries, validates them before changing records, merges duplicate contexts and preserves current edits. No account sync or CSV export is included. Different browsers, local previews and the hosted site maintain separate collections.
+
+Dictionary data is from Wiktionary under CC BY-SA 4.0. Definition and candidate displays retain source/provider/license links, and JSON backups retain attribution and edit markers. Typed meanings remain distinct from dictionary-derived meanings. The API requires no key, supports browser CORS and permits 1,000 requests per hour per IP; empty results and failures show a path to editing or retrying.
+
+Implementation: `assets/wordbook-store.js` owns storage, migration, lookup and merging; `assets/wordbook.js` handles selection, editing, review and backup UI. `assets/wordbook.css` reuses the existing design tokens. `scripts/build-catalog.mjs` generates `assets/course-vocabulary.js`, enabling all-lesson migration without loading or fetching individual lesson pages.
+
+Focused integration verification is in `scripts/verify-wordbook.cjs`. With Playwright and Chrome available, run `node scripts/verify-wordbook.cjs` against a local server after building. Set `PLAYWRIGHT_MODULE` to the installed module path if it is outside this project, `CHROME_PATH` to an installed Chrome executable, and optionally `PASSAGE_TEST_URL` (default `http://127.0.0.1:8765/_site/`). Checks use an isolated browser profile and controlled dictionary responses; live dictionary connectivity is checked separately.
 
 ## Publishing and adding lessons
 
@@ -33,7 +49,7 @@ GitHub Pages deploys the verified `_site` artifact through `.github/workflows/pa
 
 For each new lesson:
 
-1. Add its source Markdown, `index.html`, `lesson-notes.js`, and optimized WebP illustrations in its lesson folder. Reuse the shared presentation files and include `../assets/course-data.js` before `../assets/lesson.js`.
+1. Add its source Markdown, `index.html`, `lesson-notes.js`, and optimized WebP illustrations in its lesson folder. Reuse an existing lesson's stylesheet and script tags: lesson data/notes, `../assets/course-data.js`, `../assets/course-vocabulary.js`, `../assets/wordbook-store.js`, `../assets/lesson.js`, then `../assets/wordbook.js`; include both lesson.css and wordbook.css. This keeps free selection, shared bookmarks and navigation available in new lessons.
 2. Add a record to `lessons.json` with `folder`, `shortTitle`, `summary`, and a relative WebP `image`. Titles, dates and course days are extracted from lesson data. Keep learner-facing text in English.
 3. Run `node scripts/build-site.mjs`. The extractor supports the existing two reading-format profiles; extend it for different formats instead of forcing new source material into an unsuitable profile.
 4. Preview `_site/` under a local server and verify the library, lesson interactions, images and source downloads. Keep links relative so they work beneath `/ielts-passages/`.

@@ -1,0 +1,226 @@
+(() => {
+  'use strict';
+  const W = window.Wordbook;
+  const root = document.querySelector('#wordbook-main');
+  const base = window.LESSON ? '../' : '';
+  const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+  const sound = '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4zM17 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></svg>';
+  let editing = null, undo = null, selection = null, recallIds = [], recallIndex = 0, revealed = false, lastFocus;
+  document.body.insertAdjacentHTML('beforeend', `<dialog id="wb-dialog" aria-labelledby="wb-dialog-title"><div class="dialog-top"><span id="wb-dialog-title"></span><button class="icon-button" data-wb="close" aria-label="Close wordbook dialog">✕</button></div><div id="wb-dialog-body"></div></dialog><div id="wb-toast" role="status" aria-live="polite"></div>${window.LESSON ? '<button id="wb-selection" class="button primary compact" data-wb="selection" hidden>Add to wordbook ＋</button>' : ''}`);
+  const dialog = document.querySelector('#wb-dialog'), body = document.querySelector('#wb-dialog-body');
+  function notify(message, editId, allowUndo = false) {
+    const toast = document.querySelector('#wb-toast');
+    (document.querySelector('#wb-dialog[open]') || document.querySelector('#detail-dialog[open]') || document.body).append(toast);
+    toast.innerHTML = `<span>${esc(message)}</span>${editId ? `<button data-wb="edit" data-id="${esc(editId)}">Edit →</button>` : ''}${allowUndo ? '<button data-wb="undo">Undo</button>' : ''}`;
+    toast.classList.add('visible'); clearTimeout(notify.timer);
+    notify.timer = setTimeout(() => toast.classList.remove('visible'), allowUndo ? 15000 : 7000);
+  }
+  function open(title, html) {
+    lastFocus = document.activeElement;
+    document.querySelector('#wb-dialog-title').textContent = title;
+    body.innerHTML = html;
+    if (!dialog.open) dialog.showModal();
+    hideSelection();
+  }
+  function close() { dialog.close(); editing = null; lastFocus?.focus?.({ preventScroll: true }); }
+  dialog.addEventListener('cancel', () => { editing = null; });
+  const statusText = e => e.definition ? (e.review === 'remembered' ? 'Remembered' : 'Practise again') : 'Meaning needed';
+  function sourceHTML(s) {
+    const lesson = W.lessons.find(l => l.folder === s.folder);
+    if (!lesson) return '';
+    return `<div class="wb-context"><blockquote>${esc(s.quote || s.selectedText)}</blockquote><a class="wb-source" href="${base}${lesson.folder}/index.html#${esc(s.location)}">Day ${lesson.day} · ${esc(s.label)} <span aria-hidden="true">↗</span></a><span class="wb-original">Selected: ${esc(s.selectedText)}</span></div>`;
+  }
+  function attributionHTML(e, candidates = false) {
+    const a = candidates ? e.attribution : e.definitionAttribution; if (!a) return '';
+    if (!a.url) return '<p class="wb-attribution">Meaning from lesson vocabulary.</p>';
+    return `<p class="wb-attribution">Definitions: <a href="${esc(a.url)}" target="_blank" rel="noopener noreferrer">Wiktionary</a> via <a href="https://freedictionaryapi.com/" target="_blank" rel="noopener noreferrer">FreeDictionaryAPI.com</a>${a.license?.url ? ` · <a href="${esc(a.license.url)}" target="_blank" rel="noopener noreferrer">${esc(a.license.name)}</a>` : ''}${e.edited.definition ? ' · Meaning selected or edited by you' : ''}.</p>`;
+  }
+  function filtered() {
+    const search = document.querySelector('#wb-search')?.value.toLowerCase().trim() || '';
+    const folder = document.querySelector('#wb-lesson')?.value || '';
+    const status = document.querySelector('#wb-status')?.value || '';
+    return W.read().entries.filter(e => (!folder || e.sources.some(s => s.folder === folder)) && (!status || (status === 'missing' ? !e.definition : e.review === status)) && `${e.term} ${e.definition} ${e.note}`.toLowerCase().includes(search)).sort((a, b) => b.createdAt - a.createdAt);
+  }
+  function row(e) {
+    const s = e.sources[0];
+    return `<article class="wb-row" data-entry="${esc(e.id)}"><div class="wb-word"><div class="wb-word-title"><button data-wb="edit" data-id="${esc(e.id)}">${esc(e.term)}</button><button class="icon-button" data-wb="speak" data-id="${esc(e.id)}" aria-label="Read aloud: ${esc(e.term)}">${sound}</button></div>${e.ipa ? `<p class="ipa">${esc(e.ipa)}</p>` : ''}<span class="wb-status ${e.definition ? '' : 'needs-meaning'}">${statusText(e)}</span><p class="wb-meaning">${esc(e.definition || (e.dictionaryStatus === 'pending' ? 'Looking up dictionary meanings…' : e.candidates.length ? 'Choose a meaning for this context.' : 'Add a meaning or retry the dictionary.'))}</p>${e.note ? `<p class="wb-note">${esc(e.note)}</p>` : ''}<div class="wb-row-actions"><button class="text-button" data-wb="edit" data-id="${esc(e.id)}">Edit entry</button><button class="text-button" data-wb="delete" data-id="${esc(e.id)}">Delete</button></div>${attributionHTML(e)}</div><div class="wb-contexts">${s ? sourceHTML(s) : '<div class="wb-context wb-manual"><p>No lesson linked.</p><p class="subtle">Collect this word in a lesson to keep its original sentence here.</p></div>'}${e.sources.length > 1 ? `<details><summary>${e.sources.length - 1} more saved context${e.sources.length > 2 ? 's' : ''}</summary>${e.sources.slice(1).map(sourceHTML).join('')}</details>` : ''}</div></article>`;
+  }
+  function render() {
+    const all = W.read().entries;
+    document.querySelectorAll('[data-wb-count]').forEach(el => el.textContent = String(all.length));
+    if (!root) return;
+    document.querySelector('#wb-total').textContent = all.length;
+    document.querySelector('#wb-again').textContent = all.filter(e => e.review !== 'remembered').length;
+    document.querySelector('#wb-missing').textContent = all.filter(e => !e.definition).length;
+    if (W.problem) document.querySelector('#wb-notice').textContent = W.problem;
+    const list = filtered();
+    document.querySelector('#wb-results').textContent = `${list.length} ${list.length === 1 ? 'entry' : 'entries'} · Most recently added first`;
+    document.querySelector('#wb-list').innerHTML = list.length ? list.map(row).join('') : `<div class="wb-empty"><p class="eyebrow">${all.length ? 'NO MATCHES' : 'YOUR NEXT WORD STARTS HERE'}</p><h2>${all.length ? 'Try another search or filter.' : 'Keep the words that make you pause.'}</h2><p>${all.length ? 'Your other saved words are still in your wordbook.' : 'Select a word or short phrase in any lesson, then choose “Add to wordbook”. Its sentence comes with it.'}</p>${all.length ? '<button class="button secondary" data-wb="clear-filters">Clear filters</button>' : `<a class="button secondary" href="index.html">Choose a lesson →</a><button class="text-button" data-wb="add">Or add a word yourself</button>`}</div>`;
+    document.querySelector('[data-wb="recall"]').disabled = !list.length;
+  }
+  function candidatesHTML(e) {
+    const status = e.dictionaryStatus;
+    const hint = status === 'pending' ? 'Looking up dictionary meanings…' : status === 'error' ? 'The dictionary could not be reached. Your word and context are saved. Retry or write a meaning yourself.' : !e.candidates.length ? 'No dictionary entry found. Try a base form, retry, or write a meaning yourself.' : 'Choose the sense that fits your original sentence. Dictionary senses are general definitions.';
+    return `<p class="subtle" role="status">${hint}</p>${e.candidates.length ? `<div class="wb-senses">${e.candidates.map((c, i) => `<button data-wb="sense" data-id="${esc(e.id)}" data-index="${i}" aria-pressed="${e.definition === c.definition}"><small>${esc(c.partOfSpeech)}</small><span>${esc(c.definition)}</span></button>`).join('')}</div>` : ''}<button class="text-button" data-wb="retry" data-id="${esc(e.id)}" ${status === 'pending' ? 'disabled' : ''}>Retry dictionary lookup</button>${attributionHTML(e, true)}`;
+  }
+  function edit(id) {
+    const e = W.get(id); if (!e) { notify('This entry no longer exists.'); return; }
+    editing = id;
+    open('Edit wordbook entry', `<form id="wb-edit-form"><label class="wb-field">Word or phrase<input name="term" value="${esc(e.term)}" maxlength="100" required autocomplete="off"></label><p class="subtle wb-edit-hint">Change a word to its base form to look it up again. Your original selected text stays in each saved context.</p><label class="wb-field">Meaning in this context<textarea name="definition" rows="3" maxlength="3000" placeholder="Choose a dictionary sense below, or write your own English meaning.">${esc(e.definition)}</textarea></label><label class="wb-field">Your note<textarea name="note" rows="2" maxlength="3000" placeholder="A collocation, memory clue or example of your own.">${esc(e.note)}</textarea></label><div class="wb-form-actions"><button class="button primary" type="submit">Save changes</button><button class="text-button" type="button" data-wb="close">Cancel</button><button class="icon-button" type="button" data-wb="speak" data-id="${esc(e.id)}" aria-label="Read aloud: ${esc(e.term)}">${sound}</button></div><p id="wb-form-error" role="alert"></p></form><details class="wb-dictionary" open><summary>Dictionary meanings ${esc(e.ipa)}</summary><div id="wb-candidates">${candidatesHTML(e)}</div></details>${e.sources.length ? `<div class="wb-editor-contexts"><p class="eyebrow">YOUR ORIGINAL CONTEXT${e.sources.length > 1 ? 'S' : ''}</p>${e.sources.map(sourceHTML).join('')}</div>` : ''}`);
+  }
+  function addDialog() {
+    editing = null;
+    open('Add a word or phrase', '<form id="wb-add-form"><label class="wb-field">Word or phrase<input name="term" placeholder="e.g. purchasing power" maxlength="100" required autocomplete="off"></label><p class="subtle">Save first. Choose or write its meaning afterwards.</p><div class="wb-form-actions"><button class="button primary" type="submit">Add to wordbook</button><button class="text-button" type="button" data-wb="close">Cancel</button></div><p id="wb-form-error" role="alert"></p></form>');
+  }
+  function recall() {
+    editing = null;
+    let e;
+    while (recallIndex < recallIds.length && !(e = W.get(recallIds[recallIndex]))) recallIndex++;
+    if (!e) { open('Recall complete', `<div class="wb-recall"><p class="eyebrow">KEEP PRACTISING</p><h2>You reviewed ${recallIds.length} ${recallIds.length === 1 ? 'entry' : 'entries'}.</h2><p>Your self-assessments are saved. Filter by “Practise again” to revisit words that need another attempt.</p><button class="button primary" data-wb="close">Back to wordbook</button></div>`); return; }
+    open('Wordbook recall', `<div class="wb-recall"><p class="eyebrow">${recallIndex + 1} / ${recallIds.length} · RECALL BEFORE REVEALING</p><h2>${esc(e.term)} <button class="icon-button" data-wb="speak" data-id="${esc(e.id)}" aria-label="Read aloud: ${esc(e.term)}">${sound}</button></h2><p>Can you explain its meaning and use it in a sentence?</p>${revealed ? `<div class="wb-recall-answer"><p>${esc(e.definition || 'No meaning saved yet. Edit this entry to add one.')}</p>${e.note ? `<p class="subtle">${esc(e.note)}</p>` : ''}${e.sources[0] ? sourceHTML(e.sources[0]) : ''}${attributionHTML(e)}</div><div class="wb-form-actions"><button class="button primary" data-wb="rate" data-id="${esc(e.id)}" data-rating="remembered">Remembered</button><button class="button secondary" data-wb="rate" data-id="${esc(e.id)}" data-rating="again">Practise again</button></div>` : '<button class="button primary" data-wb="reveal">Reveal meaning and context</button>'}</div>`);
+  }
+  function speak(id) {
+    const e = W.get(id); if (!e) return;
+    if (!('speechSynthesis' in window)) { notify('Read-aloud is not available in this browser. Use the pronunciation guide.'); return; }
+    speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(e.term);
+    utterance.lang = 'en-GB'; utterance.rate = .85;
+    utterance.onerror = () => notify('Read-aloud is unavailable right now. Use the pronunciation guide.');
+    speechSynthesis.speak(utterance);
+  }
+  function exportJSON() {
+    const blob = new Blob([W.exportBackup()], { type: 'application/json;charset=utf-8' });
+    const url = URL.createObjectURL(blob), a = document.createElement('a');
+    a.href = url; a.download = 'passage-wordbook-' + new Date().toISOString().slice(0, 10) + '.json'; a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    notify('JSON backup exported.');
+  }
+  document.addEventListener('click', event => {
+    const button = event.target.closest('[data-wb]'); if (!button) return;
+    const action = button.dataset.wb, id = button.dataset.id;
+    try {
+      if (action === 'close') close();
+      else if (action === 'add') addDialog();
+      else if (action === 'edit') edit(id);
+      else if (action === 'speak') speak(id);
+      else if (action === 'delete') { undo = W.remove(id); notify('Entry deleted from your wordbook.', null, true); }
+      else if (action === 'undo') { W.restore(undo); undo = null; notify('Entry restored.'); }
+      else if (action === 'export') exportJSON();
+      else if (action === 'import') document.querySelector('#wb-import').click();
+      else if (action === 'retry') W.lookup(id, true);
+      else if (action === 'sense') {
+        const e = W.get(id), c = e?.candidates[Number(button.dataset.index)];
+        if (c) { const field = body.querySelector('[name="definition"]'); field.value = c.definition; field.dataset.fromDictionary = 'true'; body.querySelectorAll('[data-wb="sense"]').forEach(b => b.setAttribute('aria-pressed', String(b === button))); }
+      }
+      else if (action === 'recall') { recallIds = filtered().map(e => e.id); recallIndex = 0; revealed = false; if (recallIds.length) recall(); }
+      else if (action === 'reveal') { revealed = true; recall(); }
+      else if (action === 'rate') { W.update(id, { review: button.dataset.rating }); recallIndex++; revealed = false; recall(); }
+      else if (action === 'clear-filters') { ['#wb-search', '#wb-lesson', '#wb-status'].forEach(s => document.querySelector(s).value = ''); render(); }
+      else if (action === 'selection' && selection) {
+        const saved = selection;
+        const id = W.add(saved.term, saved.source);
+        hideSelection(); window.getSelection()?.removeAllRanges();
+        notify('Added to wordbook.', id);
+      }
+    } catch (error) { notify(error.message); }
+  });
+  document.addEventListener('submit', event => {
+    if (!['wb-edit-form', 'wb-add-form'].includes(event.target.id)) return;
+    event.preventDefault();
+    const fields = new FormData(event.target);
+    try {
+      if (event.target.id === 'wb-add-form') { const id = W.add(fields.get('term')); edit(id); }
+      else {
+        const old = W.get(editing), changed = old && W.normalize(old.term) !== W.normalize(fields.get('term'));
+        const id = W.update(editing, { term: fields.get('term'), definition: fields.get('definition'), note: fields.get('note'), definitionSource: event.target.querySelector('[name="definition"]').dataset.fromDictionary === 'true' ? 'dictionary' : undefined });
+        close(); notify('Changes saved.', id);
+        if (changed) W.lookup(id);
+      }
+    } catch (error) { document.querySelector('#wb-form-error').textContent = error.message; }
+  });
+  if (root) {
+    const folderSelect = document.querySelector('#wb-lesson');
+    W.lessons.forEach(l => folderSelect.insertAdjacentHTML('beforeend', `<option value="${esc(l.folder)}">Day ${l.day} · ${esc(l.title)}</option>`));
+    folderSelect.value = new URLSearchParams(location.search).get('lesson') || '';
+    if (folderSelect.selectedIndex < 0) folderSelect.value = '';
+    ['#wb-search', '#wb-lesson', '#wb-status'].forEach(s => document.querySelector(s).addEventListener('input', render));
+    document.querySelector('#wb-import').addEventListener('change', async event => {
+      const file = event.target.files[0]; if (!file) return;
+      try {
+        if (file.size > 5000000) throw new Error('Choose a wordbook backup smaller than 5 MB.');
+        const result = W.importBackup(await file.text());
+        document.querySelector('#wb-notice').textContent = `Import complete: ${result.added} added, ${result.merged} merged. Your current edits were kept.`;
+      } catch (error) { document.querySelector('#wb-notice').textContent = error.message; }
+      finally { event.target.value = ''; }
+    });
+  }
+  function hideSelection() { const button = document.querySelector('#wb-selection'); if (button) button.hidden = true; selection = null; }
+  function sentence(text, start, end) {
+    if (Intl.Segmenter) {
+      const segments = [...new Intl.Segmenter('en', { granularity: 'sentence' }).segment(text)];
+      const matching = segments.filter(s => s.index < end && s.index + s.segment.length > start);
+      if (matching.length) return matching.map(s => s.segment).join('').trim().slice(0, 3000);
+    }
+    let left = start, right = end;
+    while (left > 0 && !/[.!?\n]/.test(text[left - 1])) left--;
+    while (right < text.length && !/[.!?\n]/.test(text[right])) right++;
+    if (right < text.length) right++;
+    return text.slice(left, right).trim().slice(0, 3000);
+  }
+  function capture() {
+    const button = document.querySelector('#wb-selection'); if (!button || dialog.open) return;
+    const active = document.activeElement;
+    let text, quote, host, rect;
+    if (active?.matches('textarea,input[type="text"]') && active.closest('#main') && active.selectionEnd > active.selectionStart) {
+      text = active.value.slice(active.selectionStart, active.selectionEnd);
+      quote = sentence(active.value, active.selectionStart, active.selectionEnd); host = active; rect = active.getBoundingClientRect();
+    } else {
+      const selected = window.getSelection();
+      if (!selected || selected.isCollapsed || !selected.rangeCount) { hideSelection(); return; }
+      const range = selected.getRangeAt(0);
+      const element = n => n.nodeType === Node.ELEMENT_NODE ? n : n.parentElement;
+      const start = element(range.startContainer), end = element(range.endContainer);
+      if (!start?.closest('#main,#dialog-content') || !end?.closest('#main,#dialog-content')) { hideSelection(); return; }
+      text = selected.toString(); host = start;
+      const block = start.closest('.english-passage,p,blockquote,li,td,.sentence-chunks,label,h2,h3') || start;
+      const prefix = document.createRange(); prefix.selectNodeContents(block);
+      try { prefix.setEnd(range.startContainer, range.startOffset); } catch { hideSelection(); return; }
+      const offset = prefix.toString().length;
+      quote = sentence(block.textContent, offset, offset + text.length);
+      rect = range.getBoundingClientRect();
+    }
+    const word = W.term(text);
+    if (!/[A-Za-z]/.test(word) || word.length > 100 || word.split(' ').length > 12 || text.trim().length > 120) { hideSelection(); return; }
+    const L = window.LESSON, lesson = W.lessons.find(l => l.storageKey === L.storageKey);
+    const paragraph = host.closest('.paragraph')?.id.replace('paragraph-', '');
+    const location = paragraph ? 'reading-' + paragraph : (window.location.hash.slice(1) || 'overview');
+    const label = paragraph ? 'Paragraph ' + paragraph : (document.querySelector('#breadcrumb-current')?.textContent || 'Lesson context');
+    selection = { term: word, source: { folder: lesson.folder, location, label, quote, selectedText: text.trim() } };
+    (host.closest('dialog') || document.body).append(button);
+    button.hidden = false;
+    const x = Math.max(12, Math.min(rect.left, innerWidth - button.offsetWidth - 12));
+    const y = rect.bottom + 8 + button.offsetHeight < innerHeight ? rect.bottom + 8 : Math.max(8, rect.top - button.offsetHeight - 8);
+    button.style.left = x + 'px'; button.style.top = y + 'px';
+    button.setAttribute('aria-label', 'Add to wordbook: ' + word);
+  }
+  if (window.LESSON) {
+    // Keep the selection intact while the floating action receives focus.
+    document.querySelector('#wb-selection').addEventListener('pointerdown', event => event.preventDefault());
+    document.addEventListener('mouseup', event => { if (!event.target.closest('#wb-selection,#wb-toast')) setTimeout(capture, 0); });
+    document.addEventListener('keyup', event => { if (['Shift', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) capture(); if (event.key === 'Escape') hideSelection(); });
+    document.addEventListener('selectionchange', () => { if (!window.getSelection()?.toString() && !document.activeElement?.matches('textarea,input')) hideSelection(); });
+    window.addEventListener('scroll', hideSelection, { passive: true });
+    window.addEventListener('resize', hideSelection);
+    window.addEventListener('hashchange', hideSelection);
+  }
+  window.addEventListener('wordbook-change', () => {
+    render();
+    if (editing && dialog.open) {
+      const e = W.get(editing);
+      if (!e) { close(); notify('This entry was deleted in another window.'); }
+      else { const candidates = document.querySelector('#wb-candidates'); if (candidates) candidates.innerHTML = candidatesHTML(e); }
+    }
+  });
+  render();
+  if (W.problem) notify(W.problem);
+})();

@@ -19,6 +19,7 @@ function copy(relative){
  fs.copyFileSync(path.join(root,relative),target);
 }
 copy('index.html');
+copy('wordbook.html');
 for(const name of fs.readdirSync(path.join(root,'assets')))if(/\.(css|js|svg)$/.test(name))copy('assets/'+name);
 for(const {folder} of manifest.lessons){
  const context={window:{}};
