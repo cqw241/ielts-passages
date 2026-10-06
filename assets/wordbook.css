@@ -66,8 +66,26 @@
 #wb-toast {position:fixed;bottom:26px;left:50%;transform:translate(-50%,15px);opacity:0;visibility:hidden;z-index:3000;background:var(--ink);color:white;padding:13px 20px;border-radius:7px;max-width:calc(100vw - 40px);box-shadow:0 8px 35px #192d4b24;display:flex;align-items:center;gap:22px;font-size:12px;}
 #wb-toast.visible {opacity:1;visibility:visible;transform:translate(-50%,0);}
 #wb-toast button {font-size:12px;white-space:nowrap;color:#b9d5ff;}
-#wb-selection {position:fixed;z-index:2000;box-shadow:0 5px 20px #192d4b25;min-height:38px;}
-#wb-selection[hidden] {display:none;}
+#wb-selection-menu {position:fixed;z-index:2000;display:flex;gap:7px;background:var(--paper);padding:6px;border:1px solid var(--line);border-radius:7px;box-shadow:0 5px 20px #192d4b25;}
+#wb-selection-menu .button {min-height:38px;box-shadow:none;}
+#wb-selection-menu[hidden],#wb-selection-menu [hidden],.wb-stats [hidden] {display:none;}
+.wb-tabs {display:flex;gap:24px;border-bottom:1px solid var(--line);margin-bottom:0;}
+.wb-tabs [role="tab"] {display:flex;align-items:center;gap:10px;padding:13px 2px 15px;border-bottom:3px solid transparent;margin-bottom:-1px;font-size:15px;color:var(--slate);}
+.wb-tabs [role="tab"][aria-selected="true"] {border-color:var(--blue);color:var(--blue);font-weight:600;}
+.wb-tabs [role="tab"]>span {font-size:11px;padding:1px 7px;border-radius:4px;background:var(--blue-soft);color:var(--blue);}
+.wb-tabs+.wb-stats,#wb-collection>.wb-stats {border-top:0;}
+.wb-sentence-row {grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:42px;}
+.wb-sentence-text {font:400 23px/1.8 var(--serif);white-space:pre-wrap;overflow-wrap:anywhere;margin:14px 0;}
+.wb-sentence-note {margin:23px 0 0;}
+.wb-sentence-note>.eyebrow {font-size:9px;margin-bottom:8px;}
+.wb-sentence-note>p:not(.eyebrow) {font-size:14px;line-height:1.85;white-space:pre-wrap;}
+.wb-sentence-hint {font-size:12px;margin-top:18px;}
+.wb-sentence-source {padding:20px 0;border-bottom:1px solid var(--line);}
+.wb-sentence-source>p {font-size:13px;margin-bottom:9px;}
+.wb-sentence-source>.wb-source {font-size:12px;color:var(--blue);}
+.wb-sentence-source details {font-size:12px;margin-top:14px;}
+.wb-sentence-source blockquote {font:400 16px/1.8 var(--serif);margin-top:12px;}
+.wb-editor-sentence {font-size:21px;background:var(--cloud);border-left:3px solid var(--blue);padding:15px 20px;margin:15px 0 25px;}
 .word-mark,.chunk {user-select:text;}
 .wb-lesson-link {display:flex;align-items:center;gap:10px;margin:14px 0 4px;padding:13px 12px;border-top:1px solid var(--line);font-size:13px;color:var(--blue);}
 .wb-lesson-link small {display:block;color:var(--slate);font-size:9px;margin-top:3px;}
