@@ -4194,6 +4194,27 @@ dialog::backdrop {
 }
 @media(max-width:760px) {.recall-list,.coverage-lab,.concept-comparison {grid-template-columns:1fr;}}
 
+@media(max-width:760px) {
+  .hero-description,
+  .page-heading>div>p:not(.eyebrow),
+  .question-group>p,
+  .feedback>p,
+  .practice-answer,
+  .explanation-content>p,
+  .retrieval p {
+    font-size:16px;
+    line-height:1.75;
+  }
+  .answer-options>label,
+  .read-button,
+  .concept-options button {
+    min-height:44px;
+  }
+  .tf-options>label {
+    font-size:12px;
+  }
+}
+
 .lesson-switcher {max-height:145px;overflow-y:auto;flex-shrink:0;}
 .lesson-switcher .library-link {display:flex;align-items:center;justify-content:space-between;color:var(--ink);padding-bottom:5px;}
 .lesson-switcher .library-link .icon {width:12px;height:12px;}

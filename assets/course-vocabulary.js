@@ -554,5 +554,283 @@ window.COURSE_VOCABULARY = [
         "label": "Paragraph I"
       }
     ]
+  },
+  {
+    "folder": "26.9.9",
+    "title": "Reading Is a Skill We Must Keep Using",
+    "day": 3,
+    "storageKey": "passage-2026-09-09-v1",
+    "words": [
+      {
+        "id": "01",
+        "word": "literacy",
+        "definition": "The ability to understand and use written language.",
+        "ipa": "/ˈlɪtərəsi/ — uncountable noun.",
+        "article": "“Literacy matters not only because words carry information, but because people must act on what those words mean.”",
+        "location": "reading-A",
+        "label": "Paragraph A"
+      },
+      {
+        "id": "02",
+        "word": "foundational",
+        "definition": "Providing the basis on which something else develops.",
+        "ipa": "/faʊnˈdeɪʃənəl/ — adjective.",
+        "article": "“Foundational skills support everyday decisions that can otherwise depend on someone else's interpretation.”",
+        "location": "reading-A",
+        "label": "Paragraph A"
+      },
+      {
+        "id": "03",
+        "word": "autonomy",
+        "definition": "The freedom or capacity to make decisions independently.",
+        "ipa": "/ɔːˈtɒnəmi/ — uncountable noun.",
+        "article": "“Autonomy grows when a person can understand an important document without surrendering the decision to another reader.”",
+        "location": "reading-A",
+        "label": "Paragraph A"
+      },
+      {
+        "id": "04",
+        "word": "proficiency",
+        "definition": "The level of skill someone has in an activity.",
+        "ipa": "/prəˈfɪʃənsi/ — uncountable noun.",
+        "article": "“Proficiency is better understood as a continuum than as a switch that is either on or off.”",
+        "location": "reading-B",
+        "label": "Paragraph B"
+      },
+      {
+        "id": "05",
+        "word": "continuum",
+        "definition": "A range with gradual differences between its points.",
+        "ipa": "/kənˈtɪnjuəm/ — countable noun.",
+        "article": "“Proficiency is better understood as a continuum than as a switch that is either on or off.”",
+        "location": "reading-B",
+        "label": "Paragraph B"
+      },
+      {
+        "id": "06",
+        "word": "attainment",
+        "definition": "The achievement of a level or goal.",
+        "ipa": "/əˈteɪnmənt/ — noun, usually uncountable here.",
+        "article": "“Educational attainment records completed levels of education, whereas reading ability concerns what someone can actually do with a text.”",
+        "location": "reading-B",
+        "label": "Paragraph B"
+      },
+      {
+        "id": "07",
+        "word": "disparity",
+        "definition": "A noticeable difference or inequality between comparable things.",
+        "ipa": "/dɪˈspærəti/ — countable or uncountable noun.",
+        "article": "“A disparity between qualifications and current abilities is therefore worth investigating.”",
+        "location": "reading-B",
+        "label": "Paragraph B"
+      },
+      {
+        "id": "08",
+        "word": "stagnation",
+        "definition": "A period of little or no development or progress.",
+        "ipa": "/stæɡˈneɪʃən/ — uncountable noun.",
+        "article": "“Stagnation in an average, however, does not establish that every individual has stopped learning.”",
+        "location": "reading-B",
+        "label": "Paragraph B"
+      },
+      {
+        "id": "09",
+        "word": "digital divide",
+        "definition": "A gap in people's access to, or ability to benefit from, digital technologies.",
+        "ipa": "/ˌdɪdʒɪtəl dɪˈvaɪd/ — countable noun phrase.",
+        "article": "“The digital divide adds another layer to the problem.”",
+        "location": "reading-C",
+        "label": "Paragraph C"
+      },
+      {
+        "id": "10",
+        "word": "affordability",
+        "definition": "The extent to which a price is manageable within available resources.",
+        "ipa": "/əˌfɔːdəˈbɪləti/ — uncountable noun.",
+        "article": "“Affordability matters because a service cannot be used consistently if its price competes with essential household spending.”",
+        "location": "reading-C",
+        "label": "Paragraph C"
+      },
+      {
+        "id": "11",
+        "word": "navigate",
+        "definition": "To find a way through a place, process or information system.",
+        "ipa": "/ˈnævɪɡeɪt/ — verb.",
+        "article": "“Yet a connection does not itself teach someone to navigate a complicated application form.”",
+        "location": "reading-C",
+        "label": "Paragraph C"
+      },
+      {
+        "id": "12",
+        "word": "discern",
+        "definition": "To recognise or distinguish something through careful attention.",
+        "ipa": "/dɪˈsɜːn/ — transitive verb.",
+        "article": "“Once information is available, readers still need to discern what deserves their trust.”",
+        "location": "reading-D",
+        "label": "Paragraph D"
+      },
+      {
+        "id": "13",
+        "word": "credible",
+        "definition": "Reasonably believable or worthy of trust.",
+        "ipa": "/ˈkredəbəl/ — adjective.",
+        "article": "“A credible claim has support that can be examined, rather than merely a confident presentation.”",
+        "location": "reading-D",
+        "label": "Paragraph D"
+      },
+      {
+        "id": "14",
+        "word": "misleading",
+        "definition": "Likely to cause someone to form an incorrect impression.",
+        "ipa": "/ˌmɪsˈliːdɪŋ/ — adjective.",
+        "article": "“Misleading wording can remain technically accurate while directing attention away from an important qualification.”",
+        "location": "reading-D",
+        "label": "Paragraph D"
+      },
+      {
+        "id": "15",
+        "word": "inference",
+        "definition": "A conclusion drawn from evidence or information rather than stated directly.",
+        "ipa": "/ˈɪnfərəns/ — countable or uncountable noun.",
+        "article": "“An inference connects what a text states with a conclusion that the reader draws from it.”",
+        "location": "reading-D",
+        "label": "Paragraph D"
+      },
+      {
+        "id": "16",
+        "word": "scaffold",
+        "definition": "To support learning through steps or assistance that can later be reduced.",
+        "ipa": "/ˈskæfəʊld/ — transitive verb here.",
+        "article": "“A useful lesson can scaffold a difficult task by supplying temporary support that is gradually withdrawn.”",
+        "location": "reading-E",
+        "label": "Paragraph E"
+      },
+      {
+        "id": "17",
+        "word": "retention",
+        "definition": "Keeping information, people or things over time.",
+        "ipa": "/rɪˈtenʃən/ — uncountable noun.",
+        "article": "“Retention requires more than a successful answer while the example remains visible.”",
+        "location": "reading-E",
+        "label": "Paragraph E"
+      },
+      {
+        "id": "18",
+        "word": "transferable",
+        "definition": "Capable of being used in a different setting or for another task.",
+        "ipa": "/trænsˈfɜːrəbəl/ — adjective.",
+        "article": "“Transferable skills become apparent when a learner uses an approach successfully in a new setting.”",
+        "location": "reading-E",
+        "label": "Paragraph E"
+      },
+      {
+        "id": "19",
+        "word": "stigma",
+        "definition": "Social disapproval attached to a characteristic or situation.",
+        "ipa": "/ˈstɪɡmə/ — noun.",
+        "article": "“Stigma can make asking for help feel like admitting a personal failure.”",
+        "location": "reading-F",
+        "label": "Paragraph F"
+      },
+      {
+        "id": "20",
+        "word": "accommodate",
+        "definition": "To make room or suitable arrangements for a need or constraint.",
+        "ipa": "/əˈkɒmədeɪt/ — transitive verb.",
+        "article": "“Providers could accommodate such constraints through flexible timetables, without assuming that flexibility removes the need for structure.”",
+        "location": "reading-F",
+        "label": "Paragraph F"
+      },
+      {
+        "id": "21",
+        "word": "flexible",
+        "definition": "Able to change in response to different circumstances.",
+        "ipa": "/ˈfleksəbəl/ — adjective.",
+        "article": "“Providers could accommodate such constraints through flexible timetables, without assuming that flexibility removes the need for structure.”",
+        "location": "reading-F",
+        "label": "Paragraph F"
+      },
+      {
+        "id": "22",
+        "word": "relevance",
+        "definition": "A useful connection to the matter, need or situation being considered.",
+        "ipa": "/ˈreləvəns/ — uncountable noun.",
+        "article": "“Relevance matters when limited study time must compete with other responsibilities.”",
+        "location": "reading-F",
+        "label": "Paragraph F"
+      },
+      {
+        "id": "23",
+        "word": "facilitator",
+        "definition": "Someone who helps an activity or learning process work effectively.",
+        "ipa": "/fəˈsɪlɪteɪtə/ — countable noun.",
+        "article": "“A facilitator helps others participate and make progress rather than simply presenting material.”",
+        "location": "reading-G",
+        "label": "Paragraph G"
+      },
+      {
+        "id": "24",
+        "word": "self-paced",
+        "definition": "Allowing a learner to choose the speed or timing of progress.",
+        "ipa": "/ˌself ˈpeɪst/ — adjective.",
+        "article": "“Self-paced study allows participants to move through material according to their own timetable.”",
+        "location": "reading-G",
+        "label": "Paragraph G"
+      },
+      {
+        "id": "25",
+        "word": "engagement",
+        "definition": "Active involvement and attention.",
+        "ipa": "/ɪnˈɡeɪdʒmənt/ — noun, uncountable here.",
+        "article": "“Engagement, however, involves meaningful attention and participation, not merely opening a page.”",
+        "location": "reading-G",
+        "label": "Paragraph G"
+      },
+      {
+        "id": "26",
+        "word": "agency",
+        "definition": "The capacity to act intentionally and influence events or circumstances.",
+        "ipa": "/ˈeɪdʒənsi/ — uncountable noun in this meaning.",
+        "article": "“Agency involves being able to pursue a goal and influence the circumstances affecting one's life.”",
+        "location": "reading-H",
+        "label": "Paragraph H"
+      },
+      {
+        "id": "27",
+        "word": "civic participation",
+        "definition": "Involvement in community or public decision-making and activities.",
+        "ipa": "/ˈsɪvɪk pɑːˌtɪsɪˈpeɪʃən/ — uncountable noun phrase.",
+        "article": "“Civic participation can include reading a local proposal, discussing its implications and submitting an informed response.”",
+        "location": "reading-H",
+        "label": "Paragraph H"
+      },
+      {
+        "id": "28",
+        "word": "opportunity cost",
+        "definition": "The value of the best alternative forgone when a choice is made.",
+        "ipa": "/ˌɒpəˈtjuːnəti kɒst/ — noun phrase.",
+        "article": "“The opportunity cost of one programme is the value of the best alternative use of the same resources.”",
+        "location": "reading-I",
+        "label": "Paragraph I"
+      },
+      {
+        "id": "29",
+        "word": "provision",
+        "definition": "The supplying or availability of a service or resource.",
+        "ipa": "/prəˈvɪʒən/ — uncountable noun in this use.",
+        "article": "“Adult-learning provision might compete with other educational needs, while also supporting parents, workers and community organisations.”",
+        "location": "reading-I",
+        "label": "Paragraph I"
+      },
+      {
+        "id": "30",
+        "word": "reinforce",
+        "definition": "To strengthen or support something already present.",
+        "ipa": "/ˌriːɪnˈfɔːs/ — transitive verb.",
+        "article": "“Libraries, workplaces and public services could reinforce skills by offering understandable material and occasions for purposeful reading.”",
+        "location": "reading-J",
+        "label": "Paragraph J"
+      }
+    ]
   }
 ];

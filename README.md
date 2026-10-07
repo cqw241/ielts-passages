@@ -1,13 +1,14 @@
 # Passage · IELTS Reading
 
-An English-only illustrated learning website. Each lesson preserves its A–J article and vocabulary, grammar, reading, writing and speaking material. Designed and verified for desktop browsers.
+An English-only illustrated learning website. Each lesson preserves its A–J article and vocabulary, grammar, reading, writing and speaking material. Responsive layouts support desktop and mobile browsers.
 
 ## Lessons
 
 - [Day 1 · Working lives](26.9.6/index.html): employment measurement, job quality and policy trade-offs.
 - [Day 2 · Public health](26.9.7/index.html): maintaining a disease milestone through prevention, surveillance and accessible services. Includes 20 closed-book recall prompts from Day 1.
+- [Day 3 · Adult learning](26.9.9/index.html): literacy, digital inclusion and independent judgement through repeated practice. Includes 20 closed-book recall prompts from Days 1 and 2, seven-choice heading matching and short-answer reading questions.
 
-Open either lesson directly in a browser. The sidebar switches between lessons. No dependencies are required. The root page is the shared course library.
+Open any lesson directly in a browser. The sidebar switches between lessons. No dependencies are required. The root page is the shared course library.
 
 For a local preview, run `python -m http.server 8765 --bind 127.0.0.1` in this directory, then visit `http://127.0.0.1:8765/26.9.7/` or `http://127.0.0.1:8765/26.9.6/`.
 
@@ -18,7 +19,7 @@ For a local preview, run `python -m http.server 8765 --bind 127.0.0.1` in this d
 - Each lesson's `lesson-data.js` contains content extracted from its original Markdown source.
 - Each `lesson-notes.js` contains English explanations, comprehension checks, vocabulary glosses, grammar annotations and presentation configuration.
 - Day 2 uses reusable comparison panels, choice diagrams and a coverage illustration with hypothetical equally sized communities. These supplement the article without replacing its evidence or claiming that a percentage guarantees protection.
-- Build source data with `node scripts/build-lesson.mjs 26.9.6` or `node scripts/build-lesson.mjs 26.9.7`. The default remains Day 1. Review teaching notes after source changes.
+- Build source data with `node scripts/build-lesson.mjs <folder>`, for example `node scripts/build-lesson.mjs 26.9.9`. The default remains Day 1. Reading question types and ranges come from the source's question-group headings. Review teaching notes after source changes.
 - Each lesson's `images/` contains optimized WebP assets. Original reference images remain untouched.
 
 Reading progress, practice answers, recall attempts, writing drafts and speaking notes save to browser localStorage under separate lesson keys. Day 1 retains its original key. Bookmarks join the shared wordbook described below. Self-marked recall records a learner's own assessment, not independently verified mastery. Records differ between browsers and between file and HTTP access. My review exports TXT study notes. Vocabulary audio uses browser speech synthesis and available voices.
@@ -53,7 +54,7 @@ For each new lesson:
 
 1. Add its source Markdown, `index.html`, `lesson-notes.js`, and optimized WebP illustrations in its lesson folder. Reuse an existing lesson's stylesheet and script tags: lesson data/notes, `../assets/course-data.js`, `../assets/course-vocabulary.js`, `../assets/wordbook-store.js`, `../assets/lesson.js`, then `../assets/wordbook.js`; include both lesson.css and wordbook.css. This keeps free selection, shared bookmarks and navigation available in new lessons.
 2. Add a record to `lessons.json` with `folder`, `shortTitle`, `summary`, and a relative WebP `image`. Titles, dates and course days are extracted from lesson data. Keep learner-facing text in English.
-3. Run `node scripts/build-site.mjs`. The extractor supports the existing two reading-format profiles; extend it for different formats instead of forcing new source material into an unsuitable profile.
+3. Run `node scripts/build-site.mjs`. The extractor reads question-group ranges and supports True/False/Not Given, Yes/No/Not Given, multiple choice, matching headings/information, summary/sentence completion and short answers. Extend it for other formats instead of forcing new source material into an unsuitable profile.
 4. Preview `_site/` under a local server and verify the library, lesson interactions, images and source downloads. Keep links relative so they work beneath `/ielts-passages/`.
 5. Commit the lesson, registry and generated catalog files, then push to `main`. Check the Pages workflow and live URLs. All lessons remain under the same course home.
 

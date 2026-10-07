@@ -28,23 +28,46 @@ for (const m of answers.matchAll(/^(\d+)\. \*\*(.+?)\.\*\* (.+)$/gm)) {
  answerMap[m[1]]={answer:parts[0],paragraph:parts[1] || (/^[A-J]$/.test(parts[0])?parts[0]:null),explanation:m[3]};
 }
 const reading = [];
-const hasInformationMatching = readingText.includes('Questions 6–10 — Matching information');
-const headings = [...readingText.matchAll(/^(i{1,3}|iv|v|vi)\. (.+)$/gm)].map(m=>({value:m[1],text:m[2].trim()}));
-const summary = hasInformationMatching ? readingText.match(/^(.+?\*\*11\. __________\*\*.+)$/m)[1] : '';
-const summaryPrompts = hasInformationMatching ? [...summary.matchAll(/(?:^|(?<=\. ))(.+?\*\*(\d+)\. __________\*\*.+?)(?=\. |$)/g)] : [];
-for (let id=1;id<=15;id++) {
-  let question,options,type,instruction;
-  if (hasInformationMatching) {
-    if(id<=5) { question=readingText.match(new RegExp('^'+id+'\\. (.+)$','m'))[1];options=['YES','NO','NOT GIVEN'].map(x=>({value:x,text:x}));type='Yes / No / Not Given';instruction="YES = agrees with the writer · NO = contradicts the writer · NOT GIVEN = the writer's position is not stated"; }
-    else if(id<=10) { question=readingText.match(new RegExp('^'+id+'\\. (.+)$','m'))[1];options=paragraphs.map(p=>({value:p.id,text:'Paragraph '+p.id}));type='Matching information';instruction='Choose a paragraph A–J. You may use a letter more than once.'; }
-    else { question=summaryPrompts.find(m=>Number(m[2])===id)?.[1].replace(/\*\*/g,'');options=[];type='Summary completion';instruction='Complete the summary with no more than two words from the passage.'; }
+// Question ranges belong to the source, and may differ between lessons.
+const groups = blocks(readingText).map(block => {
+  const range = block.title.match(/^Questions (\d+)[–-](\d+) — (.+)$/);
+  return range && {...block, first:Number(range[1]), last:Number(range[2]), type:range[3]};
+}).filter(Boolean);
+const headings = [...readingText.matchAll(/^([ivxlcdm]+)\. (.+)$/gm)].map(m=>({value:m[1],text:m[2].trim()}));
+const summaryGroup = groups.find(group=>group.type==='Summary completion');
+const summary = summaryGroup?.text.match(/^(.+?\*\*\d+\. __________\*\*.+)$/m)?.[1] || '';
+const summaryPrompts = [...summary.matchAll(/(?:^|(?<=\. ))(.+?\*\*(\d+)\. __________\*\*.+?)(?=\. |$)/g)];
+for (const group of groups) {
+  const {type} = group;
+  for (let id=group.first;id<=group.last;id++) {
+    let question=group.text.match(new RegExp('^'+id+'\\. (.+)$','m'))?.[1]?.trim();
+    let options=[], instruction;
+    if (type==='True / False / Not Given' || type==='Yes / No / Not Given') {
+      const values=type.startsWith('True')?['TRUE','FALSE','NOT GIVEN']:['YES','NO','NOT GIVEN'];
+      options=values.map(value=>({value,text:value}));
+      instruction=type.startsWith('True')?'TRUE = agrees · FALSE = contradicts · NOT GIVEN = insufficient information':"YES = agrees with the writer · NO = contradicts the writer · NOT GIVEN = the writer's position is not stated";
+    } else if (type==='Multiple choice') {
+      const match=group.text.match(new RegExp('^\\*\\*'+id+'\\. (.+?)\\*\\*\\n\\n([\\s\\S]*?)(?=\\n\\n|$(?![\\s\\S]))','m'));
+      question=match?.[1];
+      options=[...(match?.[2]||'').matchAll(/^([A-D])\. (.+)$/gm)].map(m=>({value:m[1],text:m[2].trim()}));
+      instruction='Choose the one answer A–D that best matches the passage.';
+    } else if (type==='Matching headings') {
+      options=headings;
+      instruction=`Choose from ${headings.length} headings. Use each heading no more than once.`;
+    } else if (type==='Matching information') {
+      options=paragraphs.map(p=>({value:p.id,text:'Paragraph '+p.id}));
+      instruction='Choose a paragraph A–J. You may use a letter more than once.';
+    } else if (type==='Summary completion') {
+      question=summaryPrompts.find(m=>Number(m[2])===id)?.[1].replace(/\*\*/g,'');
+      instruction='Complete the summary with no more than two words from the passage.';
+    } else if (type==='Sentence completion' || type==='Short answers') {
+      instruction='Use no more than two words from the passage. Spelling matters.';
+    } else {
+      throw new Error(`Unsupported reading question type: ${type}`);
+    }
+    if(!question||!answerMap[id]||(type==='Multiple choice'&&options.length!==4))throw new Error(`Cannot extract question ${id}`);
+    reading.push({id,question,options,type,instruction,...answerMap[id]});
   }
-  else if (id<=5) { question=readingText.match(new RegExp('^'+id+'\\. (.+)$','m'))[1];options=['TRUE','FALSE','NOT GIVEN'].map(x=>({value:x,text:x}));type='True / False / Not Given'; }
-  else if (id<=8) { const match=readingText.match(new RegExp('^\\*\\*'+id+'\\. (.+?)\\*\\*\\n\\n([\\s\\S]*?)(?=\\n\\n)','m'));question=match[1];options=[...match[2].matchAll(/^([A-D])\. (.+)$/gm)].map(m=>({value:m[1],text:m[2].trim()}));type='Multiple choice'; }
-  else if (id<=11) {question=readingText.match(new RegExp('^'+id+'\\. (.+)$','m'))[1].trim();options=headings;type='Matching headings';}
-  else {question=readingText.match(new RegExp('^'+id+'\\. (.+)$','m'))[1].trim();options=[];type='Sentence completion';}
-  if(!question||!answerMap[id])throw new Error(`Cannot extract question ${id}`);
-  reading.push({id,question,options,type,instruction,...answerMap[id]});
 }
 const practiceText=sections['NEW VOCABULARY PRACTICE'];
 const practice=[];
@@ -56,7 +79,7 @@ for (const m of practiceText.split('### NEW VOCABULARY ANSWER KEY')[0].matchAll(
 const images=fs.readdirSync(path.join(folder,'images')).filter(p=>/^reference-\d+\.webp$/.test(p)).sort((a,b)=>Number(a.match(/\d+/)[0])-Number(b.match(/\d+/)[0])).map(p=>'images/'+p);
 const recallSection=sections['SPACED-REPETITION REVIEW — 20 WORDS'];
 const recall=[...recallSection.matchAll(/^R(\d+)\. (.+)$/gm)].map(m=>({id:m[1],question:m[2].trim(),explanation:recallSection.split('### REVIEW ANSWER KEY')[1].match(new RegExp('^'+m[1]+'\\. (.+)$','m'))[1]}));
-const lesson={title,date:raw.match(/^Date: (.+?) — /m)[1],day:Number(raw.match(/^Course day: (\d+)/m)[1]),topic:raw.match(/^Topic Area: (.+)$/m)[1].trim(),paragraphs,vocabulary,grammar,reading,practice,recall,summary,speaking:blocks(sections['IELTS SPEAKING PART 3']),sections,images,sourceFile};
+const lesson={title,date:raw.match(/^Date: (.+?) — /m)[1],day:Number(raw.match(/^(?:Course day|Lesson): (\d+)/m)[1]),topic:raw.match(/^Topic Area: (.+)$/m)[1].trim(),paragraphs,vocabulary,grammar,reading,practice,recall,summary,speaking:blocks(sections['IELTS SPEAKING PART 3']),sections,images,sourceFile};
 lesson.storageKey = 'passage-' + new Date(lesson.date + ' 12:00 UTC').toISOString().slice(0,10) + '-v1';
 if (paragraphs.length!==10||vocabulary.length!==30||grammar.length!==5||reading.length!==15||practice.length!==30) throw new Error('Incomplete lesson extraction');
 fs.writeFileSync(path.join(folder,'lesson-data.js'),'window.LESSON = '+JSON.stringify(lesson,null,2)+';\n');

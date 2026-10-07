@@ -533,6 +533,7 @@ window.LESSON = {
         }
       ],
       "type": "True / False / Not Given",
+      "instruction": "TRUE = agrees · FALSE = contradicts · NOT GIVEN = insufficient information",
       "answer": "FALSE",
       "paragraph": "D",
       "explanation": "The labour force is explicitly “not every adult without a job.” The statement changes a limited definition into a universal one. “Every” directly contradicts the exclusion, so this is not NOT GIVEN."
@@ -555,6 +556,7 @@ window.LESSON = {
         }
       ],
       "type": "True / False / Not Given",
+      "instruction": "TRUE = agrees · FALSE = contradicts · NOT GIVEN = insufficient information",
       "answer": "TRUE",
       "paragraph": "B",
       "explanation": "July changes from a loss to a gain. “Changed the reported direction” paraphrases the move from a negative employment change to a positive one; you do not need to calculate its size."
@@ -577,6 +579,7 @@ window.LESSON = {
         }
       ],
       "type": "True / False / Not Given",
+      "instruction": "TRUE = agrees · FALSE = contradicts · NOT GIVEN = insufficient information",
       "answer": "NOT GIVEN",
       "paragraph": "C",
       "explanation": "Information-sector losses are reported, but their principal cause is not identified. The publishing-worker example concerns possible job suitability, not automation. A plausible outside explanation is insufficient evidence."
@@ -599,6 +602,7 @@ window.LESSON = {
         }
       ],
       "type": "True / False / Not Given",
+      "instruction": "TRUE = agrees · FALSE = contradicts · NOT GIVEN = insufficient information",
       "answer": "FALSE",
       "paragraph": "E",
       "explanation": "The historical finding says levels remained below the earlier benchmark in half the countries. “Exceeded … in every” contradicts that. “Recovering” means improving, not necessarily having regained or passed a previous level."
@@ -621,6 +625,7 @@ window.LESSON = {
         }
       ],
       "type": "True / False / Not Given",
+      "instruction": "TRUE = agrees · FALSE = contradicts · NOT GIVEN = insufficient information",
       "answer": "TRUE",
       "paragraph": "F",
       "explanation": "“Provided that suitable jobs actually exist” makes job availability a condition. “Potential usefulness” corresponds to “may help”; the passage does not guarantee a successful outcome."
@@ -647,6 +652,7 @@ window.LESSON = {
         }
       ],
       "type": "Multiple choice",
+      "instruction": "Choose the one answer A–D that best matches the passage.",
       "answer": "B",
       "paragraph": "C",
       "explanation": "The example allows for immediate income alongside little use of editorial expertise. “Make full use of … specialist skills” paraphrases “use specialist editorial skills.” A invents a universal pay judgement; C invents responsibility for an overall decline; D contradicts the explicit statement that the person is hypothetical."
@@ -673,6 +679,7 @@ window.LESSON = {
         }
       ],
       "type": "Multiple choice",
+      "instruction": "Choose the one answer A–D that best matches the passage.",
       "answer": "C",
       "paragraph": "G",
       "explanation": "The report “may affect assessments” but does not dictate a decision. “Inform … without determining” preserves both parts of the claim. A turns possibility into obligation; B removes a risk the paragraph retains; D contradicts the described indirect transmission process."
@@ -699,6 +706,7 @@ window.LESSON = {
         }
       ],
       "type": "Multiple choice",
+      "instruction": "Choose the one answer A–D that best matches the passage.",
       "answer": "D",
       "paragraph": "J",
       "explanation": "The author values access, income, security and development, then makes future gains conditional. “Several dimensions” summarises those criteria. A mistakes a possibility for proof; B contradicts the broader evaluation; C misreads a labelled policy judgement as a ban on judgement."
@@ -733,6 +741,7 @@ window.LESSON = {
         }
       ],
       "type": "Matching headings",
+      "instruction": "Choose from 6 headings. Use each heading no more than once.",
       "answer": "ii",
       "paragraph": "B",
       "explanation": "The paragraph explains the value of early estimates and the reason for subsequent updates. “Balancing early information with later corrections” captures its main function. vi mentions survey history, which B does not supply; i falsely promises permanence and a single solution."
@@ -767,6 +776,7 @@ window.LESSON = {
         }
       ],
       "type": "Matching headings",
+      "instruction": "Choose from 6 headings. Use each heading no more than once.",
       "answer": "iv",
       "paragraph": "F",
       "explanation": "Ageing, skill needs, retraining and productivity connect long-term constraints to possible responses. The hypothetical hospital illustrates complementary responses rather than proving the universal solution suggested by i. Other headings focus on measurement or distribution, not this paragraph's organising idea."
@@ -801,6 +811,7 @@ window.LESSON = {
         }
       ],
       "type": "Matching headings",
+      "instruction": "Choose from 6 headings. Use each heading no more than once.",
       "answer": "v",
       "paragraph": "H",
       "explanation": "The paragraph asks who bears costs and considers job security and decent work. “Unequal exposure” paraphrases “disproportionate burden.” iii asserts identical outcomes, the opposite of the concern here; ii is about revisions, which H does not discuss."
@@ -810,6 +821,7 @@ window.LESSON = {
       "question": "People described as __________ are excluded from the official unemployment count after giving up active job search because of poor perceived prospects.",
       "options": [],
       "type": "Sentence completion",
+      "instruction": "Use no more than two words from the passage. Spelling matters.",
       "answer": "discouraged workers",
       "paragraph": "D",
       "explanation": "The definition refers to people outside the official unemployment count after stopping active search. Do not write “unemployed workers”: that reverses the classification being tested."
@@ -819,6 +831,7 @@ window.LESSON = {
       "question": "The term __________ refers to money received before price changes are taken into consideration.",
       "options": [],
       "type": "Sentence completion",
+      "instruction": "Use no more than two words from the passage. Spelling matters.",
       "answer": "nominal earnings",
       "paragraph": "E",
       "explanation": "“Without adjusting for changes in prices” is paraphrased as “before price changes are taken into consideration.” “Purchasing power” concerns what earnings can buy, not the unadjusted money amount."
@@ -828,6 +841,7 @@ window.LESSON = {
       "question": "Increasing output relative to the resources used is an improvement in __________.",
       "options": [],
       "type": "Sentence completion",
+      "instruction": "Use no more than two words from the passage. Spelling matters.",
       "answer": "productivity",
       "paragraph": "F",
       "explanation": "The passage defines it through output relative to input. “Resources used” paraphrases “input.” “Production” would refer to output or its creation without expressing this relationship."
@@ -837,6 +851,7 @@ window.LESSON = {
       "question": "Paragraph I argues that the limitations of economic data make __________ necessary.",
       "options": [],
       "type": "Sentence completion",
+      "instruction": "Use no more than two words from the passage. Spelling matters.",
       "answer": "scrutiny",
       "paragraph": "I",
       "explanation": "“These difficulties make scrutiny essential” supplies both the noun and the logical connection. “Necessary” paraphrases “essential.” The answer is one word; do not add words absent from the relevant expression."

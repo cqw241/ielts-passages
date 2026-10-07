@@ -21,6 +21,17 @@ window.COURSE = {
       "date": "7 September 2026",
       "topic": "Public Health, Animal Health and Public Services",
       "sourceFile": "2026-09-07.md"
+    },
+    {
+      "folder": "26.9.9",
+      "shortTitle": "Adult learning",
+      "summary": "Connect reading proficiency, useful support and repeated practice to independent choices and civic participation.",
+      "image": "images/reference-0.webp",
+      "title": "Reading Is a Skill We Must Keep Using",
+      "day": 3,
+      "date": "9 September 2026",
+      "topic": "Education, Adult Learning and Digital Inclusion",
+      "sourceFile": "2026-09-09-Reading Is a Skill We Must Keep Using.md"
     }
   ]
 };
