@@ -9,7 +9,7 @@ window.COURSE = {
       "day": 1,
       "date": "6 September 2026",
       "topic": "Employment, Economics and Social Policy",
-      "sourceFile": "26.9.6.md"
+      "sourceFile": "26-09-06-When More Jobs Are Only Part of the Story.md"
     },
     {
       "folder": "26.9.7",
@@ -20,7 +20,7 @@ window.COURSE = {
       "day": 2,
       "date": "7 September 2026",
       "topic": "Public Health, Animal Health and Public Services",
-      "sourceFile": "2026-09-07.md"
+      "sourceFile": "26-09-07-The Work That Continues After a Disease Milestone.md"
     },
     {
       "folder": "26.9.9",
@@ -31,7 +31,7 @@ window.COURSE = {
       "day": 3,
       "date": "9 September 2026",
       "topic": "Education, Adult Learning and Digital Inclusion",
-      "sourceFile": "2026-09-09-Reading Is a Skill We Must Keep Using.md"
+      "sourceFile": "26-09-09-Reading Is a Skill We Must Keep Using.md"
     },
     {
       "folder": "26.9.14",
@@ -42,7 +42,7 @@ window.COURSE = {
       "day": 4,
       "date": "14 September 2026",
       "topic": "Agriculture, International Cooperation and Rural Development",
-      "sourceFile": "2026-09-14-When Good Farming Ideas Cross Borders.md"
+      "sourceFile": "26-09-14-When Good Farming Ideas Cross Borders.md"
     }
   ]
 };

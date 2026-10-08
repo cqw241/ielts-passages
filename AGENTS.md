@@ -15,6 +15,7 @@ Study the current codebase before making changes. Reuse existing components, lay
 
 When a new article or lesson is provided:
 
+* Name the lesson source `26-MM-DD-Article Title.md` inside its `26.M.D` folder.
 * Understand the lesson structure before implementing the page.
 * Preserve the article's paragraph structure and teaching flow.
 * Build the page using existing lesson components and design patterns.

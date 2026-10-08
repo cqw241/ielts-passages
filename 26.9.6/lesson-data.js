@@ -1110,6 +1110,6 @@ window.LESSON = {
     "images/reference-9.webp",
     "images/reference-10.webp"
   ],
-  "sourceFile": "26.9.6.md",
+  "sourceFile": "26-09-06-When More Jobs Are Only Part of the Story.md",
   "storageKey": "passage-2026-09-06-v1"
 };

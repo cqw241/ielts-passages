@@ -1234,6 +1234,6 @@ window.LESSON = {
     "images/reference-4.webp",
     "images/reference-5.webp"
   ],
-  "sourceFile": "2026-09-09-Reading Is a Skill We Must Keep Using.md",
+  "sourceFile": "26-09-09-Reading Is a Skill We Must Keep Using.md",
   "storageKey": "passage-2026-09-09-v1"
 };

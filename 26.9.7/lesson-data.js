@@ -1288,6 +1288,6 @@ window.LESSON = {
     "images/reference-7.webp",
     "images/reference-8.webp"
   ],
-  "sourceFile": "2026-09-07.md",
+  "sourceFile": "26-09-07-The Work That Continues After a Disease Milestone.md",
   "storageKey": "passage-2026-09-07-v1"
 };

@@ -1,4 +1,5 @@
 .preview/
+.playwright-cli/
 _site/
 旧版归档无需参考/
 *.docx

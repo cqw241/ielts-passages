@@ -1290,6 +1290,6 @@ window.LESSON = {
     "images/reference-4.webp",
     "images/reference-5.webp"
   ],
-  "sourceFile": "2026-09-14-When Good Farming Ideas Cross Borders.md",
+  "sourceFile": "26-09-14-When Good Farming Ideas Cross Borders.md",
   "storageKey": "passage-2026-09-14-v1"
 };
