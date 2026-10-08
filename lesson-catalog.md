@@ -1,5 +1,8 @@
 ## 26.9.14
 
+**Title:** When Good Farming Ideas Cross Borders  
+**Topic:** Agriculture, International Cooperation and Rural Development
+
 1. know-how
 2. adoption
 3. mutual
@@ -32,6 +35,9 @@
 30. institutionalise
 
 ## 26.9.9
+
+**Title:** Reading Is a Skill We Must Keep Using  
+**Topic:** Education, Adult Learning and Digital Inclusion
 
 1. literacy
 2. foundational
@@ -66,6 +72,9 @@
 
 ## 26.9.7
 
+**Title:** The Work That Continues After a Disease Milestone  
+**Topic:** Public Health, Animal Health and Public Services
+
 1. milestone
 2. validation
 3. elimination
@@ -98,6 +107,9 @@
 30. adaptation
 
 ## 26.9.6
+
+**Title:** When More Jobs Are Only Part of the Story  
+**Topic:** Employment, Economics and Social Policy
 
 1. resilience
 2. headline figure
