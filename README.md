@@ -7,6 +7,7 @@ An English-only illustrated learning website. Each lesson preserves its A–J ar
 - [Day 1 · Working lives](26.9.6/index.html): employment measurement, job quality and policy trade-offs.
 - [Day 2 · Public health](26.9.7/index.html): maintaining a disease milestone through prevention, surveillance and accessible services. Includes 20 closed-book recall prompts from Day 1.
 - [Day 3 · Adult learning](26.9.9/index.html): literacy, digital inclusion and independent judgement through repeated practice. Includes 20 closed-book recall prompts from Days 1 and 2, seven-choice heading matching and short-answer reading questions.
+- [Day 4 · Farming ideas](26.9.14/index.html): why a successful farming technique does not automatically become a workable local programme. Includes 20 closed-book recall prompts from 7 September, Yes/No/Not Given, matching information and summary completion.
 
 Open any lesson directly in a browser. The sidebar switches between lessons. No dependencies are required. The root page is the shared course library.
 
