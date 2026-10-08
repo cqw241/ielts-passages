@@ -4,15 +4,19 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),crypto=require(
 const base=(process.env.PASSAGE_TEST_URL||'http://127.0.0.1:8765/_site/').replace(/\/?$/,'/');
 const digest=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
 (async()=>{
- for(const file of ['assets/vocabulary-learning.js','assets/vocabulary-learning-ui.js','assets/wordbook-store.js','assets/course-vocabulary.js']) {
-  const response=await fetch(base+file);assert.equal(response.status,200,file);
-  assert.equal(digest(Buffer.from(await response.arrayBuffer())),digest(fs.readFileSync('_site/'+file)),`Published ${file} matches the local build`);
- }
  const browser=await chromium.launch({headless:true,...(process.env.CHROME_PATH?{executablePath:process.env.CHROME_PATH}:{})});
  try {
   const context=await browser.newContext({viewport:{width:1440,height:1000}}),page=await context.newPage(),errors=[];
   page.on('pageerror',e=>errors.push(e.message));
   await page.goto(base);assert.equal(await page.locator('.library-lesson').count(),4);
+  // Use the learner's browser network path (including system proxy settings).
+  const files=['assets/vocabulary-learning.js','assets/vocabulary-learning-ui.js','assets/wordbook-store.js','assets/course-vocabulary.js'];
+  const published=await page.evaluate(async files=>Promise.all(files.map(async file=>{
+   const response=await fetch(file),bytes=await response.arrayBuffer();
+   const hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),b=>b.toString(16).padStart(2,'0')).join('');
+   return {file,status:response.status,hash};
+  })),files);
+  for(const {file,status,hash} of published) { assert.equal(status,200,file);assert.equal(hash,digest(fs.readFileSync('_site/'+file)),`Published ${file} matches the local build`); }
   assert.equal(await page.locator('#learning-dashboard').count(),1);
   for(const folder of ['26.9.6','26.9.7','26.9.9','26.9.14']) {
    await page.goto(base+folder+'/index.html#reading');assert.equal(await page.locator('.english-passage').count(),10);
