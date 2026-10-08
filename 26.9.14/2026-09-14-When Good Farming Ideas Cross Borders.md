@@ -5,7 +5,7 @@ Lesson: 4
 Topic Area: Agriculture, International Cooperation and Rural Development  
 Level: IELTS Academic 7.0–8.0 / CEFR B2+–C1
 
-**Current-Affairs Trigger:** A UN Sustainable Development Group feature published on 11 September, ahead of South-South Cooperation Day on 12 September, highlighted practical exchanges between developing countries, including agricultural cooperation between China and Uganda. It provides a timely starting point for examining why a successful technique does not automatically become a successful international programme. [UNSDG feature](https://unsdg.un.org/latest/stories/south-south-cooperation-how-solutions-travel)
+**Current-Affairs Trigger:** A UN Sustainable Development Group feature published on 11 September, ahead of South-South Cooperation Day on 12 September, highlighted practical exchanges between developing countries, including agricultural cooperation between China and Uganda. It provides a timely starting point for examining why a successful technique does not automatically become a successful international programme.
 
 **Study route:** Attempt the review without consulting earlier lists. Read the article, answer all 15 reading questions, and only then open the explanations. Complete the vocabulary practice before planning your essay and attempting the speaking challenge. You can divide this substantial lesson between two study sessions. These are original IELTS-style materials, not official test questions.
 
@@ -19,11 +19,11 @@ A farming technique can cross an ocean more easily than it can become part of a 
 
 ### B
 
-The UN's September 11 feature brings this problem into focus through examples of countries in the Global South sharing practical expertise. In agriculture, the underlying ambition is mutual benefit: a partnership should produce useful learning for both sides. Capacity building means developing the people and organisations that can continue solving problems after visiting specialists leave. Ideally, exchange is reciprocal, with local experience also changing the advice that outsiders offer. Similar development challenges can make partners relevant to each other, but the label “Global South” should not imply that their resources, climates or political influence are identical. [UNSDG](https://unsdg.un.org/latest/stories/south-south-cooperation-how-solutions-travel)
+The UN's September 11 feature brings this problem into focus through examples of countries in the Global South sharing practical expertise. In agriculture, the underlying ambition is mutual benefit: a partnership should produce useful learning for both sides. Capacity building means developing the people and organisations that can continue solving problems after visiting specialists leave. Ideally, exchange is reciprocal, with local experience also changing the advice that outsiders offer. Similar development challenges can make partners relevant to each other, but the label “Global South” should not imply that their resources, climates or political influence are identical.
 
 ### C
 
-An April 2026 FAO account of cooperation between Uganda and China offers a concrete example. It reports that more than 200 crop varieties were introduced and tested, with four officially released for commercial production. At demonstration sites, hybrid rice yields reached up to 6.9 tonnes per hectare. These are programme-reported results, not a national average or an independent estimate of the partnership's effects. For a smallholder, the practical question is whether a higher yield can be achieved under ordinary conditions. A carefully managed demonstration plot may reveal potential without showing what every household can afford to reproduce. [FAO project account](https://www.fao.org/uganda/news/detail/uganda-china-fao-south-south-partnership-sets-global-benchmark-for-agrifood-transformation-as-phase-iii-concludes/en)
+An April 2026 FAO account of cooperation between Uganda and China offers a concrete example. It reports that more than 200 crop varieties were introduced and tested, with four officially released for commercial production. At demonstration sites, hybrid rice yields reached up to 6.9 tonnes per hectare. These are programme-reported results, not a national average or an independent estimate of the partnership's effects. For a smallholder, the practical question is whether a higher yield can be achieved under ordinary conditions. A carefully managed demonstration plot may reveal potential without showing what every household can afford to reproduce.
 
 ### D
 
@@ -39,7 +39,7 @@ Ideas also move through social relationships. The diffusion of a technique may a
 
 ### G
 
-The politics of a partnership matter as much as its teaching methods. Local ownership means that the people affected have meaningful influence over priorities and implementation. A consultative process should therefore include farmers whose land, income or household duties make participation difficult. Governments may co-finance a programme to demonstrate commitment, but a financial contribution alone does not establish that every affected group has been heard. In a report published on September 2, the UN in Uganda described an August 27 consultation and a proposal for a regular cooperation platform. The proposal illustrates an ambition to organise exchanges more systematically; it does not yet demonstrate improved farm incomes. [UN Uganda](https://uganda.un.org/en/322025-uganda-looks-south-south-cooperation-accelerate-development-ambitions)
+The politics of a partnership matter as much as its teaching methods. Local ownership means that the people affected have meaningful influence over priorities and implementation. A consultative process should therefore include farmers whose land, income or household duties make participation difficult. Governments may co-finance a programme to demonstrate commitment, but a financial contribution alone does not establish that every affected group has been heard. In a report published on September 2, the UN in Uganda described an August 27 consultation and a proposal for a regular cooperation platform. The proposal illustrates an ambition to organise exchanges more systematically; it does not yet demonstrate improved farm incomes.
 
 ### H
 

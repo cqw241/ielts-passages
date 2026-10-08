@@ -313,7 +313,7 @@ window.COURSE_VOCABULARY = [
       {
         "id": "04",
         "word": "eradication",
-        "definition": "Complete removal; in disease-control terminology, permanent worldwide reduction of infection incidence to zero through deliberate efforts. [CDC terminology reference](https://www.cdc.gov/mmwr/preview/mmwrhtml/su48a7.htm)",
+        "definition": "Complete removal; in disease-control terminology, permanent worldwide reduction of infection incidence to zero through deliberate efforts.",
         "ipa": "/ɪˌrædɪˈkeɪʃən/ — uncountable noun.",
         "article": "“Elimination within a country is not the same as worldwide eradication.”",
         "location": "reading-A",
