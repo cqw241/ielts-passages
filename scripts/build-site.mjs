@@ -20,6 +20,7 @@ function copy(relative){
 }
 copy('index.html');
 copy('wordbook.html');
+copy('review.html');
 for(const name of fs.readdirSync(path.join(root,'assets')))if(/\.(css|js|svg)$/.test(name))copy('assets/'+name);
 for(const {folder} of manifest.lessons){
  const context={window:{}};

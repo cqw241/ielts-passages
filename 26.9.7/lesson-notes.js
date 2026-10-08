@@ -1,4 +1,7 @@
 window.LESSON_NOTES = {
+  "training": {
+    "04": {"example": "The eradication of the invasive plant required several years of coordinated work."}
+  },
   "intro": "A milestone is a moment to celebrate—and a system to keep working. Explore how prevention, reliable detection and accessible care protect a result after the headlines fade.",
   "presentation": {
     "topic": "PUBLIC HEALTH, ANIMAL HEALTH & PUBLIC SERVICES",

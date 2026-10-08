@@ -33,15 +33,45 @@ Reading progress, practice answers, recall attempts, writing drafts and speaking
 
 Preset words use the lesson's English definition. Other words are queried through [FreeDictionaryAPI.com](https://freedictionaryapi.com/). Choose the dictionary sense that fits the sentence, or write an English meaning and note. The dictionary does not infer the correct contextual meaning. Some phrases have no entries; inflected forms may need manual editing to a base form. Changing the entry retains its original selected text and context. Lookup has a 15-second timeout, cached results and manual retry; unavailable or empty results never prevent saving. Pending lookups resume after reopening the page. Pronunciation uses browser speech synthesis and available English voices; IPA is displayed when supplied.
 
-Entries deduplicate by case, surrounding punctuation and repeated whitespace, preserving separate word forms. Multiple contexts join the same entry. Removing a lesson bookmark unlinks that lesson; global deletion in Wordbook removes the entry and offers Undo. Recall hides meanings until revealed and records **Remembered / Practise again** self-assessments. There is no automatic review schedule.
+Entries deduplicate by case, surrounding punctuation and repeated whitespace, preserving separate word forms. Multiple contexts join the same entry. Removing a lesson bookmark unlinks that lesson; global deletion in Wordbook removes the entry and offers Undo. Today Review separates recognition from independent production, hides references until the attempt, and records Again / Hard / Good / Easy self-assessments with adaptive schedules.
 
-Wordbook uses the shared `passage-wordbook-v1` localStorage key at the current origin. Original lesson storage keys and unrelated progress/drafts are preserved. Existing untyped entries remain words; sentence entries have `kind: "sentence"`. JSON export version 2 includes both tabs, meanings/understanding, notes, full contexts, self-assessments, dictionary candidates and attribution. Import accepts Passage version 1 and 2 JSON backups up to 5 MB / 10,000 entries, validates them before changing records, merges duplicate contexts within each type and preserves current edits. No account sync or CSV export is included. Different browsers, local previews and the hosted site maintain separate collections.
+Wordbook uses the shared `passage-wordbook-v1` localStorage key at the current origin. Original lesson storage keys and unrelated progress/drafts are preserved. Existing untyped entries remain words; sentence entries have `kind: "sentence"`. JSON export version 3 includes both tabs, meanings/understanding, notes, full contexts, both learning schedules and answer histories, lesson progress/drafts, dictionary candidates and attribution. Import accepts Passage version 1, 2 and 3 JSON backups up to 5 MB / 10,000 entries, validates them before changing records, merges duplicate contexts within each type and preserves current edits. Duplicate review tracks use the schedule with the latest attempt; a current explicit goal wins over an imported goal. Lesson drafts restore only into empty browser records. No account sync or CSV export is included. Different browsers, local previews and the hosted site maintain separate collections.
 
 Dictionary data is from Wiktionary under CC BY-SA 4.0. Definition and candidate displays retain source/provider/license links, and JSON backups retain attribution and edit markers. Typed meanings remain distinct from dictionary-derived meanings. The API requires no key, supports browser CORS and permits 1,000 requests per hour per IP; empty results and failures show a path to editing or retrying.
 
 Implementation: `assets/wordbook-store.js` owns storage, migration, lookup and merging; `assets/wordbook.js` handles selection, editing, review and backup UI. `assets/wordbook.css` reuses the existing design tokens. `scripts/build-catalog.mjs` generates `assets/course-vocabulary.js`, enabling all-lesson migration without loading or fetching individual lesson pages.
 
 Focused integration verification is in `scripts/verify-wordbook.cjs` and `scripts/verify-sentences.cjs`. With Playwright and Chrome available, run both scripts against a local server after building. Set `PLAYWRIGHT_MODULE` to the installed module path if it is outside this project, `CHROME_PATH` to an installed Chrome executable, and optionally `PASSAGE_TEST_URL` (default `http://127.0.0.1:8765/_site/`). Checks use isolated browser profiles and controlled dictionary responses; live dictionary connectivity is checked separately. Sentence checks cover long selections/full text, typed isolation, old and combined backups, notes, source merging, search, delete/Undo and keyboard tabs.
+
+## Long-term vocabulary learning (v2)
+
+The website remains native JavaScript with no framework, account or AI service. In every lesson, vocabulary cards offer **Active**, **Recognition**, **Already know** and **Skip**, with **Reading exposure** as the unselected default. The catalog recommends 6 Active and 10 Recognition words per lesson, ranking existing Core Vocabulary first. Suggestions never enrol a word automatically. A term shares its chosen goal across lessons; its original contexts stay linked.
+
+- **Active** enables separate Recognition and Production tracks. **Recognition** enables the reading track. Already know, Skip and Reading exposure pause scheduling and preserve history.
+- [Today Review](review.html) prioritises weak/due tracks, then introduces at most 6 new words per local calendar day. At 20 due tasks, new words pause. Waiting words have no review date until their first attempt. Words without meanings remain editable in Wordbook and cannot enter the queue.
+- Again schedules a retry in 10 minutes and resets successful progress. Good uses 1, 3, 7, 14, 30 and 60 day steps; Hard reduces the interval; Easy advances faster. Ease and a capped late-success adjustment adapt intervals up to 120 days. All times are device-local; tracks update independently.
+- Production progresses from expression retrieval to a new-context gap, sentence rewriting and independent sentence writing. Retrieved targets and references remain hidden before reveal. Good/Easy production ratings require a written attempt. References support self-assessment; natural language is never graded by string equality. Related-form examples may be overridden in `lesson-notes.js` under `training[wordId].example` to give a genuine new-context gap.
+- An established track needs two consecutive successful attempts and a 14+ day interval. Production additionally requires a successful independent sentence. Already know is a learner choice and does not claim tested mastery. Delayed recall measures self-rated success on attempts 7+ days apart; late recall measures attempts 1+ day overdue. Both show sample counts, not inferred test scores.
+
+`assets/vocabulary-learning.js` contains pure scheduling, admission and metrics; `assets/wordbook-store.js` persists learning inside each word; `assets/vocabulary-learning-ui.js` shares goal selectors, the dashboard, history and review UI. The existing wordbook storage key remains in use, with new learning fields. Previous words become Reading exposure until a goal is chosen. Sentence collection and lesson progress retain their original behavior and keys. Learning is local to each origin: export/import from Wordbook to move records between GitHub Pages, Cloudflare Pages or another browser.
+
+Build and verify:
+
+```powershell
+node scripts/build-site.mjs
+node scripts/verify-learning.cjs
+# Start a local server separately: python -m http.server 8765 --bind 127.0.0.1
+# Set PLAYWRIGHT_MODULE and CHROME_PATH if needed, as described above.
+node scripts/verify-learning-browser.cjs
+node scripts/verify-wordbook.cjs
+node scripts/verify-sentences.cjs
+```
+
+The browser check covers opt-in selection, hidden retrieval, all production stages, independent updates, backup, cross-tab changes and 117 page/viewport combinations at 1440, 768 and 375px. Screenshots go to ignored `.preview/v2/`.
+
+## Cloudflare Pages branch deployment
+
+Keep GitHub Pages on `main`. Connect this GitHub repository to Cloudflare **Pages** using the Git integration, with framework **None**, build command `node scripts/build-site.mjs`, output directory `_site` and root directory left blank. Use `main` as Cloudflare's production branch; `v2` deploys as a preview branch with a stable branch alias. The separate Cloudflare origin keeps v2 learning records separate from the GitHub Pages origin. Each push to `v2` rebuilds the entire catalog and all four lessons. Deployment URLs are recorded after a successful build.
 
 ## Publishing and adding lessons
 

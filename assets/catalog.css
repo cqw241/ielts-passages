@@ -30,3 +30,11 @@
 .catalog-footer {display:flex;justify-content:space-between;padding:24px 35px;border-top:1px solid var(--line);font-size:11px;color:var(--slate);}
 @media(max-width:760px) {.catalog-header>span {display:none;}.library-intro {grid-template-columns:1fr;gap:30px;}.library-grid {grid-template-columns:1fr;}.library-route {padding-left:20px;}.catalog-main {padding-top:35px;}.catalog-footer {gap:20px;}}
 @media(prefers-reduced-motion:reduce) {.library-image img {transition:none;}}
+@media(max-width:480px) {
+ .catalog-header {flex-wrap:wrap;gap:12px 20px;padding:22px 20px;}
+ .catalog-header>.text-button {margin-left:0;min-height:44px;display:flex;align-items:center;}
+ .catalog-brand {width:100%;}
+ .catalog-main {padding-left:20px;padding-right:20px;}
+ .catalog-footer {flex-direction:column;padding-left:20px;padding-right:20px;gap:10px;}
+ .library-lesson-bottom {flex-wrap:wrap;}
+}

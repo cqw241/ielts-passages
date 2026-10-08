@@ -12,7 +12,9 @@
   <link rel="stylesheet" href="assets/wordbook.css">
   <script defer src="assets/course-data.js"></script>
   <script defer src="assets/course-vocabulary.js"></script>
+  <script defer src="assets/vocabulary-learning.js"></script>
   <script defer src="assets/wordbook-store.js"></script>
+  <script defer src="assets/vocabulary-learning-ui.js"></script>
   <script defer src="assets/wordbook.js"></script>
 </head>
 <body class="catalog-page wordbook-page">
@@ -20,10 +22,11 @@
   <header class="catalog-header"><a class="catalog-brand" href="index.html">passage<span>.</span></a><span>LANGUAGE YOU WANT TO KEEP.</span><a class="text-button" href="index.html">All lessons →</a></header>
   <main id="wordbook-main" class="catalog-main">
     <div class="wb-heading"><div><p class="eyebrow">YOUR COLLECTION · ACROSS EVERY LESSON</p><h1>Your wordbook<span>.</span></h1><p>Keep useful words and the sentences you want to understand better.</p></div><button class="button primary" data-wb="add">Add a word <span aria-hidden="true">＋</span></button></div>
+    <section id="learning-dashboard" aria-label="Vocabulary learning"></section>
     <div class="wb-tabs" role="tablist" aria-label="Collection type"><button id="wb-words-tab" role="tab" aria-selected="true" aria-controls="wb-collection" tabindex="0" data-wb="tab" data-kind="word">Words <span id="wb-word-count">0</span></button><button id="wb-sentences-tab" role="tab" aria-selected="false" aria-controls="wb-collection" tabindex="-1" data-wb="tab" data-kind="sentence">Sentences <span id="wb-sentence-count">0</span></button></div>
     <section id="wb-collection" role="tabpanel" aria-labelledby="wb-words-tab">
-    <div class="wb-stats" aria-label="Collection summary"><p><strong id="wb-total">0</strong> <span id="wb-total-label">words &amp; phrases</span></p><p><strong id="wb-again">0</strong> to practise</p><p><strong id="wb-missing">0</strong> <span id="wb-missing-label">need a meaning</span></p><button class="button secondary compact" data-wb="recall">Start recall →</button></div>
-    <div class="wb-toolbar"><label class="search-box"><span class="wb-sr">Search wordbook</span><input id="wb-search" type="search" placeholder="Search words, meanings or notes"></label><label><span class="wb-sr">Filter by lesson</span><select id="wb-lesson"><option value="">Every lesson</option></select></label><label><span class="wb-sr">Filter by status</span><select id="wb-status"><option value="">Every status</option><option value="missing">Meaning needed</option><option value="again">Practise again</option><option value="remembered">Remembered</option></select></label><div class="wb-backup"><button class="text-button" data-wb="export">Export backup</button><button class="text-button" data-wb="import">Import backup</button><input type="file" id="wb-import" accept=".json,application/json" hidden></div></div>
+    <div class="wb-stats" aria-label="Collection summary"><p><strong id="wb-total">0</strong> <span id="wb-total-label">words &amp; phrases</span></p><p><strong id="wb-again">0</strong> enrolled</p><p><strong id="wb-missing">0</strong> <span id="wb-missing-label">need a meaning</span></p><button class="button secondary compact" data-wb="recall">Today Review →</button></div>
+    <div class="wb-toolbar"><label class="search-box"><span class="wb-sr">Search wordbook</span><input id="wb-search" type="search" placeholder="Search words, meanings or notes"></label><label><span class="wb-sr">Filter by lesson</span><select id="wb-lesson"><option value="">Every lesson</option></select></label><label><span class="wb-sr">Filter by status</span><select id="wb-status"><option value="">Every status</option><option value="missing">Meaning needed</option><option value="active">Active</option><option value="recognition">Recognition</option><option value="known">Already know</option><option value="skip">Skip</option><option value="exposure">Reading exposure</option></select></label><div class="wb-backup"><button class="text-button" data-wb="export">Export backup</button><button class="text-button" data-wb="import">Import backup</button><input type="file" id="wb-import" accept=".json,application/json" hidden></div></div>
     <div id="wb-notice" role="status"></div><p id="wb-results" class="subtle"></p><div id="wb-list"></div>
     <p class="wb-storage-note">Saved in this browser. Export a JSON backup to keep a copy or move your wordbook to another browser.</p>
     </section>

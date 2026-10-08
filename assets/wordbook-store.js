@@ -2,6 +2,7 @@
 (() => {
   'use strict';
   const KEY = 'passage-wordbook-v1';
+  const V = window.VocabularyLearning;
   const lessons = window.COURSE_VOCABULARY || [];
   const clean = (value, max = 3000) => String(value ?? '').replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, '').slice(0, max);
   const term = value => clean(value, 100).trim().replace(/^[^A-Za-z0-9]+|[^A-Za-z0-9]+$/g, '').replace(/\s+/g, ' ');
@@ -27,6 +28,7 @@
       const data = JSON.parse(raw);
       if (data.version !== 1 || !Array.isArray(data.entries) || !Array.isArray(data.migrated) || !data.cache || typeof data.cache !== 'object') throw new Error('Invalid wordbook');
       if (data.entries.some(e => !e || (e.kind !== undefined && !['word','sentence'].includes(e.kind)) || typeof e.id !== 'string' || typeof e.key !== 'string' || typeof e.term !== 'string' || !Array.isArray(e.sources) || !Array.isArray(e.candidates) || !e.edited || e.sources.some(s => !s || typeof s.folder !== 'string'))) throw new Error('Invalid entry');
+      for (const entry of data.entries) if (kind(entry) === 'word') entry.learning = V.validate(entry.learning);
       return data;
     } catch {
       problem = 'Your wordbook could not be read. Your existing records have been kept. Check browser storage access before trying again.';
@@ -65,7 +67,7 @@
   function create(value, type = 'word') {
     const text = type === 'sentence' ? sentenceText(value) : term(value);
     if (type === 'word' && (!text || !/[A-Za-z]/.test(text) || text.split(' ').length > 12)) throw new Error('Choose an English word or a short phrase of up to 12 words.');
-    return { id: uid(), kind: type, key: type === 'sentence' ? sentenceKey(text) : normalize(text), term: text, definition: '', ipa: '', note: '', review: 'again', edited: {}, candidates: [], attribution: null, definitionAttribution: null, dictionaryStatus: type === 'sentence' ? 'not-applicable' : 'missing', sources: [], createdAt: Date.now(), updatedAt: Date.now() };
+    return { id: uid(), kind: type, key: type === 'sentence' ? sentenceKey(text) : normalize(text), term: text, definition: '', ipa: '', note: '', review: 'again', edited: {}, candidates: [], attribution: null, definitionAttribution: null, dictionaryStatus: type === 'sentence' ? 'not-applicable' : 'missing', sources: [], createdAt: Date.now(), updatedAt: Date.now(), ...(type === 'word' ? {learning:V.fresh()} : {}) };
   }
   function addTo(data, value, source, prepared, type = 'word') {
     const fresh = create(value, type);
@@ -127,6 +129,12 @@
     for (const field of ['definition', 'note', 'ipa']) if (!target[field] && !target.edited[field]) { target[field] = incoming[field]; if (field === 'definition') target.definitionAttribution = incoming.definitionAttribution; }
     if (!target.candidates.length) target.candidates = incoming.candidates;
     if (!target.attribution && incoming.attribution) target.attribution = incoming.attribution;
+    if (kind(target) === 'word' && incoming.learning) {
+      target.learning ||= V.fresh();
+      if (target.learning.status === 'exposure') target.learning.status = incoming.learning.status;
+      if (target.learning.startedAt === null) target.learning.startedAt = incoming.learning.startedAt;
+      for (const track of V.tracks) if ((incoming.learning[track].lastAt || 0) > (target.learning[track].lastAt || 0)) target.learning[track] = incoming.learning[track];
+    }
     target.dictionaryStatus = kind(target) === 'sentence' ? 'not-applicable' : target.definition || target.candidates.length ? 'ready' : 'missing';
     target.updatedAt = Date.now();
     return target;
@@ -203,11 +211,11 @@
     })();
     active.set(id, { key: k, job }); return job;
   }
-  function exportBackup() { const data = read(); if (problem) throw new Error(problem); return JSON.stringify({ format: 'passage-wordbook', version: 2, exportedAt: new Date().toISOString(), entries: data.entries }, null, 2); }
+  function exportBackup() { const data = read(); if (problem) throw new Error(problem); const lessonProgress = {}; for (const l of lessons) { const raw = localStorage.getItem(l.storageKey); if (raw) { try { lessonProgress[l.folder] = JSON.parse(raw); } catch { /* Keep the wordbook export usable. */ } } } return JSON.stringify({ format: 'passage-wordbook', version: 3, exportedAt: new Date().toISOString(), entries: data.entries, lessonProgress }, null, 2); }
   function importBackup(raw) {
     if (clean(raw, 5000001).length > 5000000) throw new Error('Choose a wordbook backup smaller than 5 MB.');
     let backup; try { backup = JSON.parse(raw); } catch { throw new Error('This file is not valid JSON. Choose a Passage wordbook backup.'); }
-    if (backup.format !== 'passage-wordbook' || ![1,2].includes(backup.version) || !Array.isArray(backup.entries) || backup.entries.length > 10000) throw new Error('Choose a version 1 or 2 Passage wordbook backup.');
+    if (backup.format !== 'passage-wordbook' || ![1,2,3].includes(backup.version) || !Array.isArray(backup.entries) || backup.entries.length > 10000) throw new Error('Choose a Passage wordbook backup (version 1, 2 or 3).');
     // Validate the entire backup before changing any current records.
     const incoming = backup.entries.map(raw => {
       if (!raw || (raw.kind !== undefined && !['word','sentence'].includes(raw.kind)) || typeof raw.term !== 'string' || !Array.isArray(raw.sources)) throw new Error('This backup contains an invalid entry. No records were changed.');
@@ -220,10 +228,22 @@
       e.attribution = raw.attribution ? attribution(raw.attribution) : null;
       e.definitionAttribution = raw.definitionAttribution ? attribution(raw.definitionAttribution) : null;
       e.createdAt = Number.isFinite(raw.createdAt) ? raw.createdAt : Date.now();
+      if (kind(e) === 'word') e.learning = V.validate(backup.version === 3 ? raw.learning : null);
       e.dictionaryStatus = kind(e) === 'sentence' ? 'not-applicable' : e.definition || e.candidates.length ? 'ready' : 'missing';
       return e;
     });
-    return change(data => {
+    const progress = backup.lessonProgress;
+    if (progress !== undefined && (!progress || typeof progress !== 'object' || Array.isArray(progress))) throw new Error('Invalid lesson progress in backup.');
+    if (progress) for (const l of lessons) if (Object.hasOwn(progress,l.folder)) {
+      const record = progress[l.folder], fail = () => { throw new Error('Invalid lesson progress in backup. No records were changed.'); };
+      if (!record || typeof record !== 'object' || Array.isArray(record)) fail();
+      for (const field of ['read','saved','recalled']) if (record[field] !== undefined && (!Array.isArray(record[field]) || record[field].some(v=>typeof v!=='string' && typeof v!=='number'))) fail();
+      for (const field of ['answers','practice','speaking','recall']) if (record[field] !== undefined && (!record[field] || typeof record[field] !== 'object' || Array.isArray(record[field]) || Object.values(record[field]).some(v=>typeof v!=='string'))) fail();
+      for (const field of ['writing','challenge']) if (record[field] !== undefined && typeof record[field] !== 'string') fail();
+      if (record.submitted !== undefined && typeof record.submitted !== 'boolean') fail();
+    }
+    const emptyLessons = new Set(lessons.filter(l=>!localStorage.getItem(l.storageKey)).map(l=>l.folder));
+    const result = change(data => {
       let added = 0, merged = 0;
       for (const e of incoming) {
         const existing = data.entries.find(x => matches(x, e.key, kind(e)));
@@ -231,8 +251,32 @@
       }
       return { added, merged };
     });
+    // Restore lesson records only into empty slots. Existing drafts always win.
+    if (progress) for (const l of lessons) if (Object.hasOwn(progress,l.folder) && emptyLessons.has(l.folder) && progress[l.folder] && typeof progress[l.folder] === 'object' && !Array.isArray(progress[l.folder])) localStorage.setItem(l.storageKey,JSON.stringify(progress[l.folder]));
+    syncBookmarks(read());
+    return result;
   }
-  window.Wordbook = { normalize, term, kind, sentenceText, read, get, add, addSentence, update, remove, restore, lookup, migrate, forLesson, bookmarked, togglePreset, exportBackup, importBackup, lessons, get problem() { return problem; } };
+  function selectStatus(id, status) {
+    if (!V.statuses.includes(status)) throw new Error('Choose a vocabulary status.');
+    change(data => { const e=data.entries.find(e=>e.id===id && kind(e)==='word'); if(!e) throw new Error('This word no longer exists.'); e.learning.status=status; e.updatedAt=Date.now(); });
+  }
+  function selectPreset(folder, wordId, status) {
+    const lesson=lessons.find(l=>l.folder===folder), word=lesson?.words.find(w=>w.id===wordId);
+    if(!word || !V.statuses.includes(status)) throw new Error('Choose a vocabulary status.');
+    return change(data=>{ const id=addTo(data,word.word,presetSource(lesson,word),{definition:word.definition,ipa:word.ipa}); const e=data.entries.find(e=>e.id===id); e.learning.status=status; return id; });
+  }
+  function learningFor(value) { return read().entries.find(e=>kind(e)==='word' && e.key===normalize(value))?.learning || V.fresh(); }
+  function rate(id, track, rating, answer='', now=Date.now()) {
+    change(data=>{
+      const e=data.entries.find(e=>e.id===id && kind(e)==='word');
+      if(!e || !V.tracks.includes(track) || !V.enabled(e.learning,track)) throw new Error('This review track is paused.');
+      if (!V.queue(data.entries,now).items.some(i=>i.id===id && i.track===track)) throw new Error('This review is no longer due. Refresh Today Review.');
+      if (track==='production' && ['good','easy'].includes(rating) && !String(answer).trim()) throw new Error('Write your independent attempt before choosing Good or Easy. Use Again if you could not retrieve it.');
+      e.learning[track] = V.schedule(e.learning[track],rating,now,answer,track==='production'?V.stage(e.learning[track]):0);
+      e.learning.startedAt ??= now; e.updatedAt=now;
+    });
+  }
+  window.Wordbook = { normalize, term, kind, sentenceText, read, get, add, addSentence, update, remove, restore, lookup, migrate, forLesson, bookmarked, togglePreset, exportBackup, importBackup, lessons, selectStatus, selectPreset, learningFor, rate, get problem() { return problem; } };
   migrate();
   if (!problem) read().entries.filter(e => kind(e) === 'word' && e.dictionaryStatus === 'pending').forEach(e => lookup(e.id));
   window.addEventListener('storage', event => { if (event.key === KEY) window.dispatchEvent(new CustomEvent('wordbook-change')); });
