@@ -1,6 +1,7 @@
 /* Verify the published artifact and a real learner journey in an isolated browser. */
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
 const assert=require('node:assert/strict'),fs=require('node:fs'),crypto=require('node:crypto');
+const lessons=JSON.parse(fs.readFileSync('lessons.json','utf8')).lessons;
 const base=(process.env.PASSAGE_TEST_URL||'http://127.0.0.1:8765/_site/').replace(/\/?$/,'/');
 const digest=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
 (async()=>{
@@ -8,7 +9,7 @@ const digest=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
  try {
   const context=await browser.newContext({viewport:{width:1440,height:1000}}),page=await context.newPage(),errors=[];
   page.on('pageerror',e=>errors.push(e.message));
-  await page.goto(base);assert.equal(await page.locator('.library-lesson').count(),4);
+  await page.goto(base);assert.equal(await page.locator('.library-lesson').count(),lessons.length);
   // Use the learner's browser network path (including system proxy settings).
   const files=['assets/vocabulary-learning.js','assets/vocabulary-learning-ui.js','assets/wordbook-store.js','assets/course-vocabulary.js'];
   const published=await page.evaluate(async files=>Promise.all(files.map(async file=>{
@@ -18,7 +19,7 @@ const digest=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
   })),files);
   for(const {file,status,hash} of published) { assert.equal(status,200,file);assert.equal(hash,digest(fs.readFileSync('_site/'+file)),`Published ${file} matches the local build`); }
   assert.equal(await page.locator('#learning-dashboard').count(),1);
-  for(const folder of ['26.9.6','26.9.7','26.9.9','26.9.14']) {
+  for(const folder of lessons.map(l=>l.folder)) {
    await page.goto(base+folder+'/index.html#reading');assert.equal(await page.locator('.english-passage').count(),10);
   }
   await page.goto(base+'26.9.6/index.html#vocabulary');
@@ -42,6 +43,6 @@ const digest=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
    await page.goto(base+route);assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,route);
   }
   assert.deepEqual(errors,[]);
-  console.log('PASS: published asset hashes, all four articles, goal selection, Wordbook, independent review/ratings, persistence, backup download and mobile layout.');
+  console.log('PASS: published asset hashes, all registered articles, goal selection, Wordbook, independent review/ratings, persistence, backup download and mobile layout.');
  } finally {await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});

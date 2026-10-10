@@ -6,8 +6,6 @@ An English-only illustrated learning website. Each lesson preserves its A–J ar
 
 - [Day 1 · Working lives](26.9.6/index.html): employment measurement, job quality and policy trade-offs.
 - [Day 2 · Public health](26.9.7/index.html): maintaining a disease milestone through prevention, surveillance and accessible services. Includes 20 closed-book recall prompts from Day 1.
-- [Day 3 · Adult learning](26.9.9/index.html): literacy, digital inclusion and independent judgement through repeated practice. Includes 20 closed-book recall prompts from Days 1 and 2, seven-choice heading matching and short-answer reading questions.
-- [Day 4 · Farming ideas](26.9.14/index.html): why a successful farming technique does not automatically become a workable local programme. Includes 20 closed-book recall prompts from 7 September, Yes/No/Not Given, matching information and summary completion.
 
 Open any lesson directly in a browser. The sidebar switches between lessons. No dependencies are required. The root page is the shared course library.
 
@@ -20,7 +18,7 @@ For a local preview, run `python -m http.server 8765 --bind 127.0.0.1` in this d
 - Each lesson's `lesson-data.js` contains content extracted from its original Markdown source.
 - Each `lesson-notes.js` contains English explanations, comprehension checks, vocabulary glosses, grammar annotations and presentation configuration.
 - Day 2 uses reusable comparison panels, choice diagrams and a coverage illustration with hypothetical equally sized communities. These supplement the article without replacing its evidence or claiming that a percentage guarantees protection.
-- Build source data with `node scripts/build-lesson.mjs <folder>`, for example `node scripts/build-lesson.mjs 26.9.9`. The default remains Day 1. Reading question types and ranges come from the source's question-group headings. Review teaching notes after source changes.
+- Build source data with `node scripts/build-lesson.mjs <folder>`, for example `node scripts/build-lesson.mjs 26.9.7`. The default remains Day 1. Reading question types and ranges come from the source's question-group headings. Review teaching notes after source changes.
 - Each lesson's `images/` contains optimized WebP assets. Original reference images remain untouched.
 
 Reading progress, practice answers, recall attempts, writing drafts and speaking notes save to browser localStorage under separate lesson keys. Day 1 retains its original key. Bookmarks join the shared wordbook described below. Self-marked recall records a learner's own assessment, not independently verified mastery. Records differ between browsers and between file and HTTP access. My review exports TXT study notes. Vocabulary audio uses browser speech synthesis and available voices.
@@ -67,13 +65,13 @@ node scripts/verify-wordbook.cjs
 node scripts/verify-sentences.cjs
 ```
 
-The browser check covers opt-in selection, hidden retrieval, all production stages, independent updates, backup, cross-tab changes and 117 page/viewport combinations at 1440, 768 and 375px. Screenshots go to ignored `.preview/v2/`.
+The browser check covers opt-in selection, hidden retrieval, all production stages, independent updates, backup, cross-tab changes and all registered lesson/page/viewport combinations at 1440, 768 and 375px. Screenshots go to ignored `.preview/v2/`.
 
 ## Cloudflare Pages branch deployment
 
-GitHub Pages remains on `main`. Cloudflare **Pages** project `ielts-passages` connects this repository through the Git integration, with framework **None**, build command `node scripts/build-site.mjs`, output directory `_site` and root directory left blank. `main` is Cloudflare's production branch; `v2` deploys at [the stable v2 preview](https://v2.ielts-passages.pages.dev/). The separate Cloudflare origin keeps v2 learning records separate from the GitHub Pages origin. Each push to `v2` rebuilds the entire catalog and all four lessons. The GitHub application is limited to this repository.
+GitHub Pages remains on `main`. Cloudflare **Pages** project `ielts-passages` connects this repository through the Git integration, with framework **None**, build command `node scripts/build-site.mjs`, output directory `_site` and root directory left blank. `main` is Cloudflare's production branch; `v2` deploys at [the stable v2 preview](https://v2.ielts-passages.pages.dev/). The separate Cloudflare origin keeps v2 learning records separate from the GitHub Pages origin. Each push to `v2` rebuilds the entire catalog and all registered lessons. The GitHub application is limited to this repository.
 
-After building locally, set `PASSAGE_TEST_URL` to the v2 preview URL and run `node scripts/verify-deployment.cjs` with the same Playwright/Chrome environment variables used for the other browser checks. It compares published learning assets with the local build and checks all four articles, selection, both review tracks, persistence, backup download and mobile layout in an isolated browser.
+After building locally, set `PASSAGE_TEST_URL` to the v2 preview URL and run `node scripts/verify-deployment.cjs` with the same Playwright/Chrome environment variables used for the other browser checks. It compares published learning assets with the local build and checks all registered articles, selection, both review tracks, persistence, backup download and mobile layout in an isolated browser.
 
 ## Publishing and adding lessons
 

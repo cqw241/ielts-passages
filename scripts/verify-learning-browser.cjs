@@ -1,6 +1,7 @@
 /* End-to-end learning and responsive regression using isolated Chrome. */
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
 const assert=require('node:assert/strict'),fs=require('node:fs');
+const lessons=JSON.parse(fs.readFileSync('lessons.json','utf8')).lessons;
 const base=(process.env.PASSAGE_TEST_URL||'http://127.0.0.1:8765/_site/').replace(/\/?$/,'/');
 (async()=>{
  const browser=await chromium.launch({headless:true,...(process.env.CHROME_PATH?{executablePath:process.env.CHROME_PATH}:{})});
@@ -63,7 +64,7 @@ const base=(process.env.PASSAGE_TEST_URL||'http://127.0.0.1:8765/_site/').replac
   fs.mkdirSync('.preview/v2',{recursive:true});
   for(const width of [1440,768,375]) {
    await page.setViewportSize({width,height:1000});
-   for(const route of ['', 'wordbook.html','review.html',...['26.9.6','26.9.7','26.9.9','26.9.14'].flatMap(f=>['overview','reading','vocabulary','grammar','exercises','writing','speaking','review','recall'].map(v=>`${f}/index.html#${v}`))]) {
+   for(const route of ['', 'wordbook.html','review.html',...lessons.map(l=>l.folder).flatMap(f=>['overview','reading','vocabulary','grammar','exercises','writing','speaking','review','recall'].map(v=>`${f}/index.html#${v}`))]) {
     await page.goto(base+route);
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true,`No horizontal overflow: ${width} ${route}`);
     assert.ok(!(await page.locator('body').innerText()).includes('undefined'),`No missing content: ${route}`);
@@ -75,6 +76,6 @@ const base=(process.env.PASSAGE_TEST_URL||'http://127.0.0.1:8765/_site/').replac
    await page.screenshot({path:`.preview/v2/review-${width}.png`,fullPage:true});
   }
   assert.deepEqual(errors,[],'No application errors');assert.deepEqual(missing,[],'No missing local resources');
-  console.log('PASS: opt-in goals, recommendations, hidden retrieval, all four production stages, independent schedules, history, paused goals, cross-tab changes, v3 import, 117 route/viewport combinations and review cards.');
+  console.log('PASS: opt-in goals, recommendations, hidden retrieval, all four production stages, independent schedules, history, paused goals, cross-tab changes, v3 import, registered route/viewport combinations and review cards.');
  } finally {await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});
