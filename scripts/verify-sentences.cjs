@@ -71,7 +71,7 @@ const base = (process.env.PASSAGE_TEST_URL || 'http://127.0.0.1:8765/_site/').re
     const typedShortId = await page.evaluate(()=>Wordbook.read().entries.find(e=>e.kind==='sentence'&&e.term==='resilience').id);
     await page.evaluate(id=>Wordbook.remove(id),typedShortId);
     assert.equal(await page.evaluate(()=>Wordbook.bookmarked('26.9.6','resilience')),true);
-    const backup=await page.evaluate(()=>Wordbook.exportBackup());assert.equal(JSON.parse(backup).version,2);
+    const backup=await page.evaluate(()=>Wordbook.exportBackup());assert.equal(JSON.parse(backup).version,3);
     await page.evaluate(id=>Wordbook.update(id,{note:'Keep my current edit.'}),sentence.id);
     await page.locator('#wb-import').setInputFiles({name:'combined.json',mimeType:'application/json',buffer:Buffer.from(backup)});
     await page.waitForFunction(()=>document.querySelector('#wb-notice').textContent.includes('Import complete'));

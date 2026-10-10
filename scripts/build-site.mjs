@@ -12,6 +12,12 @@ for(const {folder} of manifest.lessons){
 }
 await import('./build-catalog.mjs');
 const output=path.join(root,'_site');
+// A removed lesson must not survive in an earlier local build.
+if(path.dirname(output)!==root || path.basename(output)!=='_site')throw new Error('Invalid build output path');
+if(fs.existsSync(output)) {
+ if(fs.lstatSync(output).isSymbolicLink())throw new Error('Build output must not be a symbolic link');
+ fs.rmSync(output,{recursive:true,force:true});
+}
 fs.mkdirSync(output,{recursive:true});
 function copy(relative){
  const target=path.join(output,relative);
@@ -20,6 +26,7 @@ function copy(relative){
 }
 copy('index.html');
 copy('wordbook.html');
+copy('review.html');
 for(const name of fs.readdirSync(path.join(root,'assets')))if(/\.(css|js|svg)$/.test(name))copy('assets/'+name);
 for(const {folder} of manifest.lessons){
  const context={window:{}};

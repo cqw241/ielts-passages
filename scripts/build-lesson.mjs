@@ -118,22 +118,11 @@ function extractPractice(practiceText) {
   }
   return practice;
 }
-function extractRecall(recallSection) {
-  if (!recallSection) return [];
-  const body = recallSection.split('### REVIEW ANSWER KEY')[0];
-  const key = recallSection.split('### REVIEW ANSWER KEY')[1] || '';
-  const prefixed = [...body.matchAll(/^R(\d+)\. (.+)$/gm)];
-  const marks = prefixed.length ? prefixed : [...body.matchAll(/^(\d+)\. (.+)$/gm)];
-  return marks.map(m => {
-    const explanation = key.match(new RegExp('^'+m[1]+'\\. (.+)$','m'));
-    if (!explanation) throw new Error(`Missing recall answer ${m[1]}`);
-    return {id:m[1], question:m[2].trim(), explanation:explanation[1]};
-  });
-}
 const practice = extractPractice(sections['NEW VOCABULARY PRACTICE']);
-const recall = extractRecall(sections['SPACED-REPETITION REVIEW — 20 WORDS']);
+// Archive-only source sections never enter the interactive lesson or its data.
+for (const heading of Object.keys(sections)) if (/^SPACED-REPETITION REVIEW|^VOCABULARY REVIEW LEDGER/.test(heading)) delete sections[heading];
 const images=fs.readdirSync(path.join(folder,'images')).filter(p=>/^reference-\d+\.webp$/.test(p)).sort((a,b)=>Number(a.match(/\d+/)[0])-Number(b.match(/\d+/)[0])).map(p=>'images/'+p);
-const lesson={title,date:raw.match(/^Date: (.+?) — /m)[1],day:Number(raw.match(/^(?:Course day|Lesson): (\d+)/m)[1]),topic:raw.match(/^Topic Area: (.+)$/m)[1].trim(),paragraphs,vocabulary,grammar,reading,practice,recall,summary,speaking:blocks(sections['IELTS SPEAKING PART 3']),sections,images,sourceFile};
+const lesson={title,date:raw.match(/^Date: (.+?) — /m)[1],day:Number(raw.match(/^(?:Course day|Lesson): (\d+)/m)[1]),topic:raw.match(/^Topic Area: (.+)$/m)[1].trim(),paragraphs,vocabulary,grammar,reading,practice,summary,speaking:blocks(sections['IELTS SPEAKING PART 3']),sections,images,sourceFile};
 lesson.storageKey = 'passage-' + new Date(lesson.date + ' 12:00 UTC').toISOString().slice(0,10) + '-v1';
 if (paragraphs.length!==10||vocabulary.length!==30||grammar.length!==5||reading.length!==15||practice.length!==30) throw new Error('Incomplete lesson extraction');
 fs.writeFileSync(path.join(folder,'lesson-data.js'),'window.LESSON = '+JSON.stringify(lesson,null,2)+';\n');

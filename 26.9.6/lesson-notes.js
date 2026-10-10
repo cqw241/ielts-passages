@@ -317,5 +317,71 @@ window.LESSON_NOTES = {
     "challengeMode": "writing",
     "challengePlaceholder": "What should the town look beyond?",
     "qualification": "\\balthough\\b|\\bprovided that\\b"
+  },
+  "learningRecommendations": {
+    "03": {
+      "goal": "active",
+      "reason": "Use underlying causes, problems and assumptions to explain situations beyond their surface appearance."
+    },
+    "09": {
+      "goal": "active",
+      "reason": "Use account for to explain causes or describe proportions in reports, discussions and IELTS comparisons."
+    },
+    "16": {
+      "goal": "active",
+      "reason": "Use erode with trust, confidence or purchasing power to describe gradual damage across social topics."
+    },
+    "21": {
+      "goal": "active",
+      "reason": "Use trade-off to weigh competing benefits and costs in decisions about work, health or education."
+    },
+    "29": {
+      "goal": "active",
+      "reason": "Use contingent on to state the conditions for a proposal or outcome without making an absolute claim."
+    },
+    "30": {
+      "goal": "active",
+      "reason": "Use sustainable to evaluate whether a policy, habit or business can continue over time."
+    },
+    "01": {
+      "goal": "recognition",
+      "reason": "Understand resilience as recovery or resistance, rather than assuming that a strong headline proves it."
+    },
+    "02": {
+      "goal": "recognition",
+      "reason": "Identify the prominent statistic and distinguish it from the evidence behind the total."
+    },
+    "04": {
+      "goal": "recognition",
+      "reason": "Recognise preliminary as a warning that an estimate may change when more information arrives."
+    },
+    "05": {
+      "goal": "recognition",
+      "reason": "Follow changes to earlier estimates when interpreting the jobs report."
+    },
+    "06": {
+      "goal": "recognition",
+      "reason": "Recognise when a combined total may hide differences between groups."
+    },
+    "07": {
+      "goal": "recognition",
+      "reason": "Understand how an overall figure can conceal differences in job quality or income."
+    },
+    "13": {
+      "goal": "recognition",
+      "reason": "Distinguish insufficient hours or use of skills from being unemployed."
+    },
+    "14": {
+      "goal": "recognition",
+      "reason": "Understand why rising money wages do not necessarily mean people can buy more."
+    },
+    "19": {
+      "goal": "recognition",
+      "reason": "Interpret the relationship between output and inputs in the discussion of skills and long-term growth."
+    },
+    "26": {
+      "goal": "recognition",
+      "reason": "Understand security of employment as one dimension of job quality."
+    }
   }
 };

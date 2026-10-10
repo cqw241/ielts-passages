@@ -1,4 +1,9 @@
 window.LESSON_NOTES = {
+  "training": {
+    "04": {
+      "example": "The eradication of the invasive plant required several years of coordinated work."
+    }
+  },
   "intro": "A milestone is a moment to celebrate—and a system to keep working. Explore how prevention, reliable detection and accessible care protect a result after the headlines fade.",
   "presentation": {
     "topic": "PUBLIC HEALTH, ANIMAL HEALTH & PUBLIC SERVICES",
@@ -62,7 +67,7 @@ window.LESSON_NOTES = {
       "Who can use the service?",
       "What keeps it working?"
     ],
-    "studyNote": "Start with the 20-word closed-book review. Then read A–J without the new vocabulary list and attempt the reading questions before checking answers. Watch for may, could and contingent on.",
+    "studyNote": "Use Today Review when personal vocabulary tasks are available. Read A–J without the new vocabulary list and attempt the reading questions before checking answers. Watch for may, could and contingent on.",
     "writingType": "Opinion · Extent of agreement",
     "writingPrompt": "Governments should spend more money on preventing health problems than on treating people who are already ill.",
     "writingQuestion": "To what extent do you agree or disagree?",
@@ -414,6 +419,72 @@ window.LESSON_NOTES = {
           "Strengthen cross-border cooperation and connect human and animal services."
         ]
       ]
+    }
+  },
+  "learningRecommendations": {
+    "07": {
+      "goal": "active",
+      "reason": "Use intervention to discuss a purposeful response to a problem in health, education or social policy."
+    },
+    "11": {
+      "goal": "active",
+      "reason": "Use complementary to explain how two approaches support each other rather than compete."
+    },
+    "18": {
+      "goal": "active",
+      "reason": "Use equitable access or distribution to discuss fairness while accounting for different needs."
+    },
+    "23": {
+      "goal": "active",
+      "reason": "Use cost-effective to evaluate the value of an approach relative to the resources it uses."
+    },
+    "28": {
+      "goal": "active",
+      "reason": "Use accountability to discuss responsibility for decisions in governments, organisations or teams."
+    },
+    "30": {
+      "goal": "active",
+      "reason": "Use adaptation to explain how a method must change when applied to a different setting."
+    },
+    "01": {
+      "goal": "recognition",
+      "reason": "Understand a milestone as one stage in an ongoing effort, rather than the end of the work."
+    },
+    "03": {
+      "goal": "recognition",
+      "reason": "Interpret the specific public-health endpoint and distinguish it from worldwide eradication."
+    },
+    "06": {
+      "goal": "recognition",
+      "reason": "Identify contact with a risk in the discussion of prevention and treatment."
+    },
+    "08": {
+      "goal": "recognition",
+      "reason": "Understand how protection reaches a population and why uneven local coverage matters."
+    },
+    "09": {
+      "goal": "recognition",
+      "reason": "Follow the use of a reference level without treating it as a guarantee of safety."
+    },
+    "12": {
+      "goal": "recognition",
+      "reason": "Understand how different services and responsibilities must work together."
+    },
+    "15": {
+      "goal": "recognition",
+      "reason": "Recognise continuing observation and detection as part of maintaining the achievement."
+    },
+    "21": {
+      "goal": "recognition",
+      "reason": "Identify the restricted stage that holds back delivery of an otherwise available service."
+    },
+    "22": {
+      "goal": "recognition",
+      "reason": "Understand how resources are assigned when weighing funding priorities."
+    },
+    "26": {
+      "goal": "recognition",
+      "reason": "Recognise excessive confidence as a reason essential prevention work may weaken."
     }
   }
 };
