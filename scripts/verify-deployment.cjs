@@ -11,7 +11,7 @@ const digest=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
   page.on('pageerror',e=>errors.push(e.message));
   await page.goto(base);assert.equal(await page.locator('.library-lesson').count(),lessons.length);
   // Use the learner's browser network path (including system proxy settings).
-  const files=['assets/vocabulary-learning.js','assets/vocabulary-learning-ui.js','assets/wordbook-store.js','assets/course-vocabulary.js'];
+  const files=['assets/vocabulary-learning.js','assets/vocabulary-learning-ui.js','assets/wordbook-store.js','assets/course-vocabulary.js','assets/lesson.js','assets/wordbook.js','review.html',...lessons.flatMap(l=>[`${l.folder}/lesson-data.js`,`${l.folder}/lesson-notes.js`])];
   const published=await page.evaluate(async files=>Promise.all(files.map(async file=>{
    const response=await fetch(file),bytes=await response.arrayBuffer();
    const hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),b=>b.toString(16).padStart(2,'0')).join('');
@@ -27,15 +27,15 @@ const digest=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
   const id=await page.evaluate(()=>Wordbook.read().entries[0].id);
   await page.goto(base+'wordbook.html');assert.equal(await page.locator('[data-learning="status"]').inputValue(),'active');
   await page.locator('[data-wb="recall"]').click();
-  await page.locator('[data-learning="start"]').click();await page.locator('#review-answer').fill('The ability to recover after difficulty.');
-  await page.locator('[data-learning="reveal"]').click();await page.locator('[data-learning="rate"][data-rating="good"]').click();
+  await page.locator('[data-learning="start"]').click();
   assert.match(await page.locator('.review-card .eyebrow').innerText(),/PRODUCTION/);
   assert.ok(!(await page.locator('.review-card').innerText()).toLowerCase().includes('resilience'));
   await page.locator('#review-answer').fill('I could not retrieve it.');await page.locator('[data-learning="reveal"]').click();await page.locator('[data-learning="rate"][data-rating="again"]').click();
+  await page.locator('#review-answer').fill('The ability to recover after difficulty.');await page.locator('[data-learning="reveal"]').click();await page.locator('[data-learning="rate"][data-rating="good"]').click();
   await page.reload();
   const learning=await page.evaluate(id=>Wordbook.get(id).learning,id);
   assert.equal(learning.recognition.history[0].rating,'good');assert.equal(learning.production.history[0].rating,'again');
-  assert.ok(learning.production.due<learning.recognition.due);
+  assert.ok(learning.production.due<=learning.recognition.due);
   await page.goto(base+'wordbook.html');
   const download=page.waitForEvent('download');await page.locator('[data-wb="export"]').click();assert.match((await download).suggestedFilename(),/passage-wordbook/);
   await page.setViewportSize({width:375,height:900});

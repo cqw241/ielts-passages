@@ -18,6 +18,14 @@
   const uid = () => window.crypto?.randomUUID?.() || 'word-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2);
   const blank = () => ({ version: 1, entries: [], migrated: [], cache: {} });
   let problem = '', active = new Map();
+  const reviewAttempts = new Map();
+  const progressFields = ['read','saved','answers','practice','writing','challenge','speaking','submitted'];
+  const lessonProgress = record => Object.fromEntries(progressFields.filter(f=>Object.hasOwn(record,f)).map(f=>[f,record[f]]));
+  const meaningKey = value => clean(value).trim().replace(/\s+/g,' ').toLocaleLowerCase('en');
+  function changesLearning(entry, changes) {
+    if (!entry) return false;
+    return kind(entry) === 'word' && (changes.term !== undefined && normalize(changes.term) !== entry.key || changes.definition !== undefined && meaningKey(changes.definition) !== meaningKey(entry.definition) || changes.sense !== undefined && entry.candidates[changes.sense] && meaningKey(entry.candidates[changes.sense].definition) !== meaningKey(entry.definition));
+  }
   const safeURL = value => {
     try { const u = new URL(value); return u.protocol === 'https:' && ['en.wiktionary.org', 'creativecommons.org', 'freedictionaryapi.com'].includes(u.hostname) ? u.href : ''; } catch { return ''; }
   };
@@ -28,7 +36,7 @@
       const data = JSON.parse(raw);
       if (data.version !== 1 || !Array.isArray(data.entries) || !Array.isArray(data.migrated) || !data.cache || typeof data.cache !== 'object') throw new Error('Invalid wordbook');
       if (data.entries.some(e => !e || (e.kind !== undefined && !['word','sentence'].includes(e.kind)) || typeof e.id !== 'string' || typeof e.key !== 'string' || typeof e.term !== 'string' || !Array.isArray(e.sources) || !Array.isArray(e.candidates) || !e.edited || e.sources.some(s => !s || typeof s.folder !== 'string'))) throw new Error('Invalid entry');
-      for (const entry of data.entries) if (kind(entry) === 'word') entry.learning = V.validate(entry.learning);
+      for (const entry of data.entries) { delete entry.review; if (kind(entry) === 'word') entry.learning = V.validate(entry.learning); }
       return data;
     } catch {
       problem = 'Your wordbook could not be read. Your existing records have been kept. Check browser storage access before trying again.';
@@ -38,7 +46,7 @@
   function syncBookmarks(data) {
     for (const lesson of lessons) {
       try {
-        const old = JSON.parse(localStorage.getItem(lesson.storageKey) || '{}');
+        const old = lessonProgress(JSON.parse(localStorage.getItem(lesson.storageKey) || '{}'));
         const words = new Set(data.entries.filter(e => kind(e) === 'word' && e.sources.some(s => s.folder === lesson.folder)).flatMap(e => [e.key, ...e.sources.filter(s => s.folder === lesson.folder).map(s => normalize(s.selectedText))]));
         const saved = lesson.words.filter(w => words.has(normalize(w.word))).map(w => w.id);
         if (JSON.stringify(old.saved || []) !== JSON.stringify(saved)) localStorage.setItem(lesson.storageKey, JSON.stringify({ ...old, saved }));
@@ -57,7 +65,7 @@
   function validSource(s, type = 'word') {
     if (!s || !lessons.some(l => l.folder === s.folder)) return null;
     const lesson = lessons.find(l => l.folder === s.folder);
-    const location = /^(overview|reading(?:-[A-J])?|vocabulary|grammar|exercises|writing|speaking|review|recall)$/.test(s.location) ? s.location : 'reading';
+    const location = /^(overview|reading(?:-[A-J])?|vocabulary|grammar|exercises|writing|speaking|review)$/.test(s.location) ? s.location : 'reading';
     return { folder: lesson.folder, lessonTitle: lesson.title, location, label: clean(s.label || 'Lesson context', 120), quote: clean(s.quote), selectedText: clean(s.selectedText, type === 'sentence' ? 3000 : 100) };
   }
   function combineSources(a, b, type = 'word') {
@@ -67,7 +75,7 @@
   function create(value, type = 'word') {
     const text = type === 'sentence' ? sentenceText(value) : term(value);
     if (type === 'word' && (!text || !/[A-Za-z]/.test(text) || text.split(' ').length > 12)) throw new Error('Choose an English word or a short phrase of up to 12 words.');
-    return { id: uid(), kind: type, key: type === 'sentence' ? sentenceKey(text) : normalize(text), term: text, definition: '', ipa: '', note: '', review: 'again', edited: {}, candidates: [], attribution: null, definitionAttribution: null, dictionaryStatus: type === 'sentence' ? 'not-applicable' : 'missing', sources: [], createdAt: Date.now(), updatedAt: Date.now(), ...(type === 'word' ? {learning:V.fresh()} : {}) };
+    return { id: uid(), kind: type, key: type === 'sentence' ? sentenceKey(text) : normalize(text), term: text, definition: '', ipa: '', note: '', edited: {}, candidates: [], attribution: null, definitionAttribution: null, dictionaryStatus: type === 'sentence' ? 'not-applicable' : 'missing', sources: [], createdAt: Date.now(), updatedAt: Date.now(), ...(type === 'word' ? {learning:V.fresh()} : {}) };
   }
   function addTo(data, value, source, prepared, type = 'word') {
     const fresh = create(value, type);
@@ -129,11 +137,15 @@
     for (const field of ['definition', 'note', 'ipa']) if (!target[field] && !target.edited[field]) { target[field] = incoming[field]; if (field === 'definition') target.definitionAttribution = incoming.definitionAttribution; }
     if (!target.candidates.length) target.candidates = incoming.candidates;
     if (!target.attribution && incoming.attribution) target.attribution = incoming.attribution;
-    if (kind(target) === 'word' && incoming.learning) {
+    if (kind(target) === 'word' && incoming.learning && meaningKey(target.definition) === meaningKey(incoming.definition)) {
       target.learning ||= V.fresh();
-      if (target.learning.status === 'exposure') target.learning.status = incoming.learning.status;
-      if (target.learning.startedAt === null) target.learning.startedAt = incoming.learning.startedAt;
-      for (const track of V.tracks) if ((incoming.learning[track].lastAt || 0) > (target.learning[track].lastAt || 0)) target.learning[track] = incoming.learning[track];
+      const status=target.learning.status==='exposure'?incoming.learning.status:target.learning.status;
+      if ((incoming.learning.resetAt ?? 0) > (target.learning.resetAt ?? 0)) target.learning={...V.fresh(),status,resetAt:incoming.learning.resetAt};
+      target.learning.status=status;
+      const reset=target.learning.resetAt ?? 0;
+      if (target.learning.startedAt === null && (incoming.learning.startedAt ?? 0) > reset) target.learning.startedAt = incoming.learning.startedAt;
+      target.learning.exposedAt = Math.max(target.learning.exposedAt ?? 0, incoming.learning.exposedAt ?? 0) || null;
+      for (const track of V.tracks) if ((incoming.learning[track].lastAt || 0) > Math.max(reset,target.learning[track].lastAt || 0)) target.learning[track] = incoming.learning[track];
     }
     target.dictionaryStatus = kind(target) === 'sentence' ? 'not-applicable' : target.definition || target.candidates.length ? 'ready' : 'missing';
     target.updatedAt = Date.now();
@@ -143,6 +155,7 @@
     let result = id;
     change(data => {
       const e = data.entries.find(e => e.id === id); if (!e) throw new Error('This entry no longer exists.');
+      const resetLearning = changesLearning(e,changes), status = e.learning?.status;
       if (changes.term !== undefined) {
         const fresh = create(changes.term, kind(e)), text = fresh.term, k = fresh.key;
         if (k !== e.key) { e.candidates = []; e.dictionaryStatus = fresh.dictionaryStatus; e.ipa = ''; }
@@ -150,13 +163,13 @@
       }
       for (const field of ['definition', 'note']) if (changes[field] !== undefined) { e[field] = clean(changes[field]); e.edited[field] = true; }
       if (changes.definitionSource === 'dictionary') e.definitionAttribution = e.attribution;
-      if (changes.review) e.review = changes.review === 'remembered' ? 'remembered' : 'again';
       if (changes.sense !== undefined) {
         const candidate = e.candidates[changes.sense]; if (candidate) { e.definition = candidate.definition; e.edited.definition = true; e.definitionAttribution = e.attribution; }
       }
       e.updatedAt = Date.now();
       const other = data.entries.find(x => x.id !== e.id && matches(x, e.key, kind(e)));
       if (other) { mergeEntry(e, other); data.entries = data.entries.filter(x => x.id !== other.id); }
+      if (resetLearning) e.learning = {...V.fresh(), status, resetAt:Date.now()};
       result = e.id;
     });
     return result;
@@ -211,7 +224,7 @@
     })();
     active.set(id, { key: k, job }); return job;
   }
-  function exportBackup() { const data = read(); if (problem) throw new Error(problem); const lessonProgress = {}; for (const l of lessons) { const raw = localStorage.getItem(l.storageKey); if (raw) { try { lessonProgress[l.folder] = JSON.parse(raw); } catch { /* Keep the wordbook export usable. */ } } } return JSON.stringify({ format: 'passage-wordbook', version: 3, exportedAt: new Date().toISOString(), entries: data.entries, lessonProgress }, null, 2); }
+  function exportBackup() { const data = read(); if (problem) throw new Error(problem); const progress = {}; for (const l of lessons) { const raw = localStorage.getItem(l.storageKey); if (raw) { try { progress[l.folder] = lessonProgress(JSON.parse(raw)); } catch { /* Keep the wordbook export usable. */ } } } return JSON.stringify({ format: 'passage-wordbook', version: 3, exportedAt: new Date().toISOString(), entries: data.entries, lessonProgress:progress }, null, 2); }
   function importBackup(raw) {
     if (clean(raw, 5000001).length > 5000000) throw new Error('Choose a wordbook backup smaller than 5 MB.');
     let backup; try { backup = JSON.parse(raw); } catch { throw new Error('This file is not valid JSON. Choose a Passage wordbook backup.'); }
@@ -222,7 +235,6 @@
       const e = create(raw.term, kind(raw));
       e.sources = combineSources([], raw.sources.map(s => validSource(s, kind(e))).filter(Boolean), kind(e));
       e.definition = clean(raw.definition); e.note = clean(raw.note); e.ipa = clean(raw.ipa, 200);
-      e.review = raw.review === 'remembered' ? 'remembered' : 'again';
       e.edited = { term: !!raw.edited?.term, definition: !!raw.edited?.definition, note: !!raw.edited?.note };
       e.candidates = (Array.isArray(raw.candidates) ? raw.candidates : []).slice(0, 40).filter(c => typeof c?.definition === 'string').map(c => ({ definition: clean(c.definition), partOfSpeech: clean(c.partOfSpeech, 120) }));
       e.attribution = raw.attribution ? attribution(raw.attribution) : null;
@@ -237,8 +249,8 @@
     if (progress) for (const l of lessons) if (Object.hasOwn(progress,l.folder)) {
       const record = progress[l.folder], fail = () => { throw new Error('Invalid lesson progress in backup. No records were changed.'); };
       if (!record || typeof record !== 'object' || Array.isArray(record)) fail();
-      for (const field of ['read','saved','recalled']) if (record[field] !== undefined && (!Array.isArray(record[field]) || record[field].some(v=>typeof v!=='string' && typeof v!=='number'))) fail();
-      for (const field of ['answers','practice','speaking','recall']) if (record[field] !== undefined && (!record[field] || typeof record[field] !== 'object' || Array.isArray(record[field]) || Object.values(record[field]).some(v=>typeof v!=='string'))) fail();
+      for (const field of ['read','saved']) if (record[field] !== undefined && (!Array.isArray(record[field]) || record[field].some(v=>typeof v!=='string' && typeof v!=='number'))) fail();
+      for (const field of ['answers','practice','speaking']) if (record[field] !== undefined && (!record[field] || typeof record[field] !== 'object' || Array.isArray(record[field]) || Object.values(record[field]).some(v=>typeof v!=='string'))) fail();
       for (const field of ['writing','challenge']) if (record[field] !== undefined && typeof record[field] !== 'string') fail();
       if (record.submitted !== undefined && typeof record.submitted !== 'boolean') fail();
     }
@@ -252,7 +264,7 @@
       return { added, merged };
     });
     // Restore lesson records only into empty slots. Existing drafts always win.
-    if (progress) for (const l of lessons) if (Object.hasOwn(progress,l.folder) && emptyLessons.has(l.folder) && progress[l.folder] && typeof progress[l.folder] === 'object' && !Array.isArray(progress[l.folder])) localStorage.setItem(l.storageKey,JSON.stringify(progress[l.folder]));
+    if (progress) for (const l of lessons) if (Object.hasOwn(progress,l.folder) && emptyLessons.has(l.folder) && progress[l.folder] && typeof progress[l.folder] === 'object' && !Array.isArray(progress[l.folder])) localStorage.setItem(l.storageKey,JSON.stringify(lessonProgress(progress[l.folder])));
     syncBookmarks(read());
     return result;
   }
@@ -266,17 +278,37 @@
     return change(data=>{ const id=addTo(data,word.word,presetSource(lesson,word),{definition:word.definition,ipa:word.ipa}); const e=data.entries.find(e=>e.id===id); e.learning.status=status; return id; });
   }
   function learningFor(value) { return read().entries.find(e=>kind(e)==='word' && e.key===normalize(value))?.learning || V.fresh(); }
-  function rate(id, track, rating, answer='', now=Date.now()) {
+  const reviewFingerprint = (e,track) => JSON.stringify([e.key,e.definition,e.learning.status,e.learning.exposedAt,e.learning[track]]);
+  function beginReview(id,track,now=Date.now()) {
+    const e=get(id);
+    if (!e || !V.queue(read().entries,now).items.some(i=>i.id===id && i.track===track)) throw new Error('This review is no longer available. Refresh Today Review.');
+    const due=e.learning[track].due === null ? null : V.availableAt(e.learning,track);
+    change(data=>{data.entries.find(e=>e.id===id).learning.startedAt ??= now;});
+    const token=uid(); reviewAttempts.clear();
+    reviewAttempts.set(token,{id,track,due,fingerprint:reviewFingerprint(get(id),track),revealed:false});
+    return token;
+  }
+  function exposeReview(token) {
+    const a=reviewAttempts.get(token),e=a && get(a.id);
+    if (!e || a.fingerprint!==reviewFingerprint(e,a.track)) throw new Error('This word changed. Finish later and restart Today Review.');
+    change(data=>{const entry=data.entries.find(e=>e.id===a.id);entry.learning.exposedAt=Date.now();});
+    a.fingerprint=reviewFingerprint(get(a.id),a.track);
+  }
+  function revealReview(token) { exposeReview(token);reviewAttempts.get(token).revealed=true; }
+  function rate(id, track, rating, answer='', now=Date.now(), token=null) {
     change(data=>{
       const e=data.entries.find(e=>e.id===id && kind(e)==='word');
       if(!e || !V.tracks.includes(track) || !V.enabled(e.learning,track)) throw new Error('This review track is paused.');
-      if (!V.queue(data.entries,now).items.some(i=>i.id===id && i.track===track)) throw new Error('This review is no longer due. Refresh Today Review.');
+      const a=reviewAttempts.get(token), validAttempt=a && a.revealed && a.id===id && a.track===track && a.fingerprint===reviewFingerprint(e,track);
+      if (token && !validAttempt || !V.queue(data.entries,now,!!validAttempt).items.some(i=>i.id===id && i.track===track)) throw new Error('This review changed or is no longer due. Restart Today Review.');
       if (track==='production' && ['good','easy'].includes(rating) && !String(answer).trim()) throw new Error('Write your independent attempt before choosing Good or Easy. Use Again if you could not retrieve it.');
-      e.learning[track] = V.schedule(e.learning[track],rating,now,answer,track==='production'?V.stage(e.learning[track]):0);
+      const prior={...e.learning[track],due:validAttempt?a.due:e.learning[track].due===null?null:V.availableAt(e.learning,track)};
+      e.learning[track] = V.schedule(prior,rating,now,answer,track==='production'?V.stage(e.learning[track]):0,track);
       e.learning.startedAt ??= now; e.updatedAt=now;
     });
+    reviewAttempts.delete(token);
   }
-  window.Wordbook = { normalize, term, kind, sentenceText, read, get, add, addSentence, update, remove, restore, lookup, migrate, forLesson, bookmarked, togglePreset, exportBackup, importBackup, lessons, selectStatus, selectPreset, learningFor, rate, get problem() { return problem; } };
+  window.Wordbook = { normalize, term, kind, sentenceText, changesLearning, read, get, add, addSentence, update, remove, restore, lookup, migrate, forLesson, bookmarked, togglePreset, exportBackup, importBackup, lessons, selectStatus, selectPreset, learningFor, beginReview, exposeReview, revealReview, rate, get problem() { return problem; } };
   migrate();
   if (!problem) read().entries.filter(e => kind(e) === 'word' && e.dictionaryStatus === 'pending').forEach(e => lookup(e.id));
   window.addEventListener('storage', event => { if (event.key === KEY) window.dispatchEvent(new CustomEvent('wordbook-change')); });

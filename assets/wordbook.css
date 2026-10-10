@@ -20,9 +20,6 @@
 .review-page.review-active #learning-dashboard,.review-page.review-active .wb-heading {display:none;}
 .review-page.review-active .catalog-main {padding-top:30px;}
 .review-toolbar {display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:18px;margin-bottom:24px;}
-.review-queue {list-style:none;padding:0;margin:0;}
-.review-queue li {display:flex;justify-content:space-between;gap:20px;padding:17px 0;border-bottom:1px solid var(--line);font-size:15px;}
-.review-queue li span {font-size:13px;color:var(--slate);}
 .review-card {max-width:800px;background:var(--paper);border:1px solid var(--line);padding:32px;margin:0 auto;}
 .review-card-top {display:flex;justify-content:space-between;align-items:center;gap:20px;}
 .review-card h2 {font:500 34px/1.35 var(--serif);margin:24px 0;overflow-wrap:anywhere;}
@@ -63,7 +60,7 @@ body>#learning-notice:not(:empty) {position:fixed;bottom:20px;left:20px;right:20
   .review-ratings {grid-template-columns:repeat(2,minmax(0,1fr));}
   .review-ratings span {font-size:12px;}
   .review-card-top {align-items:flex-start;}
-  .review-queue li {flex-direction:column;gap:6px;}
+
   .learning-choice {align-items:flex-start;flex-direction:column;}
 }
 .wb-heading {display:flex;align-items:center;justify-content:space-between;gap:36px;margin-bottom:36px;}
@@ -126,10 +123,6 @@ body>#learning-notice:not(:empty) {position:fixed;bottom:20px;left:20px;right:20
 .wb-senses span {font-size:13px;line-height:1.8;}
 .wb-editor-contexts {border-top:1px solid var(--line);padding-top:25px;margin-top:24px;}
 .wb-editor-contexts>.eyebrow {margin-bottom:18px;}
-.wb-recall h2 {font:500 39px var(--serif);margin:23px 0;}
-.wb-recall>p:not(.eyebrow) {color:var(--slate);font-size:13px;margin-bottom:23px;}
-.wb-recall-answer {border-top:1px solid var(--line);padding-top:20px;margin:25px 0;}
-.wb-recall-answer>.wb-context {background:var(--cloud);padding:18px;margin-top:20px;}
 #wb-toast {position:fixed;bottom:26px;left:50%;transform:translate(-50%,15px);opacity:0;visibility:hidden;z-index:3000;background:var(--ink);color:white;padding:13px 20px;border-radius:7px;max-width:calc(100vw - 40px);box-shadow:0 8px 35px #192d4b24;display:flex;align-items:center;gap:22px;font-size:12px;}
 #wb-toast.visible {opacity:1;visibility:visible;transform:translate(-50%,0);}
 #wb-toast button {font-size:12px;white-space:nowrap;color:#b9d5ff;}
@@ -190,3 +183,5 @@ select:focus-visible {outline:3px solid #2966c644;outline-offset:3px;}
  .wb-form-actions {flex-wrap:wrap;}
  .wb-field input,.wb-field textarea {font-size:16px;}
 }
+
+.review-queue-summary {font-size:16px;line-height:1.7;margin:24px 0;}

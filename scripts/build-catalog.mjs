@@ -24,11 +24,19 @@ const vocabulary=lessons.map(lesson=>{
   vm.runInNewContext(fs.readFileSync(path.join(root,lesson.folder,'lesson-data.js'),'utf8'),context);
   vm.runInNewContext(fs.readFileSync(path.join(root,lesson.folder,'lesson-notes.js'),'utf8'),context);
   const data=context.window.LESSON;
+  const recommendations=context.window.LESSON_NOTES.learningRecommendations;
+  if (recommendations) {
+    for (const [id,r] of Object.entries(recommendations)) {
+      if (!data.vocabulary.some(w=>w.id===id) || !r || !['active','recognition'].includes(r.goal) || typeof r.reason!=='string' || r.reason.trim().length<25) throw new Error(`Lesson ${lesson.folder}: invalid learning recommendation ${id}`);
+    }
+    const goals=Object.values(recommendations);
+    if (goals.filter(r=>r.goal==='active').length<5 || goals.filter(r=>r.goal==='active').length>6 || goals.filter(r=>r.goal==='recognition').length<8 || goals.filter(r=>r.goal==='recognition').length>12) throw new Error(`Lesson ${lesson.folder}: recommend 5–6 Active and 8–12 Recognition expressions with teaching reasons`);
+  } else console.warn(`Lesson ${lesson.folder}: no editorial recommendations; Core Vocabulary is suggested for recognition only. Add teaching reasons before suggesting Active words.`);
   return {folder:lesson.folder,title:lesson.title,day:lesson.day,storageKey:data.storageKey,words:data.vocabulary.map(word=>{
     const paragraph=data.paragraphs.find(p=>p.text.includes(word.Article))||data.paragraphs.find(p=>p.text.toLowerCase().includes(word.word.toLowerCase()));
-    const rank = [...data.vocabulary.filter(w=>w.core),...data.vocabulary.filter(w=>!w.core)].findIndex(w=>w.id===word.id);
+    const suggestion=recommendations?.[word.id] || (!recommendations && word.core ? {goal:'recognition',reason:'Core Vocabulary supports understanding the article. An Active recommendation needs an explicit teaching reason.'} : {goal:'exposure',reason:''});
     const rewrite = data.practice.find(q=>q.id[0]==='E' && q.question.toLowerCase().includes(word.word.toLowerCase()));
-    return {id:word.id,word:word.word,core:word.core,recommendation:rank<6?'active':rank<16?'recognition':'exposure',definition:word.Definition,ipa:word['IPA / part of speech'],article:word.Article,context:word['In context'],example:context.window.LESSON_NOTES.training?.[word.id]?.example||word['Additional example'],collocation:word.Collocation,note:word['Learner note'],rewrite:rewrite?{question:rewrite.question,answer:rewrite.explanation}:null,topic:data.topic,location:paragraph?'reading-'+paragraph.id:'vocabulary',label:paragraph?'Paragraph '+paragraph.id:'Vocabulary'};
+    return {id:word.id,word:word.word,core:word.core,recommendation:suggestion.goal,recommendationReason:suggestion.reason,definition:word.Definition,ipa:word['IPA / part of speech'],article:word.Article,context:word['In context'],example:context.window.LESSON_NOTES.training?.[word.id]?.example||word['Additional example'],collocation:word.Collocation,note:word['Learner note'],rewrite:rewrite?{question:rewrite.question,answer:rewrite.explanation}:null,topic:data.topic,location:paragraph?'reading-'+paragraph.id:'vocabulary',label:paragraph?'Paragraph '+paragraph.id:'Vocabulary'};
   })};
 });
 fs.writeFileSync(path.join(root,'assets/course-vocabulary.js'),'window.COURSE_VOCABULARY = '+JSON.stringify(vocabulary,null,2)+';\n');

@@ -88,7 +88,7 @@
       open('Your saved sentence', `<form id="wb-edit-form"><p class="eyebrow">ORIGINAL SENTENCE</p><blockquote class="wb-sentence-text wb-editor-sentence">${esc(e.term)}</blockquote><label class="wb-field">Your understanding<textarea name="definition" rows="3" maxlength="3000" placeholder="Explain the sentence in your own English.">${esc(e.definition)}</textarea></label><label class="wb-field">Your note<textarea name="note" rows="3" maxlength="3000" placeholder="What made this sentence difficult? What would you like to remember?">${esc(e.note)}</textarea></label><div class="wb-form-actions"><button class="button primary" type="submit">Save changes</button><button class="text-button" type="button" data-wb="close">Cancel</button><button class="icon-button" type="button" data-wb="speak" data-id="${esc(e.id)}" aria-label="Read saved sentence aloud">${sound}</button></div><p id="wb-form-error" role="alert"></p></form>${e.sources.length ? `<div class="wb-editor-contexts"><p class="eyebrow">YOUR ORIGINAL CONTEXT</p>${e.sources.map(sourceHTML).join('')}</div>` : ''}`);
       return;
     }
-    open('Edit wordbook entry', `<form id="wb-edit-form"><label class="wb-field">Word or phrase<input name="term" value="${esc(e.term)}" maxlength="100" required autocomplete="off"></label><p class="subtle wb-edit-hint">Change a word to its base form to look it up again. Your original selected text stays in each saved context.</p><label class="wb-field">Meaning in this context<textarea name="definition" rows="3" maxlength="3000" placeholder="Choose a dictionary sense below, or write your own English meaning.">${esc(e.definition)}</textarea></label><label class="wb-field">Your note<textarea name="note" rows="2" maxlength="3000" placeholder="A collocation, memory clue or example of your own.">${esc(e.note)}</textarea></label><div class="wb-form-actions"><button class="button primary" type="submit">Save changes</button><button class="text-button" type="button" data-wb="close">Cancel</button><button class="icon-button" type="button" data-wb="speak" data-id="${esc(e.id)}" aria-label="Read aloud: ${esc(e.term)}">${sound}</button></div><p id="wb-form-error" role="alert"></p></form><details class="wb-dictionary" open><summary>Dictionary meanings ${esc(e.ipa)}</summary><div id="wb-candidates">${candidatesHTML(e)}</div></details>${e.sources.length ? `<div class="wb-editor-contexts"><p class="eyebrow">YOUR ORIGINAL CONTEXT${e.sources.length > 1 ? 'S' : ''}</p>${e.sources.map(sourceHTML).join('')}</div>` : ''}`);
+    open('Edit wordbook entry', `<form id="wb-edit-form"><label class="wb-field">Word or phrase<input name="term" value="${esc(e.term)}" maxlength="100" required autocomplete="off"></label><p class="subtle wb-edit-hint">Change a word to its base form to look it up again. Your original selected text stays in each saved context. Changing the expression or meaning clears both review tracks; changes to capitalisation, spacing or notes keep progress.</p><p id="wb-learning-reset" class="learning-hint" role="status"></p><label class="wb-field">Meaning in this context<textarea name="definition" rows="3" maxlength="3000" placeholder="Choose a dictionary sense below, or write your own English meaning.">${esc(e.definition)}</textarea></label><label class="wb-field">Your note<textarea name="note" rows="2" maxlength="3000" placeholder="A collocation, memory clue or example of your own.">${esc(e.note)}</textarea></label><div class="wb-form-actions"><button class="button primary" type="submit">Save changes</button><button class="text-button" type="button" data-wb="close">Cancel</button><button class="icon-button" type="button" data-wb="speak" data-id="${esc(e.id)}" aria-label="Read aloud: ${esc(e.term)}">${sound}</button></div><p id="wb-form-error" role="alert"></p></form><details class="wb-dictionary" open><summary>Dictionary meanings ${esc(e.ipa)}</summary><div id="wb-candidates">${candidatesHTML(e)}</div></details>${e.sources.length ? `<div class="wb-editor-contexts"><p class="eyebrow">YOUR ORIGINAL CONTEXT${e.sources.length > 1 ? 'S' : ''}</p>${e.sources.map(sourceHTML).join('')}</div>` : ''}`);
   }
   function addDialog() {
     editing = null;
@@ -130,7 +130,7 @@
       else if (action === 'retry') W.lookup(id, true);
       else if (action === 'sense') {
         const e = W.get(id), c = e?.candidates[Number(button.dataset.index)];
-        if (c) { const field = body.querySelector('[name="definition"]'); field.value = c.definition; field.dataset.fromDictionary = 'true'; body.querySelectorAll('[data-wb="sense"]').forEach(b => b.setAttribute('aria-pressed', String(b === button))); }
+        if (c) { const field = body.querySelector('[name="definition"]'); field.value = c.definition; field.dataset.fromDictionary = 'true'; field.dispatchEvent(new Event('input',{bubbles:true})); body.querySelectorAll('[data-wb="sense"]').forEach(b => b.setAttribute('aria-pressed', String(b === button))); }
       }
       else if (action === 'recall') location.href = base + 'review.html';
       else if (action === 'clear-filters') { ['#wb-search', '#wb-lesson', '#wb-status'].forEach(s => document.querySelector(s).value = ''); render(); }
@@ -143,6 +143,12 @@
       }
     } catch (error) { notify(error.message); }
   });
+  document.addEventListener('input', event => {
+    const form=event.target.closest('#wb-edit-form'), warning=form?.querySelector('#wb-learning-reset');
+    if(!warning)return;
+    const entry=W.get(editing),fields=new FormData(form);
+    warning.textContent=W.changesLearning(entry,{term:fields.get('term'),definition:fields.get('definition')})?'Saving this change will clear Recognition and Production history and restart both schedules.':'';
+  });
   document.addEventListener('submit', event => {
     if (!['wb-edit-form', 'wb-add-form'].includes(event.target.id)) return;
     event.preventDefault();
@@ -152,7 +158,8 @@
       else {
         const old = W.get(editing), changed = old && W.normalize(old.term) !== W.normalize(fields.get('term'));
         const id = W.update(editing, { term: fields.has('term') ? fields.get('term') : undefined, definition: fields.get('definition'), note: fields.get('note'), definitionSource: event.target.querySelector('[name="definition"]').dataset.fromDictionary === 'true' ? 'dictionary' : undefined });
-        close(); notify('Changes saved.', id);
+        const reset=W.changesLearning(old,{term:fields.has('term')?fields.get('term'):undefined,definition:fields.get('definition')});
+        close(); notify(reset?'Changes saved. Both review tracks were reset; your learning goal and original contexts were kept.':'Changes saved.', id);
         if (changed && W.kind(old) === 'word') W.lookup(id);
       }
     } catch (error) { document.querySelector('#wb-form-error').textContent = error.message; }
