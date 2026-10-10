@@ -37,8 +37,11 @@
     workspace.innerHTML=`<div class="review-toolbar"><label>Review track <select id="review-track"><option value="all" ${trackFilter==='all'?'selected':''}>Both tracks</option><option value="recognition" ${trackFilter==='recognition'?'selected':''}>Recognition</option><option value="production" ${trackFilter==='production'?'selected':''}>Production</option></select></label><button class="button primary" data-learning="start" ${items.length?'':'disabled'}>Start ${items.length} tasks →</button></div>${completed?`<p class="review-complete" role="status">${completed} tasks completed.</p>`:''}<p class="review-queue-summary">${recognition} Recognition · ${production} Production tasks ready.</p>${q.deferred.length?`<p class="learning-hint" data-review-deferred>${q.deferred.length} Production tasks available ${new Date(Math.min(...q.deferred.map(i=>i.availableAt))).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})} · 24 hours after seeing the answer.</p>`:''}${items.length?'':`<div class="wb-empty"><p class="eyebrow">${q.waiting||q.deferred.length?'UP NEXT':'ALL DONE'}</p><h2>${q.waiting||q.deferred.length?'No tasks ready.':'You are caught up.'}</h2><p>${q.waiting||q.deferred.length?'Try the other track or check back later.':'Choose learning goals in a lesson, or come back when a review is due.'}</p><a class="button secondary" href="index.html">Explore a lesson →</a></div>`}`;
   }
   const mask=(text,word)=> {
-    const parts=String(word).trim().split(/\s+/).map(p=>p.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'));
-    const pattern=parts.map((p,i)=>i===parts.length-1?`${p}(?:s|es|ed|ing)?`:p).join('\\s+');
+    const segments=String(word).trim().split(/\s*\.\.\.\s*/);
+    const pattern=segments.map(segment=>{
+      const parts=segment.split(/\s+/).map(p=>p.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'));
+      return parts.map((p,i)=>i===parts.length-1?`${p}(?:s|es|ed|ing)?`:p).join('\\s+');
+    }).join('\\s+(?:\\S+\\s+){0,12}?');
     return String(text||'').replace(new RegExp(`\\b${pattern}\\b`,'gi'),'_____');
   };
   function task(entry) {

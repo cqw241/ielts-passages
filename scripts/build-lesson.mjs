@@ -11,6 +11,17 @@ const sourceFile = sources[0];
 const raw = fs.readFileSync(path.join(folder, sourceFile), 'utf8').replace(/\r/g, '');
 const sections = {};
 for (const match of raw.matchAll(/^## (.+)\n([\s\S]*?)(?=^## |$(?![\s\S]))/gm)) sections[match[1]] = match[2].trim();
+if (sections['Main Reading Article']) {
+  const {extractStructuredLesson} = await import('./extract-structured-lesson.mjs');
+  const manifest = JSON.parse(fs.readFileSync(path.join(root,'lessons.json'),'utf8'));
+  const day = manifest.lessons.findIndex(item => item.folder === lessonId) + 1;
+  if (!day) throw new Error(`Register ${lessonId} in lessons.json before building`);
+  const images = fs.readdirSync(path.join(folder,'images')).filter(p => /^reference-\d+\.webp$/.test(p)).sort((a,b) => Number(a.match(/\d+/)[0])-Number(b.match(/\d+/)[0])).map(p => 'images/'+p);
+  const lesson = extractStructuredLesson({raw,sections,lessonId,sourceFile,images,day});
+  fs.writeFileSync(path.join(folder,'lesson-data.js'),'window.LESSON = '+JSON.stringify(lesson,null,2)+';\n');
+  console.log(`Extracted ${lesson.paragraphs.length} paragraphs, ${lesson.vocabulary.length} words, ${lesson.grammar.length} sentence analyses, ${lesson.reading.length} reading questions and ${lesson.practice.length} vocabulary exercises.`);
+  process.exit(0);
+}
 function fields(text) {
   const data = {};
   for (const m of text.matchAll(/^(?:- )?\*\*([^*]+):\*\*\s*(.+)$/gm)) data[m[1]] = m[2].trim();

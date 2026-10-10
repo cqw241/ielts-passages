@@ -50,7 +50,11 @@ check('Active recommendations have explicit teaching reasons',()=>{
   assert.ok(notes.window.LESSON_NOTES.learningRecommendations);
   const active=l.words.filter(w=>w.recommendation==='active');assert.ok(active.length>=5&&active.length<=6);
   for(const w of active)assert.ok(w.recommendationReason?.length>25);
-  assert.ok(l.words.some((w,i)=>w.recommendation==='active'&&!l.words.slice(0,6).includes(w)));
+  for(const w of l.words){
+   const expected=notes.window.LESSON_NOTES.learningRecommendations[w.id];
+   assert.equal(w.recommendation,expected?.goal||'exposure','Suggestions follow explicit teaching metadata, independent of list position');
+   assert.equal(w.recommendationReason,expected?.reason||'');
+  }
  }
 });
 check('Generated lessons omit obsolete recall and fixed schedules',()=>{

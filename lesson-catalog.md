@@ -1,3 +1,39 @@
+## 26.10.10
+
+**Title:** A Switch Made of Light: When a Scientific Breakthrough Meets Patients
+**Topic:** Neuroscience, Medical Innovation and Scientific Evidence
+
+1. shed light on
+2. trace ... back to
+3. pinpoint
+4. rule out
+5. translate ... into
+6. fall short of
+7. causal relationship
+8. selective control
+9. proof of concept
+10. unintended consequences
+11. correlation
+12. genetic modification
+13. outcome measure
+14. open-label study
+15. adverse event
+16. regulatory hurdles
+17. electrical impulse
+18. ion channel
+19. neural circuit
+20. light-sensitive
+21. stimulate
+22. disrupt
+23. viral vector
+24. retina
+25. degenerative
+26. clinically meaningful
+27. efficacy
+28. invasive
+29. durability
+30. benchmark
+
 ## 26.9.7
 
 **Title:** The Work That Continues After a Disease Milestone  

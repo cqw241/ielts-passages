@@ -7,6 +7,8 @@ An English-only illustrated learning website. Each lesson preserves its A–J ar
 - [Day 1 · Working lives](26.9.6/index.html): employment measurement, job quality and policy trade-offs.
 - [Day 2 · Public health](26.9.7/index.html): maintaining a disease milestone through prevention, surveillance and accessible services.
 
+- [Day 3 · A switch made of light](26.10.10/index.html): optogenetics, causal evidence and early vision trials. Includes 30 tiered expressions, three sentence analyses, ten reading questions and nine vocabulary tasks. Reading question 9 is self-checked against paragraph I and excluded from automatic scoring.
+
 Open any lesson directly in a browser. The sidebar switches between lessons. No dependencies are required. The root page is the shared course library.
 
 For a local preview, run `python -m http.server 8765 --bind 127.0.0.1` in this directory, then visit `http://127.0.0.1:8765/26.9.7/` or `http://127.0.0.1:8765/26.9.6/`.
@@ -17,6 +19,7 @@ For a local preview, run `python -m http.server 8765 --bind 127.0.0.1` in this d
 - `lessons.json` is the course registry; `scripts/build-catalog.mjs` generates the course home and shared navigation data.
 - Each lesson's `lesson-data.js` contains content extracted from its original Markdown source.
 - Each `lesson-notes.js` contains English explanations, comprehension checks, vocabulary glosses, grammar annotations and presentation configuration.
+- `scripts/extract-structured-lesson.mjs` supports the descriptive format introduced on 10 October, with variable reading, grammar and practice counts. It preserves source wording and integrates with the same vocabulary learning system. `scripts/verify-structured-lesson.cjs` covers the new format, self-check marking, original text, saves, source downloads and mobile layouts.
 - Day 2 uses reusable comparison panels, choice diagrams and a coverage illustration with hypothetical equally sized communities. These supplement the article without replacing its evidence or claiming that a percentage guarantees protection.
 - Build source data with `node scripts/build-lesson.mjs <folder>`, for example `node scripts/build-lesson.mjs 26.9.7`. The default remains Day 1. Reading question types and ranges come from the source's question-group headings. Review teaching notes after source changes.
 - Each lesson's `images/` contains optimized WebP assets. Original reference images remain untouched.
