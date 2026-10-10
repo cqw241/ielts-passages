@@ -34,7 +34,7 @@ const vocabulary=lessons.map(lesson=>{
   } else console.warn(`Lesson ${lesson.folder}: no editorial recommendations; Core Vocabulary is suggested for recognition only. Add teaching reasons before suggesting Active words.`);
   return {folder:lesson.folder,title:lesson.title,day:lesson.day,storageKey:data.storageKey,words:data.vocabulary.map(word=>{
     const paragraph=data.paragraphs.find(p=>p.text.includes(word.Article))||data.paragraphs.find(p=>p.text.toLowerCase().includes(word.word.toLowerCase()));
-    const suggestion=recommendations?.[word.id] || (!recommendations && word.core ? {goal:'recognition',reason:'Core Vocabulary supports understanding the article. An Active recommendation needs an explicit teaching reason.'} : {goal:'exposure',reason:''});
+    const suggestion=recommendations?.[word.id] || (!recommendations && word.core ? {goal:'recognition',reason:'Core Vocabulary helps you understand this article.'} : {goal:'exposure',reason:''});
     const rewrite = data.practice.find(q=>q.id[0]==='E' && q.question.toLowerCase().includes(word.word.toLowerCase()));
     return {id:word.id,word:word.word,core:word.core,recommendation:suggestion.goal,recommendationReason:suggestion.reason,definition:word.Definition,ipa:word['IPA / part of speech'],article:word.Article,context:word['In context'],example:context.window.LESSON_NOTES.training?.[word.id]?.example||word['Additional example'],collocation:word.Collocation,note:word['Learner note'],rewrite:rewrite?{question:rewrite.question,answer:rewrite.explanation}:null,topic:data.topic,location:paragraph?'reading-'+paragraph.id:'vocabulary',label:paragraph?'Paragraph '+paragraph.id:'Vocabulary'};
   })};
