@@ -73,7 +73,7 @@ The focused browser check covers opt-in selection, hidden retrieval, all product
 
 GitHub Pages remains on `main`. Cloudflare **Pages** project `ielts-passages` connects this repository through the Git integration, with framework **None**, build command `node scripts/build-site.mjs`, output directory `_site` and root directory left blank. `main` is Cloudflare's production branch; `v2` deploys at [the stable v2 preview](https://v2.ielts-passages.pages.dev/). The separate Cloudflare origin keeps v2 learning records separate from the GitHub Pages origin. Each push to `v2` rebuilds the entire catalog and all registered lessons. The GitHub application is limited to this repository.
 
-After building locally, set `PASSAGE_TEST_URL` to the v2 preview URL and run `node scripts/verify-deployment.cjs` with the same Playwright/Chrome environment variables used for the other browser checks. It compares published learning assets with the local build and checks all registered articles, selection, both review tracks, persistence, backup download and mobile layout in an isolated browser.
+After building locally, set `PASSAGE_TEST_URL` to the v2 preview URL and run `node scripts/verify-deployment.cjs` with the same Playwright/Chrome environment variables used for the other browser checks. It compares published learning assets with the local build after normalising Git checkout line endings and checks all registered articles, selection, both review tracks, persistence, backup download and mobile layout in an isolated browser.
 
 ## Publishing and adding lessons
 

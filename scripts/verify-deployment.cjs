@@ -3,7 +3,8 @@ const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
 const assert=require('node:assert/strict'),fs=require('node:fs'),crypto=require('node:crypto');
 const lessons=JSON.parse(fs.readFileSync('lessons.json','utf8')).lessons;
 const base=(process.env.PASSAGE_TEST_URL||'http://127.0.0.1:8765/_site/').replace(/\/?$/,'/');
-const digest=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
+// Git may check text out as CRLF on Windows; Linux Pages builds use LF.
+const digest=bytes=>crypto.createHash('sha256').update(bytes.toString('utf8').replace(/\r\n/g,'\n')).digest('hex');
 (async()=>{
  const browser=await chromium.launch({headless:true,...(process.env.CHROME_PATH?{executablePath:process.env.CHROME_PATH}:{})});
  try {
@@ -13,7 +14,7 @@ const digest=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
   // Use the learner's browser network path (including system proxy settings).
   const files=['assets/vocabulary-learning.js','assets/vocabulary-learning-ui.js','assets/wordbook-store.js','assets/course-vocabulary.js','assets/lesson.js','assets/wordbook.js','review.html',...lessons.flatMap(l=>[`${l.folder}/lesson-data.js`,`${l.folder}/lesson-notes.js`])];
   const published=await page.evaluate(async files=>Promise.all(files.map(async file=>{
-   const response=await fetch(file),bytes=await response.arrayBuffer();
+   const response=await fetch(file),bytes=new TextEncoder().encode((await response.text()).replace(/\r\n/g,'\n'));
    const hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),b=>b.toString(16).padStart(2,'0')).join('');
    return {file,status:response.status,hash};
   })),files);
