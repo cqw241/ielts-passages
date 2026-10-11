@@ -5,7 +5,8 @@
   const md = window.markdownit?.('commonmark', {html:false, breaks:true});
   if (md) {
     // Keep the small notes format; in particular, never load user-supplied images.
-    md.disable(['image', 'heading', 'lheading', 'fence', 'code', 'hr']);
+    md.disable(['image', 'fence', 'code']);
+    md.enable('table');
     const validate = md.validateLink.bind(md);
     md.validateLink = url => {
       if (!validate(url)) return false;

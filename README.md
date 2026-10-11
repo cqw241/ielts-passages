@@ -15,6 +15,8 @@ Passage is a lightweight, browser-based English reading and vocabulary-learning 
 - **Wordbook and saved sentences:** preserve reading context, add English explanations and Markdown notes, and export/import JSON backups.
 - **Browser-first:** responsive static pages, no account or backend, and no package installation for the website.
 
+Personal meanings and notes support Markdown headings, tables, horizontal rules, bold, italic, lists, quotes, inline code and links, with Preview / Edit controls. Raw HTML and images are disabled. Original Markdown stays editable and survives JSON backups; reviews use its plain text, and formatting-only edits preserve review progress.
+
 ## Run locally
 
 Use Node.js 22 (the version used for deployment) and a local HTTP server:

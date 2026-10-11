@@ -117,6 +117,16 @@ body>#learning-notice:not(:empty) {position:fixed;bottom:20px;left:20px;right:20
 .wb-preview {min-height:100px;border:1px solid var(--line);border-radius:5px;padding:12px;background:var(--paper);margin-top:7px;font-size:14px;font-weight:400;}
 .wb-markdown {white-space:normal;overflow-wrap:anywhere;}
 .wb-markdown p {margin:0 0 .65em;}
+.wb-markdown :is(h1,h2,h3,h4,h5,h6) {font-family:inherit;line-height:1.4;font-weight:600;letter-spacing:normal;margin:1em 0 .5em;}
+.wb-markdown h1 {font-size:1.4em;}
+.wb-markdown h2 {font-size:1.25em;}
+.wb-markdown h3 {font-size:1.1em;}
+.wb-markdown :is(h4,h5,h6) {font-size:1em;}
+.wb-markdown>:first-child {margin-top:0;}
+.wb-markdown hr {border:0;border-top:1px solid var(--line);margin:1em 0;}
+.wb-markdown table {width:100%;table-layout:fixed;border-collapse:collapse;margin:.75em 0;font:inherit;}
+.wb-markdown th,.wb-markdown td {border:1px solid var(--line);padding:.5em .65em;vertical-align:top;}
+.wb-markdown th {font-weight:600;background:var(--cloud);}
 .wb-markdown>:last-child {margin-bottom:0;}
 .wb-markdown ul,.wb-markdown ol {padding-left:1.5em;margin:.65em 0;list-style-position:outside;}
 .wb-markdown ul {list-style-type:disc;}
