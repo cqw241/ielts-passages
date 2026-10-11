@@ -21,10 +21,12 @@
   const reviewAttempts = new Map();
   const progressFields = ['read','saved','answers','practice','writing','challenge','speaking','submitted'];
   const lessonProgress = record => Object.fromEntries(progressFields.filter(f=>Object.hasOwn(record,f)).map(f=>[f,record[f]]));
-  const meaningKey = value => clean(value).trim().replace(/\s+/g,' ').toLocaleLowerCase('en');
+  const meaningKey = (value, personal = false) => clean(personal ? window.WordbookMarkdown?.text(value) ?? value : value).trim().replace(/\s+/g,' ').toLocaleLowerCase('en');
+  const entryMeaningKey = entry => meaningKey(entry.definition, window.WordbookMarkdown?.isPersonalDefinition(entry));
   function changesLearning(entry, changes) {
     if (!entry) return false;
-    return kind(entry) === 'word' && (changes.term !== undefined && normalize(changes.term) !== entry.key || changes.definition !== undefined && meaningKey(changes.definition) !== meaningKey(entry.definition) || changes.sense !== undefined && entry.candidates[changes.sense] && meaningKey(entry.candidates[changes.sense].definition) !== meaningKey(entry.definition));
+    const personal = changes.definitionSource === 'personal' || changes.definitionSource !== 'dictionary' && (changes.definition !== entry.definition || window.WordbookMarkdown?.isPersonalDefinition(entry));
+    return kind(entry) === 'word' && (changes.term !== undefined && normalize(changes.term) !== entry.key || changes.definition !== undefined && meaningKey(changes.definition, personal) !== entryMeaningKey(entry) || changes.sense !== undefined && entry.candidates[changes.sense] && meaningKey(entry.candidates[changes.sense].definition) !== entryMeaningKey(entry));
   }
   const safeURL = value => {
     try { const u = new URL(value); return u.protocol === 'https:' && ['en.wiktionary.org', 'creativecommons.org', 'freedictionaryapi.com'].includes(u.hostname) ? u.href : ''; } catch { return ''; }
@@ -144,7 +146,7 @@
     }
     if (!target.candidates.length) target.candidates = incoming.candidates;
     if (!target.attribution && incoming.attribution) target.attribution = incoming.attribution;
-    if (kind(target) === 'word' && incoming.learning && meaningKey(target.definition) === meaningKey(incoming.definition)) {
+    if (kind(target) === 'word' && incoming.learning && entryMeaningKey(target) === entryMeaningKey(incoming)) {
       target.learning ||= V.fresh();
       const status=target.learning.status==='exposure'?incoming.learning.status:target.learning.status;
       if ((incoming.learning.resetAt ?? 0) > (target.learning.resetAt ?? 0)) target.learning={...V.fresh(),status,resetAt:incoming.learning.resetAt};
@@ -288,7 +290,7 @@
     return change(data=>{ const id=addTo(data,word.word,presetSource(lesson,word),{definition:word.definition,ipa:word.ipa}); const e=data.entries.find(e=>e.id===id); e.learning.status=status; return id; });
   }
   function learningFor(value) { return read().entries.find(e=>kind(e)==='word' && e.key===normalize(value))?.learning || V.fresh(); }
-  const reviewFingerprint = (e,track) => JSON.stringify([e.key,e.definition,e.learning.status,e.learning.exposedAt,e.learning[track]]);
+  const reviewFingerprint = (e,track) => JSON.stringify([e.key,entryMeaningKey(e),e.learning.status,e.learning.exposedAt,e.learning[track]]);
   function beginReview(id,track,now=Date.now()) {
     const e=get(id);
     if (!e || !V.queue(read().entries,now).items.some(i=>i.id===id && i.track===track)) throw new Error('This review is no longer available. Refresh Today Review.');
