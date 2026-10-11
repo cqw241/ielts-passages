@@ -9,7 +9,7 @@ An English-only illustrated learning website. Each lesson preserves its A–J ar
 
 - [Day 3 · A switch made of light](26.10.10/index.html): optogenetics, causal evidence and early vision trials. Includes 30 tiered expressions, three sentence analyses, ten reading questions and nine vocabulary tasks. Reading question 9 is self-checked against paragraph I and excluded from automatic scoring.
 
-Open any lesson directly in a browser. The sidebar switches between lessons. No dependencies are required. The root page is the shared course library.
+Open any lesson directly in a browser. The sidebar switches between lessons. No package installation is required. The root page is the shared course library.
 
 For a local preview, run `python -m http.server 8765 --bind 127.0.0.1` in this directory, then visit `http://127.0.0.1:8765/26.9.7/` or `http://127.0.0.1:8765/26.9.6/`.
 
@@ -41,6 +41,10 @@ Wordbook uses the shared `passage-wordbook-v1` localStorage key at the current o
 Dictionary data is from Wiktionary under CC BY-SA 4.0. Definition and candidate displays retain source/provider/license links, and JSON backups retain attribution and edit markers. Typed meanings remain distinct from dictionary-derived meanings. The API requires no key, supports browser CORS and permits 1,000 requests per hour per IP; empty results and failures show a path to editing or retrying.
 
 Implementation: `assets/wordbook-store.js` owns storage, migration, lookup and merging; `assets/wordbook.js` handles selection, editing, review and backup UI. `assets/wordbook.css` reuses the existing design tokens. `scripts/build-catalog.mjs` generates `assets/course-vocabulary.js`, enabling all-lesson migration without loading or fetching individual lesson pages.
+
+Personal meanings, sentence understanding and notes support **bold**, *italic*, ordered/unordered lists, quotes, inline code and links. The existing textareas offer **Preview / Edit** per field; previewing does not save. Original Markdown (including line breaks) stays in localStorage and JSON backups and returns when editing. Words, saved original sentences, article contexts, lesson definitions and dictionary choices retain their existing plain-text presentation. An optional `edited.definitionMarkdown` flag distinguishes typed meanings from selected dictionary meanings; backup versions and storage keys stay unchanged.
+
+`assets/wordbook-markdown.js` uses the local, unmodified `assets/markdown-it.min.js` browser bundle from [markdown-it 15.0.2](https://www.npmjs.com/package/markdown-it/v/15.0.2) (MIT; license in `assets/markdown-it.LICENSE.txt`). No CDN, parser plugins or editor dependencies are required. Raw HTML and images are disabled; links allow only HTTP, HTTPS, mailto and relative destinations that resolve to those protocols. Other user/source fields keep the existing escaping. If the parser cannot load, personal text falls back to escaped plain text. After replacing a vendor file from an official release, rerun `node scripts/verify-wordbook-markdown.cjs` with the browser environment below.
 
 Focused integration verification is in `scripts/verify-wordbook.cjs` and `scripts/verify-sentences.cjs`. With Playwright and Chrome available, run both scripts against a local server after building. Set `PLAYWRIGHT_MODULE` to the installed module path if it is outside this project, `CHROME_PATH` to an installed Chrome executable, and optionally `PASSAGE_TEST_URL` (default `http://127.0.0.1:8765/_site/`). Checks use isolated browser profiles and controlled dictionary responses; live dictionary connectivity is checked separately. Sentence checks cover long selections/full text, typed isolation, old and combined backups, notes, source merging, search, delete/Undo and keyboard tabs.
 

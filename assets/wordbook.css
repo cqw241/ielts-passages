@@ -111,6 +111,20 @@ body>#learning-notice:not(:empty) {position:fixed;bottom:20px;left:20px;right:20
 .wb-field {display:block;font-size:12px;font-weight:600;margin-bottom:17px;}
 .wb-field input,.wb-field textarea {display:block;width:100%;font-size:14px;font-weight:400;margin-top:7px;border:1px solid var(--line);border-radius:5px;padding:12px;background:var(--paper);}
 .wb-edit-hint {font-size:11px;margin:-7px 0 20px;}
+.wb-field-header {display:flex;align-items:center;justify-content:space-between;gap:16px;}
+.wb-field-header .text-button {font-size:12px;min-height:44px;padding:8px;}
+.wb-markdown-field [hidden] {display:none;}
+.wb-preview {min-height:100px;border:1px solid var(--line);border-radius:5px;padding:12px;background:var(--paper);margin-top:7px;font-size:14px;font-weight:400;}
+.wb-markdown {white-space:normal;overflow-wrap:anywhere;}
+.wb-markdown p {margin:0 0 .65em;}
+.wb-markdown>:last-child {margin-bottom:0;}
+.wb-markdown ul,.wb-markdown ol {padding-left:1.5em;margin:.65em 0;list-style-position:outside;}
+.wb-markdown ul {list-style-type:disc;}
+.wb-markdown ol {list-style-type:decimal;}
+.wb-markdown li+li {margin-top:.3em;}
+.wb-markdown blockquote {border-left:3px solid var(--blue);padding-left:12px;margin:.65em 0;color:var(--slate);font:inherit;}
+.wb-markdown code {font-size:.9em;background:var(--cloud);padding:2px 4px;border-radius:3px;white-space:pre-wrap;}
+.wb-markdown a {color:var(--blue);text-decoration:underline;text-underline-offset:2px;}
 .wb-form-actions {display:flex;align-items:center;gap:17px;margin-top:22px;}
 #wb-form-error {color:#9a413a;font-size:12px;margin-top:10px;}
 .wb-dictionary {border-top:1px solid var(--line);margin-top:28px;padding-top:20px;}
@@ -138,6 +152,7 @@ body>#learning-notice:not(:empty) {position:fixed;bottom:20px;left:20px;right:20
 .wb-sentence-text {font:400 23px/1.8 var(--serif);white-space:pre-wrap;overflow-wrap:anywhere;margin:14px 0;}
 .wb-sentence-note {margin:23px 0 0;}
 .wb-sentence-note>.eyebrow {font-size:9px;margin-bottom:8px;}
+.wb-sentence-note>.wb-markdown {font-size:14px;line-height:1.85;}
 .wb-sentence-note>p:not(.eyebrow) {font-size:14px;line-height:1.85;white-space:pre-wrap;}
 .wb-sentence-hint {font-size:12px;margin-top:18px;}
 .wb-sentence-source {padding:20px 0;border-bottom:1px solid var(--line);}

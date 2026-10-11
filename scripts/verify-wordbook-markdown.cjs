@@ -1,0 +1,103 @@
+/* Focused Markdown integration/security check; isolated storage, mocked dictionary. */
+const {chromium} = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const base = (process.env.PASSAGE_TEST_URL || 'http://127.0.0.1:8765/_site/').replace(/\/?$/, '/');
+(async () => {
+  const browser = await chromium.launch({headless:true, ...(process.env.CHROME_PATH ? {executablePath:process.env.CHROME_PATH} : {})});
+  try {
+    const page = await browser.newPage({viewport:{width:1440,height:1000}}), errors=[];
+    page.on('pageerror', e=>errors.push(e.message));
+    await page.route('https://freedictionaryapi.com/**', route=>route.fulfill({json:{entries:[{language:{code:'en'},senses:[{definition:'A **literal** dictionary meaning.'}]}]}}));
+    await page.goto(base+'wordbook.html');
+    const id = await page.evaluate(()=>Wordbook.add('markdown test'));
+    await page.waitForFunction(id=>Wordbook.get(id).candidates.length>0, id);
+    const row = page.locator(`[data-entry="${id}"]`);
+    await row.locator('.wb-row-actions [data-wb="edit"]').click();
+    const meaning = page.locator('#wb-edit-definition'), note = page.locator('#wb-edit-note');
+    const toggle = name=>page.locator(`[data-wb="preview"][data-field="${name}"]`);
+    // Dictionary text is literal, even after saving unchanged or previewing it.
+    await page.locator('[data-wb="sense"]').first().click();
+    await toggle('definition').click();
+    assert.equal(await page.locator('#wb-preview-definition strong').count(),0);
+    await page.locator('#wb-edit-form button[type="submit"]').click();
+    assert.equal(await row.locator('.wb-meaning strong').count(),0);
+    await row.locator('.wb-row-actions [data-wb="edit"]').click();
+    await page.locator('[data-wb="sense"]').first().click();
+    await meaning.fill('A **literal** dictionary meaning.');
+    await toggle('definition').click();
+    assert.equal(await page.locator('#wb-preview-definition strong').innerText(),'literal','Typed text is personal even when matching a dictionary sense');
+    await toggle('definition').click();
+    const raw='**A clear meaning** with *emphasis* and `inline code`.\n\n- First point\n- Second point\n\n1. First step\n2. Second step\n\n> A useful quote.\n\n[Read more](https://example.com/?a=1&b=2)';
+    await meaning.fill(raw); // Manual edits after choosing a sense must become personal.
+    await note.fill('*Remember* this expression.\nKeep the line break.');
+    await toggle('definition').click();
+    assert.equal(await meaning.isVisible(),false);
+    const preview=page.locator('#wb-preview-definition');
+    for (const tag of ['strong','em','code','ul','ol','blockquote','a']) assert.ok(await preview.locator(tag).count(),tag);
+    assert.equal(await toggle('definition').getAttribute('aria-expanded'),'true');
+    assert.equal(await page.evaluate(id=>Wordbook.get(id).definition,id),'A **literal** dictionary meaning.','Preview does not save');
+    await toggle('definition').click();
+    assert.equal(await meaning.inputValue(),raw);
+    assert.equal(await meaning.evaluate(el=>el===document.activeElement),true,'Edit restores keyboard focus');
+    await toggle('definition').click();
+    await page.locator('#wb-edit-form button[type="submit"]').click();
+    assert.equal(await row.locator('.wb-meaning strong').innerText(),'A clear meaning');
+    assert.equal(await row.locator('.wb-note em').innerText(),'Remember');
+    await page.reload();
+    await row.locator('.wb-row-actions [data-wb="edit"]').click();
+    assert.equal(await meaning.inputValue(),raw,'Reload/re-edit restores raw Markdown');
+    const hostile='<img src=x onerror="window.mdExecuted=true">\n<script>window.mdExecuted=true</script>\n\n[bad](javascript:alert(1)) [encoded](jav&#x61;script:alert(1)) [data](data:text/html,x) [file](file:///test) [custom](vbscript:evil)\n\n![image](https://example.com/tracker.png)\n\n[ok](https://example.com) [mail](mailto:test@example.com) [relative](./review.html)\n\n</textarea><input autofocus onfocus="window.mdExecuted=true">';
+    await note.fill(hostile);
+    await toggle('note').click();
+    const safe=page.locator('#wb-preview-note');
+    assert.equal(await safe.locator('script,img,input,iframe').count(),0);
+    const links = await safe.locator('a').evaluateAll(nodes=>nodes.map(el=>el.href));
+    assert.ok(links.length>=3);
+    assert.ok(links.every(url=>/^(https?:|mailto:)/i.test(url)),'Every rendered link uses an allowed protocol');
+    assert.match(await safe.innerText(),/<img/,'Raw HTML stays visible text');
+    await page.locator('#wb-edit-form button[type="submit"]').click();
+    assert.equal(await row.locator('.wb-note script,.wb-note img,.wb-note input').count(),0);
+    assert.equal(await page.evaluate(()=>!!window.mdExecuted),false);
+    const backup=await page.evaluate(()=>Wordbook.exportBackup());
+    assert.equal(JSON.parse(backup).entries[0].note,hostile);
+    await page.evaluate(raw=>{localStorage.clear();Wordbook.importBackup(raw);},backup);
+    assert.equal(await page.evaluate(()=>Wordbook.read().entries[0].definition),raw);
+    assert.equal(await page.locator('.wb-meaning strong').innerText(),'A clear meaning','Backup retains personal formatting');
+    // Sentence and sources stay literal; only personal understanding/notes render.
+    const original='The **original** sentence has <b>literal</b> symbols and `code`.';
+    const sid=await page.evaluate(text=>Wordbook.addSentence(text,{folder:'26.9.6',location:'reading-A',label:'Paragraph A',quote:text,selectedText:text}),original);
+    await page.locator('#wb-sentences-tab').click();
+    const sentenceRow=page.locator(`[data-entry="${sid}"]`);
+    await sentenceRow.locator('[data-wb="edit"]').click();
+    assert.equal(await page.locator('.wb-editor-sentence').innerText(),original);
+    await meaning.fill('**My understanding**\n\n> Keep the distinction.');
+    await note.fill('A *personal note* with [a link](https://example.com).');
+    await toggle('note').click();
+    fs.mkdirSync('.preview/markdown',{recursive:true});
+    await page.locator('#wb-dialog').screenshot({path:'.preview/markdown/desktop.png'});
+    await page.setViewportSize({width:375,height:812});
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+    assert.equal(await page.locator('#wb-dialog').evaluate(el=>el.scrollWidth>el.clientWidth),false);
+    await page.locator('#wb-dialog').screenshot({path:'.preview/markdown/mobile.png'});
+    await page.locator('#wb-edit-form button[type="submit"]').click();
+    assert.equal(await sentenceRow.locator('.wb-sentence-text').innerText(),original);
+    assert.equal(await sentenceRow.locator('.wb-sentence-text strong,.wb-sentence-text b,.wb-sentence-text code').count(),0);
+    assert.equal(await sentenceRow.locator('.wb-markdown strong').innerText(),'My understanding');
+    // The same lightweight editor works from a lesson, with relative local assets.
+    await page.goto(base+'26.10.10/index.html#reading');
+    await page.evaluate(()=>{const e=Wordbook.read().entries.find(e=>e.kind==='word');const b=document.createElement('button');b.dataset.wb='edit';b.dataset.id=e.id;b.id='md-edit';document.body.append(b);});
+    await page.locator('#md-edit').click();
+    assert.equal(await meaning.inputValue(),raw);
+    await toggle('definition').click();
+    assert.equal(await preview.locator('strong').innerText(),'A clear meaning');
+    // Losing the parser must leave escaped text rather than unsafe HTML.
+    await page.route('**/markdown-it.min.js', route=>route.abort());
+    await page.goto(base+'wordbook.html');
+    assert.equal(await page.locator('.wb-meaning strong').count(),0);
+    assert.equal(await page.locator('.wb-meaning').innerText(),raw);
+    assert.equal(await page.locator('.wb-note img,.wb-note script').count(),0);
+    assert.deepEqual(errors,[]);
+    console.log('PASS: Markdown formats, Preview/Edit, raw persistence/backups, plain dictionary/original sentences, unsafe HTML/links, lesson editor and mobile layout.');
+  } finally { await browser.close(); }
+})().catch(error=>{console.error(error);process.exit(1);});

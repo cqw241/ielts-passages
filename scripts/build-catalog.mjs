@@ -15,7 +15,7 @@ const lessons=manifest.lessons.map(entry=>{
   const lesson=context.window.LESSON;
   for(const file of ['index.html','lesson-notes.js',entry.image])if(!fs.existsSync(path.join(root,entry.folder,file)))throw new Error('Missing lesson file: '+file);
   const lessonHTML=fs.readFileSync(path.join(root,entry.folder,'index.html'),'utf8');
-  for(const asset of ['course-data.js','course-vocabulary.js','vocabulary-learning.js','vocabulary-learning-ui.js','wordbook-store.js','lesson.js','wordbook.js','wordbook.css'])if(!lessonHTML.includes('../assets/'+asset))throw new Error(`Lesson ${entry.folder} must include shared asset ${asset}`);
+  for(const asset of ['course-data.js','course-vocabulary.js','vocabulary-learning.js','vocabulary-learning-ui.js','wordbook-store.js','lesson.js','markdown-it.min.js','wordbook-markdown.js','wordbook.js','wordbook.css'])if(!lessonHTML.includes('../assets/'+asset))throw new Error(`Lesson ${entry.folder} must include shared asset ${asset}`);
   return {...entry,title:lesson.title,day:lesson.day,date:lesson.date,topic:lesson.topic,sourceFile:lesson.sourceFile};
 }).sort((a,b)=>a.day-b.day);
 fs.writeFileSync(path.join(root,'assets/course-data.js'),'window.COURSE = '+JSON.stringify({lessons},null,2)+';\n');
@@ -58,6 +58,8 @@ const html=`<!doctype html>
 <script defer src="assets/course-vocabulary.js"></script>
 <script defer src="assets/vocabulary-learning.js"></script>
 <script defer src="assets/wordbook-store.js"></script>
+<script defer src="assets/markdown-it.min.js"></script>
+<script defer src="assets/wordbook-markdown.js"></script>
 <script defer src="assets/vocabulary-learning-ui.js"></script>
 <script defer src="assets/wordbook.js"></script>
 </head>

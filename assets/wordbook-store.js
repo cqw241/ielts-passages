@@ -134,7 +134,14 @@
   }
   function mergeEntry(target, incoming) {
     target.sources = combineSources(target.sources, incoming.sources, kind(target));
-    for (const field of ['definition', 'note', 'ipa']) if (!target[field] && !target.edited[field]) { target[field] = incoming[field]; if (field === 'definition') target.definitionAttribution = incoming.definitionAttribution; }
+    for (const field of ['definition', 'note', 'ipa']) if (!target[field] && !target.edited[field]) {
+      target[field] = incoming[field];
+      if (field === 'definition') {
+        target.definitionAttribution = incoming.definitionAttribution;
+        target.edited.definition = incoming.edited.definition;
+        if (typeof incoming.edited.definitionMarkdown === 'boolean') target.edited.definitionMarkdown = incoming.edited.definitionMarkdown;
+      }
+    }
     if (!target.candidates.length) target.candidates = incoming.candidates;
     if (!target.attribution && incoming.attribution) target.attribution = incoming.attribution;
     if (kind(target) === 'word' && incoming.learning && meaningKey(target.definition) === meaningKey(incoming.definition)) {
@@ -161,10 +168,12 @@
         if (k !== e.key) { e.candidates = []; e.dictionaryStatus = fresh.dictionaryStatus; e.ipa = ''; }
         e.term = text; e.key = k; e.edited.term = true;
       }
+      if (changes.definitionSource === 'dictionary') e.edited.definitionMarkdown = false;
+      else if (changes.definitionSource === 'personal' || changes.definition !== undefined && clean(changes.definition) !== e.definition) e.edited.definitionMarkdown = true;
       for (const field of ['definition', 'note']) if (changes[field] !== undefined) { e[field] = clean(changes[field]); e.edited[field] = true; }
       if (changes.definitionSource === 'dictionary') e.definitionAttribution = e.attribution;
       if (changes.sense !== undefined) {
-        const candidate = e.candidates[changes.sense]; if (candidate) { e.definition = candidate.definition; e.edited.definition = true; e.definitionAttribution = e.attribution; }
+        const candidate = e.candidates[changes.sense]; if (candidate) { e.definition = candidate.definition; e.edited.definition = true; e.edited.definitionMarkdown = false; e.definitionAttribution = e.attribution; }
       }
       e.updatedAt = Date.now();
       const other = data.entries.find(x => x.id !== e.id && matches(x, e.key, kind(e)));
@@ -236,6 +245,7 @@
       e.sources = combineSources([], raw.sources.map(s => validSource(s, kind(e))).filter(Boolean), kind(e));
       e.definition = clean(raw.definition); e.note = clean(raw.note); e.ipa = clean(raw.ipa, 200);
       e.edited = { term: !!raw.edited?.term, definition: !!raw.edited?.definition, note: !!raw.edited?.note };
+      if (typeof raw.edited?.definitionMarkdown === 'boolean') e.edited.definitionMarkdown = raw.edited.definitionMarkdown;
       e.candidates = (Array.isArray(raw.candidates) ? raw.candidates : []).slice(0, 40).filter(c => typeof c?.definition === 'string').map(c => ({ definition: clean(c.definition), partOfSpeech: clean(c.partOfSpeech, 120) }));
       e.attribution = raw.attribution ? attribution(raw.attribution) : null;
       e.definitionAttribution = raw.definitionAttribution ? attribution(raw.definitionAttribution) : null;
