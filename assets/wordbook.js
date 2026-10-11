@@ -173,7 +173,8 @@
     const form=event.target.closest('#wb-edit-form'), warning=form?.querySelector('#wb-learning-reset');
     if(!warning)return;
     const entry=W.get(editing),fields=new FormData(form);
-    warning.textContent=W.changesLearning(entry,{term:fields.get('term'),definition:fields.get('definition')})?'Saving this change will clear Recognition and Production history and restart both schedules.':'';
+    const source=form.querySelector('[name="definition"]').dataset.fromDictionary;
+    warning.textContent=W.changesLearning(entry,{term:fields.get('term'),definition:fields.get('definition'),definitionSource:source==='true'?'dictionary':source==='false'?'personal':undefined})?'Saving this change will clear Recognition and Production history and restart both schedules.':'';
   });
   document.addEventListener('submit', event => {
     if (!['wb-edit-form', 'wb-add-form'].includes(event.target.id)) return;
@@ -185,7 +186,7 @@
         const old = W.get(editing), changed = old && W.normalize(old.term) !== W.normalize(fields.get('term'));
         const source = event.target.querySelector('[name="definition"]').dataset.fromDictionary;
         const id = W.update(editing, { term: fields.has('term') ? fields.get('term') : undefined, definition: fields.get('definition'), note: fields.get('note'), definitionSource: source === 'true' ? 'dictionary' : source === 'false' ? 'personal' : undefined });
-        const reset=W.changesLearning(old,{term:fields.has('term')?fields.get('term'):undefined,definition:fields.get('definition')});
+        const reset=W.changesLearning(old,{term:fields.has('term')?fields.get('term'):undefined,definition:fields.get('definition'),definitionSource:source==='true'?'dictionary':source==='false'?'personal':undefined});
         close(); notify(reset?'Saved. Both review tracks restarted.':'Changes saved.', id);
         if (changed && W.kind(old) === 'word') W.lookup(id);
       }
