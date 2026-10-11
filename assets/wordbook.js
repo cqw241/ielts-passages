@@ -4,6 +4,18 @@
   const root = document.querySelector('#wordbook-main');
   const base = window.LESSON ? '../' : '';
   const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+  const M = window.WordbookMarkdown;
+  const markdownHint = '<p id="wb-markdown-help" class="subtle wb-edit-hint">Markdown: **bold**, *italic*, lists, &gt; quotes, `code` and [links](https://example.com). Use Preview before saving.</p>';
+  function markdownField(name, label, value, rows, placeholder) {
+    return `<div class="wb-field wb-markdown-field"><div class="wb-field-header"><label for="wb-edit-${name}">${label}</label><button class="text-button" type="button" data-wb="preview" data-field="${name}" aria-label="Preview: ${label}" aria-controls="wb-preview-${name}" aria-expanded="false">Preview</button></div><textarea id="wb-edit-${name}" name="${name}" rows="${rows}" maxlength="3000" placeholder="${placeholder}" aria-describedby="wb-markdown-help">${esc(value)}</textarea><div id="wb-preview-${name}" class="wb-markdown wb-preview" role="region" aria-label="${label} preview" hidden></div></div>`;
+  }
+  function refreshPreview(field) {
+    const preview = body.querySelector(`#wb-preview-${field.name}`);
+    if (!preview || preview.hidden) return;
+    const entry = W.get(editing);
+    const plainMeaning = field.name === 'definition' && (field.dataset.fromDictionary === 'true' || field.dataset.fromDictionary !== 'false' && entry && field.value === entry.definition && !M.isPersonalDefinition(entry));
+    preview.innerHTML = field.value.trim() ? (plainMeaning ? esc(field.value).replace(/\n/g, '<br>') : M.render(field.value)) : '<p class="subtle">Nothing to preview yet.</p>';
+  }
   const sound = '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4zM17 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></svg>';
   let editing = null, undo = null, selection = null, lastFocus;
   let collectionType = location.hash === '#sentences' ? 'sentence' : 'word';
@@ -45,10 +57,10 @@
   function row(e) {
     if (W.kind(e) === 'sentence') return sentenceRow(e);
     const s = e.sources[0];
-    return `<article class="wb-row" data-entry="${esc(e.id)}"><div class="wb-word"><div class="wb-word-title"><button data-wb="edit" data-id="${esc(e.id)}">${esc(e.term)}</button><button class="icon-button" data-wb="speak" data-id="${esc(e.id)}" aria-label="Read aloud: ${esc(e.term)}">${sound}</button></div>${e.ipa ? `<p class="ipa">${esc(e.ipa)}</p>` : ''}<span class="wb-status ${e.definition ? '' : 'needs-meaning'}">${statusText(e)}</span><p class="wb-meaning">${esc(e.definition || (e.dictionaryStatus === 'pending' ? 'Looking up dictionary meanings…' : e.candidates.length ? 'Choose a meaning for this context.' : 'Add a meaning or retry the dictionary.'))}</p>${e.note ? `<p class="wb-note">${esc(e.note)}</p>` : ''}<div class="wb-row-actions"><button class="text-button" data-wb="edit" data-id="${esc(e.id)}">Edit entry</button><button class="text-button" data-wb="delete" data-id="${esc(e.id)}">Delete</button></div>${window.VocabularyLearningUI.entryControl(e)}${attributionHTML(e)}</div><div class="wb-contexts">${s ? sourceHTML(s) : '<div class="wb-context wb-manual"><p>Added manually.</p></div>'}${e.sources.length > 1 ? `<details><summary>${e.sources.length - 1} more saved context${e.sources.length > 2 ? 's' : ''}</summary>${e.sources.slice(1).map(sourceHTML).join('')}</details>` : ''}</div></article>`;
+    return `<article class="wb-row" data-entry="${esc(e.id)}"><div class="wb-word"><div class="wb-word-title"><button data-wb="edit" data-id="${esc(e.id)}">${esc(e.term)}</button><button class="icon-button" data-wb="speak" data-id="${esc(e.id)}" aria-label="Read aloud: ${esc(e.term)}">${sound}</button></div>${e.ipa ? `<p class="ipa">${esc(e.ipa)}</p>` : ''}<span class="wb-status ${e.definition ? '' : 'needs-meaning'}">${statusText(e)}</span><div class="wb-meaning wb-markdown">${e.definition ? M.definition(e) : esc( (e.dictionaryStatus === 'pending' ? 'Looking up dictionary meanings…' : e.candidates.length ? 'Choose a meaning for this context.' : 'Add a meaning or retry the dictionary.'))}</div>${e.note ? `<div class="wb-note wb-markdown">${M.render(e.note)}</div>` : ''}<div class="wb-row-actions"><button class="text-button" data-wb="edit" data-id="${esc(e.id)}">Edit entry</button><button class="text-button" data-wb="delete" data-id="${esc(e.id)}">Delete</button></div>${window.VocabularyLearningUI.entryControl(e)}${attributionHTML(e)}</div><div class="wb-contexts">${s ? sourceHTML(s) : '<div class="wb-context wb-manual"><p>Added manually.</p></div>'}${e.sources.length > 1 ? `<details><summary>${e.sources.length - 1} more saved context${e.sources.length > 2 ? 's' : ''}</summary>${e.sources.slice(1).map(sourceHTML).join('')}</details>` : ''}</div></article>`;
   }
   function sentenceRow(e) {
-    return `<article class="wb-row wb-sentence-row" data-entry="${esc(e.id)}"><div><p class="eyebrow">SAVED SENTENCE</p><blockquote class="wb-sentence-text">${esc(e.term)}</blockquote><div class="wb-row-actions"><button class="text-button" data-wb="edit" data-id="${esc(e.id)}">Edit notes</button><button class="text-button" data-wb="delete" data-id="${esc(e.id)}">Delete</button><button class="icon-button" data-wb="speak" data-id="${esc(e.id)}" aria-label="Read saved sentence aloud">${sound}</button></div>${e.definition ? `<div class="wb-sentence-note"><p class="eyebrow">YOUR UNDERSTANDING</p><p>${esc(e.definition)}</p></div>` : ''}${e.note ? `<div class="wb-sentence-note"><p class="eyebrow">YOUR NOTE</p><p>${esc(e.note)}</p></div>` : ''}${!e.definition && !e.note ? '<p class="subtle wb-sentence-hint">Add your understanding or a note.</p>' : ''}</div><aside class="wb-contexts" aria-label="Sentence sources">${e.sources.length ? `<p class="eyebrow">FROM YOUR READING</p>${e.sources.map(s => { const lesson = W.lessons.find(l => l.folder === s.folder); return `<div class="wb-sentence-source"><p>${esc(lesson.title)}</p><a class="wb-source" href="${base}${lesson.folder}/index.html#${esc(s.location)}">Day ${lesson.day} · ${esc(s.label)} ↗</a>${s.quote && s.quote !== e.term ? `<details><summary>Surrounding context</summary><blockquote>${esc(s.quote)}</blockquote></details>` : ''}</div>`; }).join('')}` : '<p class="subtle">Added manually.</p>'}</aside></article>`;
+    return `<article class="wb-row wb-sentence-row" data-entry="${esc(e.id)}"><div><p class="eyebrow">SAVED SENTENCE</p><blockquote class="wb-sentence-text">${esc(e.term)}</blockquote><div class="wb-row-actions"><button class="text-button" data-wb="edit" data-id="${esc(e.id)}">Edit notes</button><button class="text-button" data-wb="delete" data-id="${esc(e.id)}">Delete</button><button class="icon-button" data-wb="speak" data-id="${esc(e.id)}" aria-label="Read saved sentence aloud">${sound}</button></div>${e.definition ? `<div class="wb-sentence-note"><p class="eyebrow">YOUR UNDERSTANDING</p><div class="wb-markdown">${M.definition(e)}</div></div>` : ''}${e.note ? `<div class="wb-sentence-note"><p class="eyebrow">YOUR NOTE</p><div class="wb-markdown">${M.render(e.note)}</div></div>` : ''}${!e.definition && !e.note ? '<p class="subtle wb-sentence-hint">Add your understanding or a note.</p>' : ''}</div><aside class="wb-contexts" aria-label="Sentence sources">${e.sources.length ? `<p class="eyebrow">FROM YOUR READING</p>${e.sources.map(s => { const lesson = W.lessons.find(l => l.folder === s.folder); return `<div class="wb-sentence-source"><p>${esc(lesson.title)}</p><a class="wb-source" href="${base}${lesson.folder}/index.html#${esc(s.location)}">Day ${lesson.day} · ${esc(s.label)} ↗</a>${s.quote && s.quote !== e.term ? `<details><summary>Surrounding context</summary><blockquote>${esc(s.quote)}</blockquote></details>` : ''}</div>`; }).join('')}` : '<p class="subtle">Added manually.</p>'}</aside></article>`;
   }
   function render() {
     const all = W.read().entries;
@@ -85,10 +97,10 @@
     const e = W.get(id); if (!e) { notify('This entry no longer exists.'); return; }
     editing = id;
     if (W.kind(e) === 'sentence') {
-      open('Your saved sentence', `<form id="wb-edit-form"><p class="eyebrow">ORIGINAL SENTENCE</p><blockquote class="wb-sentence-text wb-editor-sentence">${esc(e.term)}</blockquote><label class="wb-field">Your understanding<textarea name="definition" rows="3" maxlength="3000" placeholder="Explain the sentence in your own English.">${esc(e.definition)}</textarea></label><label class="wb-field">Your note<textarea name="note" rows="3" maxlength="3000" placeholder="What made this sentence difficult? What would you like to remember?">${esc(e.note)}</textarea></label><div class="wb-form-actions"><button class="button primary" type="submit">Save changes</button><button class="text-button" type="button" data-wb="close">Cancel</button><button class="icon-button" type="button" data-wb="speak" data-id="${esc(e.id)}" aria-label="Read saved sentence aloud">${sound}</button></div><p id="wb-form-error" role="alert"></p></form>${e.sources.length ? `<div class="wb-editor-contexts"><p class="eyebrow">YOUR ORIGINAL CONTEXT</p>${e.sources.map(sourceHTML).join('')}</div>` : ''}`);
+      open('Your saved sentence', `<form id="wb-edit-form"><p class="eyebrow">ORIGINAL SENTENCE</p><blockquote class="wb-sentence-text wb-editor-sentence">${esc(e.term)}</blockquote>${markdownHint}${markdownField("definition", "Your understanding", e.definition, 3, "Explain the sentence in your own English.")}${markdownField("note", "Your note", e.note, 3, "What made this sentence difficult? What would you like to remember?")}<div class="wb-form-actions"><button class="button primary" type="submit">Save changes</button><button class="text-button" type="button" data-wb="close">Cancel</button><button class="icon-button" type="button" data-wb="speak" data-id="${esc(e.id)}" aria-label="Read saved sentence aloud">${sound}</button></div><p id="wb-form-error" role="alert"></p></form>${e.sources.length ? `<div class="wb-editor-contexts"><p class="eyebrow">YOUR ORIGINAL CONTEXT</p>${e.sources.map(sourceHTML).join('')}</div>` : ''}`);
       return;
     }
-    open('Edit wordbook entry', `<form id="wb-edit-form"><label class="wb-field">Word or phrase<input name="term" value="${esc(e.term)}" maxlength="100" required autocomplete="off"></label><p id="wb-learning-reset" class="learning-hint" role="status"></p><label class="wb-field">Meaning in this context<textarea name="definition" rows="3" maxlength="3000" placeholder="Choose a dictionary sense below, or write your own English meaning.">${esc(e.definition)}</textarea></label><label class="wb-field">Your note<textarea name="note" rows="2" maxlength="3000" placeholder="A collocation, memory clue or example of your own.">${esc(e.note)}</textarea></label><div class="wb-form-actions"><button class="button primary" type="submit">Save changes</button><button class="text-button" type="button" data-wb="close">Cancel</button><button class="icon-button" type="button" data-wb="speak" data-id="${esc(e.id)}" aria-label="Read aloud: ${esc(e.term)}">${sound}</button></div><p id="wb-form-error" role="alert"></p></form><details class="wb-dictionary" open><summary>Dictionary meanings ${esc(e.ipa)}</summary><div id="wb-candidates">${candidatesHTML(e)}</div></details>${e.sources.length ? `<div class="wb-editor-contexts"><p class="eyebrow">YOUR ORIGINAL CONTEXT${e.sources.length > 1 ? 'S' : ''}</p>${e.sources.map(sourceHTML).join('')}</div>` : ''}`);
+    open('Edit wordbook entry', `<form id="wb-edit-form"><label class="wb-field">Word or phrase<input name="term" value="${esc(e.term)}" maxlength="100" required autocomplete="off"></label><p id="wb-learning-reset" class="learning-hint" role="status"></p>${markdownHint}${markdownField("definition", "Meaning in this context", e.definition, 3, "Choose a dictionary sense below, or write your own English meaning.")}${markdownField("note", "Your note", e.note, 2, "A collocation, memory clue or example of your own.")}<div class="wb-form-actions"><button class="button primary" type="submit">Save changes</button><button class="text-button" type="button" data-wb="close">Cancel</button><button class="icon-button" type="button" data-wb="speak" data-id="${esc(e.id)}" aria-label="Read aloud: ${esc(e.term)}">${sound}</button></div><p id="wb-form-error" role="alert"></p></form><details class="wb-dictionary" open><summary>Dictionary meanings ${esc(e.ipa)}</summary><div id="wb-candidates">${candidatesHTML(e)}</div></details>${e.sources.length ? `<div class="wb-editor-contexts"><p class="eyebrow">YOUR ORIGINAL CONTEXT${e.sources.length > 1 ? 'S' : ''}</p>${e.sources.map(sourceHTML).join('')}</div>` : ''}`);
   }
   function addDialog() {
     editing = null;
@@ -122,6 +134,16 @@
       else if (action === 'tab') activateTab(button.dataset.kind);
       else if (action === 'add') addDialog();
       else if (action === 'edit') edit(id);
+      else if (action === 'preview') {
+        const field = body.querySelector(`[name="${button.dataset.field}"]`), preview = body.querySelector(`#wb-preview-${button.dataset.field}`);
+        const show = preview.hidden;
+        field.hidden = show; preview.hidden = !show;
+        button.textContent = show ? 'Edit' : 'Preview';
+        button.setAttribute('aria-label', `${show ? 'Edit' : 'Preview'}: ${body.querySelector(`label[for="${field.id}"]`).textContent}`);
+        button.setAttribute('aria-expanded', String(show));
+        refreshPreview(field);
+        if (!show) field.focus();
+      }
       else if (action === 'speak') speak(id);
       else if (action === 'delete') { undo = W.remove(id); notify('Entry deleted from your wordbook.', null, true); }
       else if (action === 'undo') { W.restore(undo); undo = null; notify('Entry restored.'); }
@@ -144,6 +166,10 @@
     } catch (error) { notify(error.message); }
   });
   document.addEventListener('input', event => {
+    if (event.target.matches('#wb-edit-form textarea')) {
+      if (event.isTrusted && event.target.name === 'definition') event.target.dataset.fromDictionary = 'false';
+      refreshPreview(event.target);
+    }
     const form=event.target.closest('#wb-edit-form'), warning=form?.querySelector('#wb-learning-reset');
     if(!warning)return;
     const entry=W.get(editing),fields=new FormData(form);
@@ -157,7 +183,8 @@
       if (event.target.id === 'wb-add-form') { const id = event.target.dataset.kind === 'sentence' ? W.addSentence(fields.get('term')) : W.add(fields.get('term')); edit(id); }
       else {
         const old = W.get(editing), changed = old && W.normalize(old.term) !== W.normalize(fields.get('term'));
-        const id = W.update(editing, { term: fields.has('term') ? fields.get('term') : undefined, definition: fields.get('definition'), note: fields.get('note'), definitionSource: event.target.querySelector('[name="definition"]').dataset.fromDictionary === 'true' ? 'dictionary' : undefined });
+        const source = event.target.querySelector('[name="definition"]').dataset.fromDictionary;
+        const id = W.update(editing, { term: fields.has('term') ? fields.get('term') : undefined, definition: fields.get('definition'), note: fields.get('note'), definitionSource: source === 'true' ? 'dictionary' : source === 'false' ? 'personal' : undefined });
         const reset=W.changesLearning(old,{term:fields.has('term')?fields.get('term'):undefined,definition:fields.get('definition')});
         close(); notify(reset?'Saved. Both review tracks restarted.':'Changes saved.', id);
         if (changed && W.kind(old) === 'word') W.lookup(id);
