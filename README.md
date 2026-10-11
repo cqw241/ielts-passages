@@ -1,113 +1,64 @@
-# Passage · IELTS Reading
+# Passage
 
-An English-only illustrated learning website. Each lesson preserves its A–J article and vocabulary, grammar, reading, writing and speaking material. Responsive layouts support desktop and mobile browsers.
+**Read in context. Remember what matters. Use English naturally.**
 
-## Lessons
+Passage is a lightweight, browser-based English reading and vocabulary-learning website. Its primary goal is to build both **receptive vocabulary** (understanding expressions in context) and **productive vocabulary** (using them in your own writing and speech). IELTS-style practice and current-affairs reading support that goal.
 
-- [Day 1 · Working lives](26.9.6/index.html): employment measurement, job quality and policy trade-offs.
-- [Day 2 · Public health](26.9.7/index.html): maintaining a disease milestone through prevention, surveillance and accessible services.
+**[Open Passage](https://cqw241.github.io/ielts-passages/)** · [Wordbook](https://cqw241.github.io/ielts-passages/wordbook.html) · [Today Review](https://cqw241.github.io/ielts-passages/review.html)
 
-- [Day 3 · A switch made of light](26.10.10/index.html): optogenetics, causal evidence and early vision trials. Includes 30 tiered expressions, three sentence analyses, ten reading questions and nine vocabulary tasks. Reading question 9 is self-checked against paragraph I and excluded from automatic scoring.
+## Features
 
-Open any lesson directly in a browser. The sidebar switches between lessons. No package installation is required. The root page is the shared course library.
+- **Illustrated reading lessons:** original explanatory articles, 30 vocabulary items, sentence analysis, reading questions, and language practice.
+- **Personal learning goals:** choose Active, Recognition, Already know, or Skip for each expression; recommendations never enrol words automatically.
+- **Two-track spaced repetition:** independent Recognition and Production progress, adaptive scheduling, and Again / Hard / Good / Easy self-assessment.
+- **Active output practice:** retrieve expressions, complete new contexts, rewrite sentences, and create your own examples.
+- **Wordbook and saved sentences:** preserve reading context, add English explanations and Markdown notes, and export/import JSON backups.
+- **Browser-first:** responsive static pages, no account or backend, and no package installation for the website.
 
-For a local preview, run `python -m http.server 8765 --bind 127.0.0.1` in this directory, then visit `http://127.0.0.1:8765/26.9.7/` or `http://127.0.0.1:8765/26.9.6/`.
+## Run locally
 
-## Content and shared presentation
+Use Node.js 22 (the version used for deployment) and a local HTTP server:
 
-- `assets/lesson.css` and `assets/lesson.js` contain shared styles, rendering and interactions.
-- `lessons.json` is the course registry; `scripts/build-catalog.mjs` generates the course home and shared navigation data.
-- Each lesson's `lesson-data.js` contains content extracted from its original Markdown source.
-- Each `lesson-notes.js` contains English explanations, comprehension checks, vocabulary glosses, grammar annotations and presentation configuration.
-- `scripts/extract-structured-lesson.mjs` supports the descriptive format introduced on 10 October, with variable reading, grammar and practice counts. It preserves source wording and integrates with the same vocabulary learning system. `scripts/verify-structured-lesson.cjs` covers the new format, self-check marking, original text, saves, source downloads and mobile layouts.
-- Day 2 uses reusable comparison panels, choice diagrams and a coverage illustration with hypothetical equally sized communities. These supplement the article without replacing its evidence or claiming that a percentage guarantees protection.
-- Build source data with `node scripts/build-lesson.mjs <folder>`, for example `node scripts/build-lesson.mjs 26.9.7`. The default remains Day 1. Reading question types and ranges come from the source's question-group headings. Review teaching notes after source changes.
-- Each lesson's `images/` contains optimized WebP assets. Original reference images remain untouched.
+```sh
+git clone https://github.com/cqw241/ielts-passages.git
+cd ielts-passages
+node scripts/build-site.mjs
+python3 -m http.server 8765 --bind 127.0.0.1
+```
 
-Reading progress, practice answers, writing drafts and speaking notes save to browser localStorage under separate lesson keys. Day 1 retains its original key. Bookmarks join the shared wordbook described below. Records differ between browsers and between file and HTTP access. My collection exports TXT study notes. Vocabulary audio uses browser speech synthesis and available voices.
+Open **http://127.0.0.1:8765/_site/**. The build generates the registered lessons and course catalog in `_site/`; no `npm install` is needed.
 
-## Shared wordbook
+## Project structure
 
-[Wordbook](wordbook.html) has **Words / Sentences** tabs for a shared collection across every lesson. Select learning text (including highlighted words, explanations, examples and writing drafts), then click **Add to wordbook** for a word or short phrase, or **Save sentence** for a sentence. The selection, context and a link to its lesson save immediately. Long selections offer the sentence action without truncating them into words. Existing vocabulary bookmarks from all registered lessons migrate once when any course page opens. My collection shows the current lesson's collection; home and lesson sidebars link to the shared wordbook.
+| Path | Purpose |
+| --- | --- |
+| `lessons.json` | Registry for the course library and navigation |
+| `26.*/*` | Lesson Markdown, page shell, teaching notes, and images |
+| `assets/lesson.*` | Shared reading interface |
+| `assets/wordbook*` | Wordbook, saved sentences, and Markdown notes |
+| `assets/vocabulary-learning*` | Review scheduling and learning UI |
+| `scripts/` | Lesson extraction, site builds, and verification |
+| `_site/` | Generated deployment output (not committed) |
 
-[Saved sentences](wordbook.html#sentences) retain their complete selected wording and punctuation, up to 3,000 characters, with lesson/paragraph links. The notes editor leaves the original sentence intact and lets you add **Your understanding** and **Your note** in English. Sentences can also be added manually. Search and lesson filtering work within each tab; a **Without notes** filter helps revisit sentences awaiting your notes. Read-aloud, delete and Undo reuse the existing controls. Duplicate sentences merge sources using case/whitespace matching; punctuation remains significant. Words and sentences are separate entry types, even if their text happens to match. Sentence collection does not query a dictionary or generate an explanation.
+## Add or publish a lesson
 
-Preset words use the lesson's English definition. Other words are queried through [FreeDictionaryAPI.com](https://freedictionaryapi.com/). Choose the dictionary sense that fits the sentence, or write an English meaning and note. The dictionary does not infer the correct contextual meaning. Some phrases have no entries; inflected forms may need manual editing to a base form. Changing the entry retains its original selected text and context. Lookup has a 15-second timeout, cached results and manual retry; unavailable or empty results never prevent saving. Pending lookups resume after reopening the page. Pronunciation uses browser speech synthesis and available English voices; IPA is displayed when supplied.
+1. Follow an existing lesson folder: add one source file named `26-MM-DD-Title.md`, an `index.html` page shell, `lesson-notes.js`, and any WebP illustrations.
+2. Register its `folder`, `shortTitle`, `summary`, and `image` in `lessons.json`.
+3. In `lesson-notes.js`, provide editorial `learningRecommendations` with a `goal` and `reason` for suggested Active and Recognition terms. Aim for 5–6 Active and 8–12 Recognition recommendations; learners choose whether to enrol.
+4. Run `node scripts/build-site.mjs`, preview `_site/`, and commit the lesson sources, registry, and regenerated lesson/catalog data.
 
-Entries deduplicate by case, surrounding punctuation and repeated whitespace, preserving separate word forms. Multiple contexts join the same entry. Removing a lesson bookmark unlinks that lesson; global deletion in Wordbook removes the entry and offers Undo. Today Review separates recognition from independent production, hides references until the attempt, and records Again / Hard / Good / Easy self-assessments with adaptive schedules.
+See [AGENTS.md](AGENTS.md) for development conventions. Pushes to `main` build and deploy the site to GitHub Pages via [GitHub Actions](.github/workflows/pages.yml).
 
-Wordbook uses the shared `passage-wordbook-v1` localStorage key at the current origin. Original lesson storage keys and unrelated progress/drafts are preserved. Existing untyped entries remain words; sentence entries have `kind: "sentence"`. JSON export version 3 includes both tabs, meanings/understanding, notes, full contexts, both learning schedules and answer histories, lesson progress/drafts, dictionary candidates and attribution. Import accepts Passage version 1, 2 and 3 JSON backups up to 5 MB / 10,000 entries, validates them before changing records, merges duplicate contexts within each type and preserves current edits. Duplicate review tracks use the schedule with the latest attempt; a current explicit goal wins over an imported goal. Lesson drafts restore only into empty browser records. No account sync or CSV export is included. Different browsers, local previews and the hosted site maintain separate collections.
+## Verification
 
-Dictionary data is from Wiktionary under CC BY-SA 4.0. Definition and candidate displays retain source/provider/license links, and JSON backups retain attribution and edit markers. Typed meanings remain distinct from dictionary-derived meanings. The API requires no key, supports browser CORS and permits 1,000 requests per hour per IP; empty results and failures show a path to editing or retrying.
-
-Implementation: `assets/wordbook-store.js` owns storage, migration, lookup and merging; `assets/wordbook.js` handles selection, editing, review and backup UI. `assets/wordbook.css` reuses the existing design tokens. `scripts/build-catalog.mjs` generates `assets/course-vocabulary.js`, enabling all-lesson migration without loading or fetching individual lesson pages.
-
-Personal meanings, sentence understanding and notes support **bold**, *italic*, ordered/unordered lists, quotes, inline code and links. The existing textareas offer **Preview / Edit** per field; previewing does not save. Original Markdown (including line breaks) stays in localStorage and JSON backups and returns when editing. Words, saved original sentences, article contexts, lesson definitions and dictionary choices retain their existing plain-text presentation. An optional `edited.definitionMarkdown` flag distinguishes typed meanings from selected dictionary meanings; backup versions and storage keys stay unchanged.
-
-`assets/wordbook-markdown.js` uses the local, unmodified `assets/markdown-it.min.js` browser bundle from [markdown-it 15.0.2](https://www.npmjs.com/package/markdown-it/v/15.0.2) (MIT; license in `assets/markdown-it.LICENSE.txt`). No CDN, parser plugins or editor dependencies are required. Raw HTML and images are disabled; links allow only HTTP, HTTPS, mailto and relative destinations that resolve to those protocols. Other user/source fields keep the existing escaping. If the parser cannot load, personal text falls back to escaped plain text. After replacing a vendor file from an official release, rerun `node scripts/verify-wordbook-markdown.cjs` with the browser environment below.
-
-For personal meanings, learning resets and backup merging compare visible text extracted from the same markdown-it tokens, with the existing case/whitespace normalisation. Formatting and link destination changes retain both review tracks; changing the visible meaning text or word still resets them. Today Review uses the extracted plain meaning/note before its existing masking and task generation, while raw Markdown remains editable and exportable. `node scripts/verify-markdown-review.cjs` checks existing histories/schedules, semantic changes, backup restore/merge and all review stages.
-
-Focused integration verification is in `scripts/verify-wordbook.cjs` and `scripts/verify-sentences.cjs`. With Playwright and Chrome available, run both scripts against a local server after building. Set `PLAYWRIGHT_MODULE` to the installed module path if it is outside this project, `CHROME_PATH` to an installed Chrome executable, and optionally `PASSAGE_TEST_URL` (default `http://127.0.0.1:8765/_site/`). Checks use isolated browser profiles and controlled dictionary responses; live dictionary connectivity is checked separately. Sentence checks cover long selections/full text, typed isolation, old and combined backups, notes, source merging, search, delete/Undo and keyboard tabs.
-
-## Long-term vocabulary learning (v2)
-
-The website remains native JavaScript with no framework, account or AI service. In every lesson, vocabulary cards offer **Active**, **Recognition**, **Already know** and **Skip**, with **Reading exposure** as the unselected default. The catalog uses explicit `learningRecommendations[wordId] = {goal, reason}` in each lesson's notes. The current lessons each suggest 6 Active and 10 Recognition expressions. Active choices prioritise reusable meanings, collocations and communicative value across topics; Recognition choices support article comprehension. Suggestions display their teaching reasons. Without editorial metadata, only Core Vocabulary receives Recognition suggestions; no positional or automatic Active fallback is used. The builder checks goals, reasons, known word IDs and the 5–6 / 8–12 recommendation ranges. Suggestions never enrol a word automatically. A term shares its chosen goal across lessons; its original contexts stay linked.
-
-- **Active** enables separate Recognition and Production tracks. **Recognition** enables the reading track. Already know, Skip and Reading exposure pause scheduling and preserve history.
-- [Today Review](review.html) prioritises weak/due tracks, then introduces at most 6 new words per local calendar day. At 20 due tasks, new words pause. Waiting words have no review date until their first rating. Starting a task counts against the daily new-word allowance, including abandoned attempts. Words without meanings remain editable in Wordbook and cannot enter the queue.
-- Again resets successful progress. Recognition retries in 10 minutes; independent Production retries after at least 1 day. Good uses 1, 3, 7, 14, 30 and 60 day steps; Hard reduces the interval; Easy advances faster. Ease and a capped late-success adjustment adapt intervals up to 120 days. All times are device-local; tracks update independently.
-- Production progresses from expression retrieval to a new-context gap, sentence rewriting and independent sentence writing. The pre-review queue shows counts only. Paired Production tasks run before Recognition. Expression-retrieval and gap targets remain hidden before reveal; rewriting and independent sentence tasks intentionally name their target. Displaying a Recognition target or any reference stores an answer-exposure timestamp. Production waits at least 24 hours after exposure, including ungraded exits, reloads and backup restores. A revealed task can still be self-rated using its current attempt; stale attempts cannot overwrite changes from another tab. Deferred tasks show their next availability. Lateness is measured against the protected availability time, so answer separation alone does not inflate late-review metrics. Good/Easy production ratings require a written attempt. References support self-assessment; natural language is never graded by string equality. Related-form examples may be overridden in `lesson-notes.js` under `training[wordId].example` to give a genuine new-context gap.
-- An established track needs two consecutive successful attempts and a 14+ day interval. Production additionally requires a successful independent sentence **after the latest Again**. Changing a word's normalised expression or meaning clears both tracks and keeps the goal and original contexts; case, spacing and note edits preserve progress. The editor explains this before saving. Reset timestamps prevent older backups from restoring pre-reset mastery, and different meanings do not share imported review histories. Already know is a learner choice and does not claim tested mastery. Delayed recall measures self-rated success on attempts 7+ days apart; late recall measures attempts 1+ day overdue. Both show sample counts, not inferred test scores.
-
-`assets/vocabulary-learning.js` contains pure scheduling, admission and metrics; `assets/wordbook-store.js` persists learning inside each word; `assets/vocabulary-learning-ui.js` shares goal selectors, the dashboard, history and review UI. The existing wordbook storage key remains in use, with new learning fields. Today Review is the only personal vocabulary review system. The fixed 20-word recall page, saved-word flashcards and textbook date-based review ledger have been removed from interactive pages, generated data, state handlers and study-note exports. Legacy recall fields are ignored when importing/exporting lesson progress. Original source Markdown stays archived unchanged, and the current lesson's 30 vocabulary exercises remain comprehension/application practice rather than a second personal scheduler. Previous words become Reading exposure until a goal is chosen. Sentence collection and lesson progress retain their original behavior and keys. Learning is local to each origin: export/import from Wordbook to move records between GitHub Pages, Cloudflare Pages or another browser.
-
-Build and verify:
-
-```powershell
+```sh
 node scripts/build-site.mjs
 node scripts/verify-learning.cjs
 node scripts/verify-learning-fixes.cjs
-# Start a local server separately: python -m http.server 8765 --bind 127.0.0.1
-# Set PLAYWRIGHT_MODULE and CHROME_PATH if needed, as described above.
-node scripts/verify-learning-browser.cjs --focused
-# Omit --focused for the full registered route / viewport matrix.
-node scripts/verify-wordbook.cjs
-node scripts/verify-sentences.cjs
 ```
 
-The focused browser check covers opt-in selection, hidden retrieval, all production stages, exposure deferral across exits/reloads/backups, independent updates, cross-tab changes and the affected desktop/mobile views. The full mode additionally checks all registered lesson/page/viewport combinations at 1440, 768 and 375px. Screenshots go to ignored `.preview/v2/`.
+Browser integration checks include `scripts/verify-wordbook.cjs`, `scripts/verify-sentences.cjs`, `scripts/verify-wordbook-markdown.cjs`, `scripts/verify-markdown-review.cjs`, and `scripts/verify-learning-browser.cjs --focused`. Run these against a local server with Playwright and Chrome/Chromium available; `PLAYWRIGHT_MODULE`, `CHROME_PATH`, and `PASSAGE_TEST_URL` can override the defaults.
 
-## Cloudflare Pages branch deployment
+## Data and acknowledgements
 
-GitHub Pages remains on `main`. Cloudflare **Pages** project `ielts-passages` connects this repository through the Git integration, with framework **None**, build command `node scripts/build-site.mjs`, output directory `_site` and root directory left blank. `main` is Cloudflare's production branch; `v2` deploys at [the stable v2 preview](https://v2.ielts-passages.pages.dev/). The separate Cloudflare origin keeps v2 learning records separate from the GitHub Pages origin. Each push to `v2` rebuilds the entire catalog and all registered lessons. The GitHub application is limited to this repository.
-
-After building locally, set `PASSAGE_TEST_URL` to the v2 preview URL and run `node scripts/verify-deployment.cjs` with the same Playwright/Chrome environment variables used for the other browser checks. It compares published learning assets with the local build after normalising Git checkout line endings and checks all registered articles, selection, both review tracks, persistence, backup download and mobile layout in an isolated browser.
-
-## Publishing and adding lessons
-
-Repository: https://github.com/cqw241/ielts-passages
-
-Course home: https://cqw241.github.io/ielts-passages/
-
-GitHub Pages deploys the verified `_site` artifact through `.github/workflows/pages.yml` on pushes to `main`. `node scripts/build-site.mjs` rebuilds all registered lessons and the library using Node.js built-ins. No package installation is needed. The deployment runs in a fresh checkout; `_site` is an ignored local build output. Only website assets and lesson-source Markdown downloads enter the deployed artifact.
-
-For each new lesson:
-
-1. Add its source Markdown, `index.html`, `lesson-notes.js`, and optimized WebP illustrations in its lesson folder. Name the source `26-MM-DD-Article Title.md`, for example `26.9.6/26-09-06-When More Jobs Are Only Part of the Story.md`. Reuse an existing lesson's stylesheet and script tags: lesson data/notes, `../assets/course-data.js`, `../assets/course-vocabulary.js`, `../assets/vocabulary-learning.js`, `../assets/wordbook-store.js`, `../assets/vocabulary-learning-ui.js`, `../assets/lesson.js`, then `../assets/wordbook.js`; include both lesson.css and wordbook.css. This keeps free selection, shared bookmarks and navigation available in new lessons.
-2. Prepare vocabulary recommendations in `lesson-notes.js` under `learningRecommendations`. Explicitly choose about 5–6 Active and 8–12 Recognition entries by word ID, each with an English `reason`. Prefer transferable expressions that learners can use in varied topics, with a concrete collocation or communicative purpose. Domain-specific terms can serve Recognition even when marked Core. Review examples for accurate meaning and grammatical form; provide `training[wordId].example` when the default example cannot form a genuine gap. Missing metadata never produces Active suggestions automatically. For example:
-
-   ```js
-   learningRecommendations: {
-     "21": {goal: "active", reason: "Use trade-off to weigh competing benefits and costs in decisions about work, health or education."},
-     "13": {goal: "recognition", reason: "Distinguish insufficient hours or use of skills from being unemployed."}
-   }
-   ```
-
-   Future courses must not generate fixed prior-word recall sets, date-based vocabulary ledgers, saved-word flashcards or another personal review route. Link to `../review.html` for personal vocabulary review. Keep reading comprehension, current-lesson language application, grammar, writing and speaking practice. The extractor skips archive-only `SPACED-REPETITION REVIEW` and `VOCABULARY REVIEW LEDGER` sections in older Markdown.
-3. Add a record to `lessons.json` with `folder`, `shortTitle`, `summary`, and a relative WebP `image`. Titles, dates and course days are extracted from lesson data. Keep learner-facing text in English.
-4. Run `node scripts/build-site.mjs`. The extractor reads question-group ranges and supports True/False/Not Given, Yes/No/Not Given, multiple choice, matching headings/information, summary/sentence completion and short answers. Extend it for other formats instead of forcing new source material into an unsuitable profile.
-5. Preview `_site/` under a local server and verify the library, lesson interactions, images and source downloads. Keep links relative so they work beneath `/ielts-passages/`.
-6. Commit the lesson, registry and generated catalog files, then push to `main`. Check the Pages workflow and live URLs. All lessons remain under the same course home.
-
-Original PNGs, DOCX files, archived content, planning notes, `.preview` files and `.playwright-cli` browser snapshots are excluded from Git. The course registry controls which lesson folders join the deployment. Existing browser-local records are retained at their original origin; the hosted site maintains its own study records.
+Learning records are stored in your **browser's localStorage**, separately for each browser and website origin. There is no account sync: use the Wordbook's **Export / Import JSON** controls to back up or transfer records. Dictionary lookup uses [FreeDictionaryAPI.com](https://freedictionaryapi.com/), with definitions sourced from Wiktionary (CC BY-SA 4.0). Markdown rendering uses [markdown-it](https://github.com/markdown-it/markdown-it), distributed under its [MIT license](assets/markdown-it.LICENSE.txt).
