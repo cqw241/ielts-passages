@@ -10,6 +10,14 @@ const base=(process.env.PASSAGE_TEST_URL||'http://127.0.0.1:8765/_site/').replac
   page.on('pageerror',e=>errors.push(page.url()+' '+e.stack));
   page.on('response',r=>{if(r.url().startsWith(base)&&r.status()>=400)missing.push(r.url());});
   await page.route('https://freedictionaryapi.com/**',r=>r.fulfill({json:{entries:[]}}));
+  async function compareAndRevise(answer) {
+   const input=page.locator('#review-answer'),draft=answer+' (draft)';
+   await input.fill(draft);await page.locator('[data-learning="reveal"]').click();
+   assert.equal(await input.inputValue(),draft,'Comparing preserves the original attempt');
+   assert.equal(await input.isEditable(),true,'The answer remains editable after comparing with the reference');
+   await input.fill(answer);
+   assert.ok(await page.locator('.review-reference').isVisible(),'The reference stays visible while revising');
+  }
   const initial=new Date('2026-10-08T10:00:00+08:00');await page.clock.install({time:initial});
   await page.goto(base+'26.9.6/index.html#vocabulary');
   assert.equal(await page.locator('[data-learning="status"]').count(),30);
@@ -28,9 +36,11 @@ const base=(process.env.PASSAGE_TEST_URL||'http://127.0.0.1:8765/_site/').replac
   assert.match(await page.locator('.review-card .eyebrow').first().innerText(),/PRODUCTION/);
   assert.equal(await page.locator('[data-learning="rate"]').count(),0,'Rate only after comparing');
   assert.ok(!(await page.locator('.review-card').innerText()).toLowerCase().includes('resilience'),'Retrieval hides target and context');
-  await page.locator('#review-answer').fill('resilience');await page.locator('[data-learning="reveal"]').click();await page.locator('[data-learning="rate"][data-rating="good"]').click();
+  await compareAndRevise('resilience');await page.locator('[data-learning="rate"][data-rating="good"]').click();
+  assert.equal(await page.evaluate(id=>Wordbook.get(id).learning.production.history.at(-1).answer,id),'resilience','Production history saves the revised answer');
   assert.match(await page.locator('.review-card .eyebrow').first().innerText(),/RECOGNITION/);
-  await page.locator('#review-answer').fill('The capacity to recover after a setback.');await page.locator('[data-learning="reveal"]').click();await page.locator('[data-learning="rate"][data-rating="good"]').click();
+  await compareAndRevise('The capacity to recover after a setback.');await page.locator('[data-learning="rate"][data-rating="good"]').click();
+  assert.equal(await page.evaluate(id=>Wordbook.get(id).learning.recognition.history.at(-1).answer,id),'The capacity to recover after a setback.','Recognition history saves the revised answer');
   const recognition=await page.evaluate(id=>JSON.stringify(Wordbook.get(id).learning.recognition),id);
   // Complete successive due production attempts. Recognition remains overdue and unchanged.
   for(const [days,step,answer] of [[1,1,'resilience'],[4,2,'resilience'],[11,3,'Local employers help the town recover, strengthening its resilience.'],[25,4,'Regular practice builds my resilience when a difficult task goes wrong.']]) {
@@ -38,8 +48,9 @@ const base=(process.env.PASSAGE_TEST_URL||'http://127.0.0.1:8765/_site/').replac
    await page.locator('#review-track').selectOption('production');await page.locator('[data-learning="start"]').click();
    assert.match(await page.locator('.review-card .eyebrow').first().innerText(),new RegExp(`STEP ${step}`));
    if(step===2)assert.match(await page.locator('.review-card blockquote').innerText(),/_____/,'New context contains a real gap');
-   await page.locator('#review-answer').fill(answer);await page.locator('[data-learning="reveal"]').click();
+   await compareAndRevise(answer);
    await page.locator('[data-learning="rate"][data-rating="good"]').click();
+   assert.equal(await page.evaluate(id=>Wordbook.get(id).learning.production.history.at(-1).answer,id),answer,`Stage ${step} saves the revised answer`);
    assert.equal(await page.evaluate(id=>JSON.stringify(Wordbook.get(id).learning.recognition),id),recognition);
   }
   assert.equal(await page.evaluate(id=>VocabularyLearning.mastered(Wordbook.get(id).learning.production,'production'),id),true);
