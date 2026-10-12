@@ -19,6 +19,8 @@ Personal meanings and notes support Markdown headings, tables, horizontal rules,
 
 The learning dashboard counts total/enrolled/meaning-needed/established words separately from due review tasks and distinct new words ready to start. Enrolled includes words without meanings. Established requires success in every enabled track. The 6-new-word limit applies to starts per local calendar day, never the size of your wordbook. Existing two-track schedules, 20-task backlog admission and Production's 24-hour exposure wait are unchanged. Empty review states explain missing meanings, unenrolled words, the daily limit, backlog capacity, other-track tasks and the next scheduled review, with links to the relevant Wordbook filters.
 
+New-word admission reserves 2 task slots per word within a 20-task capacity. With 19 backlog tasks, only 1 slot remains, so a new word cannot start; with 20, no slots remain. Complete existing reviews to free capacity. This capacity limit is separate from the daily 6-new-word limit.
+
 ## Run locally
 
 Use Node.js 22 (the version used for deployment) and a local HTTP server:

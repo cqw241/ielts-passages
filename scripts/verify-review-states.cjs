@@ -80,10 +80,25 @@ const base=(process.env.PASSAGE_TEST_URL||'http://127.0.0.1:8765/_site/').replac
   await page.locator('#review-track').selectOption('production');
   // All Production tasks remain available: the threshold pauses new words, never existing reviews.
   assert.match(await page.locator('[data-learning="start"]').innerText(),/Start 10 tasks/);
-  await seed([...Array.from({length:20},()=>({due:true,status:'recognition'})),{}]);
-  await page.locator('#review-track').selectOption('production');
-  assert.match(await reason('backlog').innerText(),/1 new word is waiting behind 20 existing review tasks/);
-  assert.match(await reason('track').innerText(),/20 tasks are ready in the other track/);
+  for(const backlog of [19,20]) {
+   await seed([...Array.from({length:backlog},()=>({due:true,status:'recognition'})),{}]);
+   assert.equal(await count('due'),String(backlog));assert.equal(await count('newWordsReady'),'0');
+   assert.match(await page.locator('.learning-banner').innerText(),new RegExp(`${20-backlog} free task slot.*within the 20-task capacity`),'Dashboard explains the actual remaining capacity');
+   await page.locator('#review-track').selectOption('production');
+   const text=await reason('backlog').innerText();
+   assert.ok(text.includes(`1 new word is waiting behind ${backlog} existing review tasks`));
+   assert.ok(text.includes(`${20-backlog} free task slot`));assert.ok(text.includes('Starting a new word requires 2 free task slots.'));
+   assert.ok(!text.includes('New words pause at 20 backlog tasks'),'Capacity shortage does not promise admission until 20');
+   assert.ok((await reason('track').innerText()).includes(`${backlog} tasks are ready in the other track`));
+   assert.equal(await page.locator('[data-learning="start"]').isDisabled(),true);
+   if(backlog===19) {
+    await page.setViewportSize({width:375,height:900});
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+    await page.screenshot({path:'.preview/review-states/capacity-19-mobile.png',fullPage:true});
+   }
+   await page.locator('[data-learning="all-tracks"]').click();
+   assert.match(await page.locator('[data-learning="start"]').innerText(),new RegExp(`Start ${backlog} tasks`),'Existing reviews stay available at either boundary');
+  }
   await seed([]);assert.equal(await page.locator('[data-learning="start"]').isDisabled(),true);
   assert.match(await page.locator('.wb-empty').innerText(),/No words saved yet/);
   assert.deepEqual(errors,[]);

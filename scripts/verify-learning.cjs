@@ -84,4 +84,13 @@ const capped=Array.from({length:8},(_,i)=>({id:String(i),definition:'Meaning',le
 for(const e of capped.slice(0,6)){e.learning.startedAt=now;e.learning.exposedAt=now;for(const n of V.tracks)e.learning[n]=V.schedule(e.learning[n],'good',now);}
 const capStats=V.stats(capped,now);assert.equal(capStats.totalWords,8);assert.equal(capStats.newWordsReady,0);assert.equal(capStats.blockedWords,2);
 assert.equal(capStats.futureTasks.recognition,6);assert.equal(capStats.nextByTrack.production,now+day);
+for(const backlog of [18,19,20]) {
+ const boundary=Array.from({length:backlog},(_,i)=>({id:String(i),definition:'Meaning',learning:{...V.fresh(),status:'recognition',startedAt:now-2*day,recognition:V.schedule(V.fresh().recognition,'good',now-2*day)}}));
+ boundary.push({id:'new-active',definition:'Meaning',learning:active()});
+ const s=V.stats(boundary,now);
+ assert.equal(s.backlog,backlog);assert.equal(s.newWordsReady,backlog===18?1:0);
+ assert.equal(s.blockedWords,backlog===18?0:1);assert.equal(s.items.length,backlog===18?20:backlog);
+ assert.equal(s.paused,backlog===20,'Keep the existing pause threshold while explaining insufficient capacity at 19');
+ assert.equal(s.items.filter(i=>i.id!=='new-active').length,backlog,'Capacity never removes existing reviews');
+}
 console.log('PASS: Active defaults, missing-meaning admission, preserved goals/migrations/imports, distinct word/task metrics, established criteria and daily-cap inventory.');
