@@ -27,6 +27,7 @@
     return value;
   }
   function enabled(learning, name) { return learning.status === 'active' || learning.status === 'recognition' && name === 'recognition'; }
+  const hasMeaning = entry => !!String(window.WordbookMarkdown?.definitionText(entry) ?? entry.definition ?? '').trim();
   function schedule(track, rating, now = Date.now(), answer = '', stage = 0, name = 'recognition') {
     if (!['again','hard','good','easy'].includes(rating)) throw new Error('Choose a review rating.');
     const next = { ...track, history: [...track.history] };
@@ -58,7 +59,7 @@
     return Math.max(learning[name].due ?? 0, name === 'production' && exposure ? exposure + DAY : 0);
   }
   function queue(entries, now = Date.now(), ignoreExposure = false) {
-    const words = entries.filter(e => e.kind !== 'sentence' && e.definition && e.learning);
+    const words = entries.filter(e => e.kind !== 'sentence' && hasMeaning(e) && e.learning);
     const byId = new Map(words.map(e=>[e.id,e]));
     const due = [], waiting = [], deferred = [], startedToday = entries.filter(e => e.learning?.startedAt !== null && e.learning?.startedAt !== undefined && dateKey(e.learning.startedAt) === dateKey(now)).length;
     for (const entry of words) for (const name of tracks) {
@@ -84,16 +85,29 @@
     const productionIds = new Set(items.filter(i=>i.track==='production').map(i=>i.id));
     // Preserve weakness/overdue order within groups, but do paired production before recognition.
     items.sort((a,b)=>Number(a.track==='recognition' && productionIds.has(a.id))-Number(b.track==='recognition' && productionIds.has(b.id)));
-    return { items, due:due.length, waiting:waiting.length, deferred, paused:backlog>=20 || startedToday>=6, startedToday, blocked:waiting.filter(i=>!allowed.has(i.id)).length };
+    return { items, due:due.length, waiting:waiting.length, deferred, backlog, paused:backlog>=20 || startedToday>=6, startedToday, blocked:waiting.filter(i=>!allowed.has(i.id)).length };
   }
   function stats(entries, now = Date.now()) {
     const counts = { recognition:0, production:0, recognitionTotal:0, productionTotal:0, latePassed:0, lateTotal:0, delayedPassed:0, delayedTotal:0 };
-    for (const e of entries.filter(e=>e.kind!=='sentence' && e.learning)) for (const name of tracks) {
+    const words = entries.filter(e=>e.kind!=='sentence' && e.learning), enrolled = words.filter(e=>enabled(e.learning,'recognition'));
+    const q = queue(entries,now), byId = new Map(words.map(e=>[e.id,e]));
+    const newIds = new Set(q.items.filter(i=>byId.get(i.id).learning.startedAt===null).map(i=>i.id));
+    const waitingWords = enrolled.filter(e=>hasMeaning(e) && e.learning.startedAt===null).length;
+    const nextByTrack = {recognition:null,production:null}, futureTasks = {recognition:0,production:0};
+    for (const e of words) for (const name of tracks) {
       const t=e.learning[name];
       if (enabled(e.learning,name)) { counts[name+'Total']++; if (mastered(t,name)) counts[name]++; }
+      const at=availableAt(e.learning,name);
+      if (enabled(e.learning,name) && hasMeaning(e) && at>now) {
+        futureTasks[name]++; nextByTrack[name]=Math.min(nextByTrack[name]??at,at);
+      }
       for (const h of t.history) { const passed=['good','easy'].includes(h.rating); if (h.lateDays>=1) { counts.lateTotal++; if(passed) counts.latePassed++; } if(h.gapDays>=7) { counts.delayedTotal++; if(passed) counts.delayedPassed++; } }
     }
-    return { ...counts, ...queue(entries,now) };
+    return { ...counts, ...q, totalWords:words.length, enrolledWords:enrolled.length,
+      missingWords:words.filter(e=>!hasMeaning(e)).length, enrolledMissing:enrolled.filter(e=>!hasMeaning(e)).length,
+      unenrolledWords:words.length-enrolled.length, newWordsReady:newIds.size, waitingWords, blockedWords:waitingWords-newIds.size,
+      masteredWords:enrolled.filter(e=>hasMeaning(e) && tracks.filter(n=>enabled(e.learning,n)).every(n=>mastered(e.learning[n],n))).length,
+      nextByTrack, futureTasks };
   }
-  window.VocabularyLearning = { DAY, INTERVALS, statuses, tracks, fresh, validate, enabled, schedule, stage, mastered, availableAt, queue, stats, dateKey };
+  window.VocabularyLearning = { DAY, INTERVALS, statuses, tracks, fresh, validate, enabled, hasMeaning, schedule, stage, mastered, availableAt, queue, stats, dateKey };
 })();

@@ -79,10 +79,10 @@
     if (type === 'word' && (!text || !/[A-Za-z]/.test(text) || text.split(' ').length > 12)) throw new Error('Choose an English word or a short phrase of up to 12 words.');
     return { id: uid(), kind: type, key: type === 'sentence' ? sentenceKey(text) : normalize(text), term: text, definition: '', ipa: '', note: '', edited: {}, candidates: [], attribution: null, definitionAttribution: null, dictionaryStatus: type === 'sentence' ? 'not-applicable' : 'missing', sources: [], createdAt: Date.now(), updatedAt: Date.now(), ...(type === 'word' ? {learning:V.fresh()} : {}) };
   }
-  function addTo(data, value, source, prepared, type = 'word') {
+  function addTo(data, value, source, prepared, type = 'word', status = 'active') {
     const fresh = create(value, type);
     let entry = data.entries.find(e => matches(e, fresh.key, type));
-    if (!entry) { entry = fresh; data.entries.push(entry); }
+    if (!entry) { entry = fresh; if (type === 'word') entry.learning.status = status; data.entries.push(entry); }
     const valid = validSource(source, type);
     if (valid) entry.sources = combineSources(entry.sources, [valid], type);
     if (prepared && !entry.definition && !entry.edited.definition) {
@@ -108,7 +108,7 @@
       let saved;
       try { saved = JSON.parse(localStorage.getItem(lesson.storageKey) || '{}').saved || []; if (!Array.isArray(saved)) continue; } catch { continue; }
       for (const word of lesson.words.filter(w => saved.map(String).includes(String(w.id)))) {
-        addTo(data, word.word, presetSource(lesson, word), { definition: word.definition, ipa: word.ipa });
+        addTo(data, word.word, presetSource(lesson, word), { definition: word.definition, ipa: word.ipa }, 'word', 'exposure');
       }
       data.migrated.push(lesson.folder); changed = true;
     }
