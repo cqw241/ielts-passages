@@ -28,13 +28,18 @@ const base = (process.env.PASSAGE_TEST_URL || 'http://127.0.0.1:8765/_site/').re
     await toggle('definition').click();
     assert.equal(await page.locator('#wb-preview-definition strong').innerText(),'literal','Typed text is personal even when matching a dictionary sense');
     await toggle('definition').click();
-    const raw='**A clear meaning** with *emphasis* and `inline code`.\n\n- First point\n- Second point\n\n1. First step\n2. Second step\n\n> A useful quote.\n\n[Read more](https://example.com/?a=1&b=2)';
+    const blocks='# Understanding the Entire Sentence\n\n## Sentence Breakdown\n\n| Part | Meaning |\n| :--- | :--- |\n| A short-term gain | An improvement observed over a relatively short period. |\n| Benchmark | The required standard. |\n\n---\n\n### A Simpler Rewrite\n\nSetext heading\n--------------';
+    const raw=blocks+'\n\n**A clear meaning** with *emphasis* and `inline code`.\n\n- First point\n- Second point\n\n1. First step\n2. Second step\n\n> A useful quote.\n\n[Read more](https://example.com/?a=1&b=2)';
     await meaning.fill(raw); // Manual edits after choosing a sense must become personal.
     await note.fill('*Remember* this expression.\nKeep the line break.');
     await toggle('definition').click();
     assert.equal(await meaning.isVisible(),false);
     const preview=page.locator('#wb-preview-definition');
-    for (const tag of ['strong','em','code','ul','ol','blockquote','a']) assert.ok(await preview.locator(tag).count(),tag);
+    for (const tag of ['h1','h2','h3','table','hr','strong','em','code','ul','ol','blockquote','a']) assert.ok(await preview.locator(tag).count(),tag);
+    assert.equal(await preview.locator('h1').innerText(),'Understanding the Entire Sentence');
+    assert.equal(await preview.locator('table th').count(),2);
+    assert.equal(await preview.locator('table td').count(),4);
+    assert.equal(await preview.locator('table td').first().innerText(),'A short-term gain');
     assert.equal(await toggle('definition').getAttribute('aria-expanded'),'true');
     assert.equal(await page.evaluate(id=>Wordbook.get(id).definition,id),'A **literal** dictionary meaning.','Preview does not save');
     await toggle('definition').click();
@@ -44,6 +49,7 @@ const base = (process.env.PASSAGE_TEST_URL || 'http://127.0.0.1:8765/_site/').re
     await page.locator('#wb-edit-form button[type="submit"]').click();
     assert.equal(await row.locator('.wb-meaning strong').innerText(),'A clear meaning');
     assert.equal(await row.locator('.wb-note em').innerText(),'Remember');
+    assert.equal(await row.locator('.wb-meaning table').count(),1,'Saved meaning renders its table');
     await page.reload();
     await row.locator('.wb-row-actions [data-wb="edit"]').click();
     assert.equal(await meaning.inputValue(),raw,'Reload/re-edit restores raw Markdown');
@@ -72,7 +78,7 @@ const base = (process.env.PASSAGE_TEST_URL || 'http://127.0.0.1:8765/_site/').re
     await sentenceRow.locator('[data-wb="edit"]').click();
     assert.equal(await page.locator('.wb-editor-sentence').innerText(),original);
     await meaning.fill('**My understanding**\n\n> Keep the distinction.');
-    await note.fill('A *personal note* with [a link](https://example.com).');
+    await note.fill(blocks+'\n\nA *personal note* with [a link](https://example.com).');
     await toggle('note').click();
     fs.mkdirSync('.preview/markdown',{recursive:true});
     await page.locator('#wb-dialog').screenshot({path:'.preview/markdown/desktop.png'});
@@ -80,6 +86,9 @@ const base = (process.env.PASSAGE_TEST_URL || 'http://127.0.0.1:8765/_site/').re
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
     assert.equal(await page.locator('#wb-dialog').evaluate(el=>el.scrollWidth>el.clientWidth),false);
     await page.locator('#wb-dialog').screenshot({path:'.preview/markdown/mobile.png'});
+    await page.locator('#wb-preview-note table').scrollIntoViewIfNeeded();
+    assert.equal(await page.locator('#wb-preview-note').evaluate(el=>el.scrollWidth>el.clientWidth),false,'Mobile table stays within the preview');
+    await page.locator('#wb-dialog').screenshot({path:'.preview/markdown/mobile-table.png'});
     await page.locator('#wb-edit-form button[type="submit"]').click();
     assert.equal(await sentenceRow.locator('.wb-sentence-text').innerText(),original);
     assert.equal(await sentenceRow.locator('.wb-sentence-text strong,.wb-sentence-text b,.wb-sentence-text code').count(),0);
