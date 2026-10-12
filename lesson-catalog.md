@@ -1,3 +1,39 @@
+## 26.10.12
+
+**Title:** The Numbers Are Equal. The Chances Are Not.
+**Topic:** Education, Gender Equality and Public Policy
+
+1. mask
+2. close the gap
+3. compound
+4. be entitled to
+5. fall through the cracks
+6. be tailored to
+7. gender parity
+8. completion rate
+9. stigma
+10. structural barriers
+11. disparity
+12. enrolment
+13. care responsibilities
+14. vulnerability
+15. financial constraints
+16. policy implementation
+17. on paper
+18. milestone
+19. headline figure
+20. uneven
+21. overlap
+22. a feedback loop
+23. re-enter
+24. legal protection
+25. transport costs
+26. opportunity costs
+27. a policy package
+28. second-chance pathways
+29. track progress
+30. translate ... into
+
 ## 26.10.10
 
 **Title:** A Switch Made of Light: When a Scientific Breakthrough Meets Patients
