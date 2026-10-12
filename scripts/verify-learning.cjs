@@ -54,3 +54,43 @@ const priorEntries=JSON.stringify(W.read().entries);assert.throws(()=>W.importBa
 const stats=V.stats([{...imported,learning:{...imported.learning,status:'active',recognition:t}}],now);
 assert.equal(stats.delayedTotal,1);assert.equal(stats.delayedPassed,1);assert.equal(stats.lateTotal,1);
 console.log('PASS: intervals, adaptive ratings, independent tracks, paused goals, daily limits, backlog, delayed metrics, backup validation and draft preservation.');
+// Defaults affect new interactive additions only; old goals/imports stay intact.
+records.clear();
+const manual=W.add('new word');assert.equal(W.get(manual).learning.status,'active');
+assert.equal(V.queue(W.read().entries,now).items.length,0,'Missing meanings block review, not enrollment');
+W.update(manual,{definition:'A new expression.'});
+assert.equal(V.queue(W.read().entries,now).items.length,2,'Adding a meaning enables both tracks');
+W.selectStatus(manual,'skip');W.add('new word');assert.equal(W.get(manual).learning.status,'skip','Saving again preserves the chosen goal');
+W.togglePreset(l.folder,l.words[1].id);
+assert.equal(W.learningFor(l.words[1].word).status,'active','New bookmarks default Active');
+records.clear();records.set(l.storageKey,JSON.stringify({saved:[l.words[0].id]}));W.migrate();
+assert.equal(W.learningFor(l.words[0].word).status,'exposure','Legacy bookmarks are not enrolled by migration');
+const legacy=JSON.parse(W.exportBackup());delete legacy.entries[0].learning;records.clear();W.importBackup(JSON.stringify(legacy));
+assert.equal(W.read().entries[0].learning.status,'exposure','Unclassified imports keep the legacy default');
+const active=()=>({...V.fresh(),status:'active'});
+const mixed=[
+ {id:'new',definition:'Meaning',learning:active()},
+ {id:'missing',definition:'  ',learning:active()},
+ {id:'paused',definition:'Meaning',learning:V.fresh()},
+ {id:'known',definition:'Meaning',learning:{...V.fresh(),status:'known'}},
+ {id:'mastered',definition:'Meaning',learning:{...active(),startedAt:now-day,recognition:t,production:t}},
+ {id:'sentence',kind:'sentence',definition:'Meaning'}
+];
+const totals=V.stats(mixed,now);
+assert.equal(totals.totalWords,5);assert.equal(totals.enrolledWords,3);assert.equal(totals.missingWords,1);
+assert.equal(totals.unenrolledWords,2);assert.equal(totals.newWordsReady,1,'Dual tracks count as one new word');
+assert.equal(totals.masteredWords,1,'All enabled tracks must meet mastery; Already know does not claim mastery');
+const capped=Array.from({length:8},(_,i)=>({id:String(i),definition:'Meaning',learning:active()}));
+for(const e of capped.slice(0,6)){e.learning.startedAt=now;e.learning.exposedAt=now;for(const n of V.tracks)e.learning[n]=V.schedule(e.learning[n],'good',now);}
+const capStats=V.stats(capped,now);assert.equal(capStats.totalWords,8);assert.equal(capStats.newWordsReady,0);assert.equal(capStats.blockedWords,2);
+assert.equal(capStats.futureTasks.recognition,6);assert.equal(capStats.nextByTrack.production,now+day);
+for(const backlog of [18,19,20]) {
+ const boundary=Array.from({length:backlog},(_,i)=>({id:String(i),definition:'Meaning',learning:{...V.fresh(),status:'recognition',startedAt:now-2*day,recognition:V.schedule(V.fresh().recognition,'good',now-2*day)}}));
+ boundary.push({id:'new-active',definition:'Meaning',learning:active()});
+ const s=V.stats(boundary,now);
+ assert.equal(s.backlog,backlog);assert.equal(s.newWordsReady,backlog===18?1:0);
+ assert.equal(s.blockedWords,backlog===18?0:1);assert.equal(s.items.length,backlog===18?20:backlog);
+ assert.equal(s.paused,backlog===20,'Keep the existing pause threshold while explaining insufficient capacity at 19');
+ assert.equal(s.items.filter(i=>i.id!=='new-active').length,backlog,'Capacity never removes existing reviews');
+}
+console.log('PASS: Active defaults, missing-meaning admission, preserved goals/migrations/imports, distinct word/task metrics, established criteria and daily-cap inventory.');

@@ -9,13 +9,17 @@ Passage is a lightweight, browser-based English reading and vocabulary-learning 
 ## Features
 
 - **Illustrated reading lessons:** original explanatory articles, 30 vocabulary items, sentence analysis, reading questions, and language practice.
-- **Personal learning goals:** choose Active, Recognition, Already know, or Skip for each expression; recommendations never enrol words automatically.
+- **Personal learning goals:** new saved or manually added words default to Active (Recognition + Production); add a meaning before review can start. Choose Recognition, Already know, Skip or Reading exposure as needed. Existing goals and imports keep their status; lesson recommendations alone never enrol words.
 - **Two-track spaced repetition:** independent Recognition and Production progress, adaptive scheduling, and Again / Hard / Good / Easy self-assessment.
 - **Active output practice:** retrieve expressions, complete new contexts, rewrite sentences, and create your own examples.
 - **Wordbook and saved sentences:** preserve reading context, add English explanations and Markdown notes, and export/import JSON backups.
 - **Browser-first:** responsive static pages, no account or backend, and no package installation for the website.
 
 Personal meanings and notes support Markdown headings, tables, horizontal rules, bold, italic, lists, quotes, inline code and links, with Preview / Edit controls. Raw HTML and images are disabled. Original Markdown stays editable and survives JSON backups; reviews use its plain text, and formatting-only edits preserve review progress.
+
+The learning dashboard counts total/enrolled/meaning-needed/established words separately from due review tasks and distinct new words ready to start. Enrolled includes words without meanings. Established requires success in every enabled track. The 6-new-word limit applies to starts per local calendar day, never the size of your wordbook. Existing two-track schedules, 20-task backlog admission and Production's 24-hour exposure wait are unchanged. Empty review states explain missing meanings, unenrolled words, the daily limit, backlog capacity, other-track tasks and the next scheduled review, with links to the relevant Wordbook filters.
+
+New-word admission reserves 2 task slots per word within a 20-task capacity. With 19 backlog tasks, only 1 slot remains, so a new word cannot start; with 20, no slots remain. Complete existing reviews to free capacity. This capacity limit is separate from the daily 6-new-word limit.
 
 ## Run locally
 
@@ -59,7 +63,7 @@ node scripts/verify-learning.cjs
 node scripts/verify-learning-fixes.cjs
 ```
 
-Browser integration checks include `scripts/verify-wordbook.cjs`, `scripts/verify-sentences.cjs`, `scripts/verify-wordbook-markdown.cjs`, `scripts/verify-markdown-review.cjs`, and `scripts/verify-learning-browser.cjs --focused`. Run these against a local server with Playwright and Chrome/Chromium available; `PLAYWRIGHT_MODULE`, `CHROME_PATH`, and `PASSAGE_TEST_URL` can override the defaults.
+Browser integration checks include `scripts/verify-wordbook.cjs`, `scripts/verify-sentences.cjs`, `scripts/verify-wordbook-markdown.cjs`, `scripts/verify-markdown-review.cjs`, `scripts/verify-review-states.cjs` (enrollment, counts and idle-state actions), and `scripts/verify-learning-browser.cjs --focused`. Run these against a local server with Playwright and Chrome/Chromium available; `PLAYWRIGHT_MODULE`, `CHROME_PATH`, and `PASSAGE_TEST_URL` can override the defaults.
 
 ## Data and acknowledgements
 

@@ -1,6 +1,7 @@
 (() => {
   'use strict';
   const W = window.Wordbook;
+  const V = window.VocabularyLearning;
   const root = document.querySelector('#wordbook-main');
   const base = window.LESSON ? '../' : '';
   const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
@@ -37,7 +38,7 @@
   }
   function close() { dialog.close(); editing = null; lastFocus?.focus?.({ preventScroll: true }); }
   dialog.addEventListener('cancel', () => { editing = null; });
-  const statusText = e => W.kind(e) === 'sentence' ? 'Saved sentence' : e.definition ? ({active:'Active · two tracks',recognition:'Recognition · reading track',known:'Already know · paused',skip:'Skip · paused',exposure:'Reading exposure'}[e.learning.status]) : 'Meaning needed';
+  const statusText = e => W.kind(e) === 'sentence' ? 'Saved sentence' : V.hasMeaning(e) ? ({active:'Active · two tracks',recognition:'Recognition · reading track',known:'Already know · paused',skip:'Skip · paused',exposure:'Reading exposure'}[e.learning.status]) : 'Meaning needed';
   function sourceHTML(s) {
     const lesson = W.lessons.find(l => l.folder === s.folder);
     if (!lesson) return '';
@@ -52,12 +53,12 @@
     const search = document.querySelector('#wb-search')?.value.toLowerCase().trim() || '';
     const folder = document.querySelector('#wb-lesson')?.value || '';
     const status = document.querySelector('#wb-status')?.value || '';
-    return W.read().entries.filter(e => W.kind(e) === collectionType && (!folder || e.sources.some(s => s.folder === folder)) && (!status || (status === 'missing' ? (collectionType === 'sentence' ? !e.definition && !e.note : !e.definition) : e.learning?.status === status)) && `${e.term} ${e.definition} ${e.note}`.toLowerCase().includes(search)).sort((a, b) => b.createdAt - a.createdAt);
+    return W.read().entries.filter(e => W.kind(e) === collectionType && (!folder || e.sources.some(s => s.folder === folder)) && (!status || (status === 'missing' ? (collectionType === 'sentence' ? !e.definition && !e.note : !V.hasMeaning(e)) : status === 'unenrolled' ? e.learning && !V.enabled(e.learning,'recognition') : e.learning?.status === status)) && `${e.term} ${e.definition} ${e.note}`.toLowerCase().includes(search)).sort((a, b) => b.createdAt - a.createdAt);
   }
   function row(e) {
     if (W.kind(e) === 'sentence') return sentenceRow(e);
     const s = e.sources[0];
-    return `<article class="wb-row" data-entry="${esc(e.id)}"><div class="wb-word"><div class="wb-word-title"><button data-wb="edit" data-id="${esc(e.id)}">${esc(e.term)}</button><button class="icon-button" data-wb="speak" data-id="${esc(e.id)}" aria-label="Read aloud: ${esc(e.term)}">${sound}</button></div>${e.ipa ? `<p class="ipa">${esc(e.ipa)}</p>` : ''}<span class="wb-status ${e.definition ? '' : 'needs-meaning'}">${statusText(e)}</span><div class="wb-meaning wb-markdown">${e.definition ? M.definition(e) : esc( (e.dictionaryStatus === 'pending' ? 'Looking up dictionary meanings…' : e.candidates.length ? 'Choose a meaning for this context.' : 'Add a meaning or retry the dictionary.'))}</div>${e.note ? `<div class="wb-note wb-markdown">${M.render(e.note)}</div>` : ''}<div class="wb-row-actions"><button class="text-button" data-wb="edit" data-id="${esc(e.id)}">Edit entry</button><button class="text-button" data-wb="delete" data-id="${esc(e.id)}">Delete</button></div>${window.VocabularyLearningUI.entryControl(e)}${attributionHTML(e)}</div><div class="wb-contexts">${s ? sourceHTML(s) : '<div class="wb-context wb-manual"><p>Added manually.</p></div>'}${e.sources.length > 1 ? `<details><summary>${e.sources.length - 1} more saved context${e.sources.length > 2 ? 's' : ''}</summary>${e.sources.slice(1).map(sourceHTML).join('')}</details>` : ''}</div></article>`;
+    return `<article class="wb-row" data-entry="${esc(e.id)}"><div class="wb-word"><div class="wb-word-title"><button data-wb="edit" data-id="${esc(e.id)}">${esc(e.term)}</button><button class="icon-button" data-wb="speak" data-id="${esc(e.id)}" aria-label="Read aloud: ${esc(e.term)}">${sound}</button></div>${e.ipa ? `<p class="ipa">${esc(e.ipa)}</p>` : ''}<span class="wb-status ${V.hasMeaning(e) ? '' : 'needs-meaning'}">${statusText(e)}</span><div class="wb-meaning wb-markdown">${V.hasMeaning(e) ? M.definition(e) : esc( (e.dictionaryStatus === 'pending' ? 'Looking up dictionary meanings…' : e.candidates.length ? 'Choose a meaning for this context.' : 'Add a meaning or retry the dictionary.'))}</div>${e.note ? `<div class="wb-note wb-markdown">${M.render(e.note)}</div>` : ''}<div class="wb-row-actions"><button class="text-button" data-wb="edit" data-id="${esc(e.id)}">Edit entry</button><button class="text-button" data-wb="delete" data-id="${esc(e.id)}">Delete</button></div>${window.VocabularyLearningUI.entryControl(e)}${attributionHTML(e)}</div><div class="wb-contexts">${s ? sourceHTML(s) : '<div class="wb-context wb-manual"><p>Added manually.</p></div>'}${e.sources.length > 1 ? `<details><summary>${e.sources.length - 1} more saved context${e.sources.length > 2 ? 's' : ''}</summary>${e.sources.slice(1).map(sourceHTML).join('')}</details>` : ''}</div></article>`;
   }
   function sentenceRow(e) {
     return `<article class="wb-row wb-sentence-row" data-entry="${esc(e.id)}"><div><p class="eyebrow">SAVED SENTENCE</p><blockquote class="wb-sentence-text">${esc(e.term)}</blockquote><div class="wb-row-actions"><button class="text-button" data-wb="edit" data-id="${esc(e.id)}">Edit notes</button><button class="text-button" data-wb="delete" data-id="${esc(e.id)}">Delete</button><button class="icon-button" data-wb="speak" data-id="${esc(e.id)}" aria-label="Read saved sentence aloud">${sound}</button></div>${e.definition ? `<div class="wb-sentence-note"><p class="eyebrow">YOUR UNDERSTANDING</p><div class="wb-markdown">${M.definition(e)}</div></div>` : ''}${e.note ? `<div class="wb-sentence-note"><p class="eyebrow">YOUR NOTE</p><div class="wb-markdown">${M.render(e.note)}</div></div>` : ''}${!e.definition && !e.note ? '<p class="subtle wb-sentence-hint">Add your understanding or a note.</p>' : ''}</div><aside class="wb-contexts" aria-label="Sentence sources">${e.sources.length ? `<p class="eyebrow">FROM YOUR READING</p>${e.sources.map(s => { const lesson = W.lessons.find(l => l.folder === s.folder); return `<div class="wb-sentence-source"><p>${esc(lesson.title)}</p><a class="wb-source" href="${base}${lesson.folder}/index.html#${esc(s.location)}">Day ${lesson.day} · ${esc(s.label)} ↗</a>${s.quote && s.quote !== e.term ? `<details><summary>Surrounding context</summary><blockquote>${esc(s.quote)}</blockquote></details>` : ''}</div>`; }).join('')}` : '<p class="subtle">Added manually.</p>'}</aside></article>`;
@@ -76,11 +77,11 @@
     document.querySelector('#wb-total-label').textContent = sentences ? 'saved sentences' : 'words & phrases';
     document.querySelector('#wb-again').parentElement.hidden = sentences;
     document.querySelector('#wb-again').textContent = entries.filter(e => ['active','recognition'].includes(e.learning?.status)).length;
-    document.querySelector('#wb-missing').textContent = entries.filter(e => sentences ? !e.definition && !e.note : !e.definition).length;
+    document.querySelector('#wb-missing').textContent = entries.filter(e => sentences ? !e.definition && !e.note : !V.hasMeaning(e)).length;
     document.querySelector('#wb-missing-label').textContent = sentences ? 'without notes' : 'need a meaning';
     document.querySelector('#wb-search').placeholder = sentences ? 'Search sentences, understanding or notes' : 'Search words, meanings or notes';
     document.querySelector('#wb-status option[value="missing"]').textContent = sentences ? 'Without notes' : 'Meaning needed';
-    for (const value of ['active','recognition','known','skip','exposure']) document.querySelector(`#wb-status option[value="${value}"]`).hidden = sentences;
+    for (const value of ['active','recognition','known','skip','exposure','unenrolled']) document.querySelector(`#wb-status option[value="${value}"]`).hidden = sentences;
     document.querySelector('[data-wb="recall"]').hidden = sentences;
     if (W.problem) document.querySelector('#wb-notice').textContent = W.problem;
     const list = filtered();
@@ -101,6 +102,7 @@
       return;
     }
     open('Edit wordbook entry', `<form id="wb-edit-form"><label class="wb-field">Word or phrase<input name="term" value="${esc(e.term)}" maxlength="100" required autocomplete="off"></label><p id="wb-learning-reset" class="learning-hint" role="status"></p>${markdownHint}${markdownField("definition", "Meaning in this context", e.definition, 3, "Choose a dictionary sense below, or write your own English meaning.")}${markdownField("note", "Your note", e.note, 2, "A collocation, memory clue or example of your own.")}<div class="wb-form-actions"><button class="button primary" type="submit">Save changes</button><button class="text-button" type="button" data-wb="close">Cancel</button><button class="icon-button" type="button" data-wb="speak" data-id="${esc(e.id)}" aria-label="Read aloud: ${esc(e.term)}">${sound}</button></div><p id="wb-form-error" role="alert"></p></form><details class="wb-dictionary" open><summary>Dictionary meanings ${esc(e.ipa)}</summary><div id="wb-candidates">${candidatesHTML(e)}</div></details>${e.sources.length ? `<div class="wb-editor-contexts"><p class="eyebrow">YOUR ORIGINAL CONTEXT${e.sources.length > 1 ? 'S' : ''}</p>${e.sources.map(sourceHTML).join('')}</div>` : ''}`);
+    if(V.enabled(e.learning,'recognition')&&!V.hasMeaning(e))body.querySelector('.wb-field').insertAdjacentHTML('afterend','<p class="learning-hint">Enrolled for review. Choose or write a meaning to begin.</p>');
   }
   function addDialog() {
     editing = null;
@@ -108,7 +110,7 @@
       open('Add a sentence', '<form id="wb-add-form" data-kind="sentence"><label class="wb-field">Sentence<textarea name="term" rows="4" maxlength="3000" required placeholder="Paste the complete sentence you want to keep."></textarea></label><div class="wb-form-actions"><button class="button primary" type="submit">Save sentence</button><button class="text-button" type="button" data-wb="close">Cancel</button></div><p id="wb-form-error" role="alert"></p></form>');
       return;
     }
-    open('Add a word or phrase', '<form id="wb-add-form"><label class="wb-field">Word or phrase<input name="term" placeholder="e.g. purchasing power" maxlength="100" required autocomplete="off"></label><p class="subtle">Add a meaning after saving.</p><div class="wb-form-actions"><button class="button primary" type="submit">Add to wordbook</button><button class="text-button" type="button" data-wb="close">Cancel</button></div><p id="wb-form-error" role="alert"></p></form>');
+    open('Add a word or phrase', '<form id="wb-add-form"><label class="wb-field">Word or phrase<input name="term" placeholder="e.g. purchasing power" maxlength="100" required autocomplete="off"></label><p class="subtle">New words join Active (Recognition + Production). Add a meaning after saving to begin learning, within the daily limit.</p><div class="wb-form-actions"><button class="button primary" type="submit">Add to wordbook</button><button class="text-button" type="button" data-wb="close">Cancel</button></div><p id="wb-form-error" role="alert"></p></form>');
   }
   function speak(id) {
     const e = W.get(id); if (!e) return;
@@ -161,7 +163,7 @@
         const sentenceSave = action === 'sentence-selection';
         const id = sentenceSave ? W.addSentence(saved.text, saved.source) : W.add(saved.term, saved.source);
         hideSelection(); window.getSelection()?.removeAllRanges();
-        notify(sentenceSave ? 'Sentence saved.' : 'Added to wordbook.', id);
+        notify(sentenceSave ? 'Sentence saved.' : V.enabled(W.get(id).learning,'recognition')&&!V.hasMeaning(W.get(id)) ? 'Saved for review. Add a meaning to start.' : 'Added to wordbook.', id);
       }
     } catch (error) { notify(error.message); }
   });
@@ -187,7 +189,8 @@
         const source = event.target.querySelector('[name="definition"]').dataset.fromDictionary;
         const id = W.update(editing, { term: fields.has('term') ? fields.get('term') : undefined, definition: fields.get('definition'), note: fields.get('note'), definitionSource: source === 'true' ? 'dictionary' : source === 'false' ? 'personal' : undefined });
         const reset=W.changesLearning(old,{term:fields.has('term')?fields.get('term'):undefined,definition:fields.get('definition'),definitionSource:source==='true'?'dictionary':source==='false'?'personal':undefined});
-        close(); notify(reset?'Saved. Both review tracks restarted.':'Changes saved.', id);
+        const entry=W.get(id), enrolled=W.kind(entry)==='word'&&V.enabled(entry.learning,'recognition');
+        close(); notify(enrolled&&!V.hasMeaning(entry)?'Saved for review. Add a meaning to start.':enrolled&&!V.hasMeaning(old)?'Meaning saved. This word can enter review within the daily limit.':reset?'Saved. Both review tracks restarted.':'Changes saved.', id);
         if (changed && W.kind(old) === 'word') W.lookup(id);
       }
     } catch (error) { document.querySelector('#wb-form-error').textContent = error.message; }
@@ -215,6 +218,9 @@
     W.lessons.forEach(l => folderSelect.insertAdjacentHTML('beforeend', `<option value="${esc(l.folder)}">Day ${l.day} · ${esc(l.title)}</option>`));
     folderSelect.value = new URLSearchParams(location.search).get('lesson') || '';
     if (folderSelect.selectedIndex < 0) folderSelect.value = '';
+    const statusSelect=document.querySelector('#wb-status');
+    statusSelect.value=new URLSearchParams(location.search).get('status')||'';
+    if(statusSelect.selectedIndex<0)statusSelect.value='';
     ['#wb-search', '#wb-lesson', '#wb-status'].forEach(s => document.querySelector(s).addEventListener('input', render));
     document.querySelector('#wb-import').addEventListener('change', async event => {
       const file = event.target.files[0]; if (!file) return;

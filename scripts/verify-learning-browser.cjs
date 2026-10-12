@@ -21,7 +21,7 @@ const base=(process.env.PASSAGE_TEST_URL||'http://127.0.0.1:8765/_site/').replac
   const id=await page.evaluate(()=>Wordbook.read().entries[0].id);
   assert.equal(await page.locator('[data-action="save-word"][data-id="01"]').getAttribute('aria-pressed'),'true');
   await page.reload();assert.equal(await page.locator('[data-learning="status"][data-word="01"]').inputValue(),'active');
-  await page.goto(base);assert.match(await page.locator('#learning-dashboard').innerText(),/2 first attempts ready/);
+  await page.goto(base);assert.match(await page.locator('#learning-dashboard').innerText(),/1 new word ready/);
   await page.locator('#learning-dashboard a').click();
   assert.ok(!(await page.locator('#review-workspace').innerText()).toLowerCase().includes('resilience'),'The pre-review queue never exposes a target');
   await page.locator('[data-learning="start"]').click();
@@ -46,7 +46,7 @@ const base=(process.env.PASSAGE_TEST_URL||'http://127.0.0.1:8765/_site/').replac
   await page.goto(base+'wordbook.html');
   await page.locator('[data-learning="history"]').click();assert.match(await page.locator('#learning-history').innerText(),/Regular practice builds my resilience/);await page.locator('[data-learning="close-history"]').click();
   await page.locator('[data-learning="status"]').selectOption('known');await page.goto(base+'review.html');
-  assert.equal(await page.locator('.review-queue li').count(),0);assert.match(await page.locator('#learning-dashboard').innerText(),/0 \/ 0/,'Already know is not mastery');
+  assert.equal(await page.locator('.review-queue li').count(),0);assert.equal(await page.locator('[data-learning-count="masteredWords"] strong').innerText(),'0','Already know is not mastery');
   await page.goto(base+'wordbook.html');await page.locator('[data-learning="status"]').selectOption('recognition');
   await page.goto(base+'review.html');assert.match(await page.locator('.review-queue-summary').innerText(),/1 Recognition · 0 Production/);
   const backup=await page.evaluate(()=>Wordbook.exportBackup());
