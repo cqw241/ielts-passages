@@ -32,6 +32,17 @@ window.COURSE = {
       "date": "10 October 2026",
       "topic": "Neuroscience, Medical Innovation and Scientific Evidence",
       "sourceFile": "26-10-10-A Switch Made of Light - When a Scientific Breakthrough Meets Patients.md"
+    },
+    {
+      "folder": "26.10.12",
+      "shortTitle": "Equal numbers, unequal chances",
+      "summary": "Look beyond enrolment parity to completion, interacting barriers and the support that makes education possible.",
+      "image": "images/reference-0.webp",
+      "title": "The Numbers Are Equal. The Chances Are Not.",
+      "day": 4,
+      "date": "12 October 2026",
+      "topic": "Education, Gender Equality and Public Policy",
+      "sourceFile": "26-10-12-The Numbers Are Equal. The Chances Are Not.md"
     }
   ]
 };
