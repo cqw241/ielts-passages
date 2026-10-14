@@ -36,5 +36,20 @@ for(const {folder} of manifest.lessons){
  for(const name of ['index.html','lesson-data.js','lesson-notes.js',lesson.sourceFile])copy(folder+'/'+name);
  for(const name of fs.readdirSync(path.join(root,folder,'images')))if(name.endsWith('.webp'))copy(folder+'/images/'+name);
 }
+// Only public Supabase configuration is emitted. Never bundle private backups.
+const localSync = {window:{}};
+vm.runInNewContext(fs.readFileSync(path.join(root,'assets/sync-config.js'),'utf8'), localSync);
+const syncConfig = {
+ url: process.env.PASSAGE_SUPABASE_URL || localSync.window.PASSAGE_SYNC_CONFIG?.url || '',
+ publishableKey: process.env.PASSAGE_SUPABASE_PUBLISHABLE_KEY || localSync.window.PASSAGE_SYNC_CONFIG?.publishableKey || ''
+};
+if (syncConfig.url || syncConfig.publishableKey) {
+ if (!/^https:\/\/[a-z0-9-]+\.supabase\.co\/?$/.test(syncConfig.url) || !syncConfig.publishableKey) throw new Error('Set both public Supabase build variables');
+ if (!syncConfig.publishableKey.startsWith('sb_publishable_')) {
+   let role; try { role = JSON.parse(Buffer.from(syncConfig.publishableKey.split('.')[1], 'base64url')).role; } catch {}
+   if (role !== 'anon') throw new Error('Only a publishable or legacy anon key may be built into the website');
+ }
+}
+fs.writeFileSync(path.join(output,'assets/sync-config.js'),'window.PASSAGE_SYNC_CONFIG = '+JSON.stringify(syncConfig)+';\n');
 fs.writeFileSync(path.join(output,'.nojekyll'),'');
 console.log('Ready for GitHub Pages: _site (website files and lesson source downloads only).');

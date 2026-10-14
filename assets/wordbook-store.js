@@ -236,7 +236,7 @@
     active.set(id, { key: k, job }); return job;
   }
   function exportBackup() { const data = read(); if (problem) throw new Error(problem); const progress = {}; for (const l of lessons) { const raw = localStorage.getItem(l.storageKey); if (raw) { try { progress[l.folder] = lessonProgress(JSON.parse(raw)); } catch { /* Keep the wordbook export usable. */ } } } return JSON.stringify({ format: 'passage-wordbook', version: 3, exportedAt: new Date().toISOString(), entries: data.entries, lessonProgress:progress }, null, 2); }
-  function importBackup(raw) {
+  function prepareBackup(raw) {
     if (clean(raw, 5000001).length > 5000000) throw new Error('Choose a wordbook backup smaller than 5 MB.');
     let backup; try { backup = JSON.parse(raw); } catch { throw new Error('This file is not valid JSON. Choose a Passage wordbook backup.'); }
     if (backup.format !== 'passage-wordbook' || ![1,2,3].includes(backup.version) || !Array.isArray(backup.entries) || backup.entries.length > 10000) throw new Error('Choose a Passage wordbook backup (version 1, 2 or 3).');
@@ -266,6 +266,10 @@
       for (const field of ['writing','challenge']) if (record[field] !== undefined && typeof record[field] !== 'string') fail();
       if (record.submitted !== undefined && typeof record.submitted !== 'boolean') fail();
     }
+    return { incoming, progress };
+  }
+  function importBackup(raw) {
+    const { incoming, progress } = prepareBackup(raw);
     const emptyLessons = new Set(lessons.filter(l=>!localStorage.getItem(l.storageKey)).map(l=>l.folder));
     const result = change(data => {
       let added = 0, merged = 0;
@@ -278,6 +282,7 @@
     // Restore lesson records only into empty slots. Existing drafts always win.
     if (progress) for (const l of lessons) if (Object.hasOwn(progress,l.folder) && emptyLessons.has(l.folder) && progress[l.folder] && typeof progress[l.folder] === 'object' && !Array.isArray(progress[l.folder])) localStorage.setItem(l.storageKey,JSON.stringify(lessonProgress(progress[l.folder])));
     syncBookmarks(read());
+    window.dispatchEvent(new CustomEvent('passage-local-change'));
     return result;
   }
   function selectStatus(id, status) {
@@ -320,7 +325,7 @@
     });
     reviewAttempts.delete(token);
   }
-  window.Wordbook = { normalize, term, kind, sentenceText, changesLearning, read, get, add, addSentence, update, remove, restore, lookup, migrate, forLesson, bookmarked, togglePreset, exportBackup, importBackup, lessons, selectStatus, selectPreset, learningFor, beginReview, exposeReview, revealReview, rate, get problem() { return problem; } };
+  window.Wordbook = { normalize, term, kind, sentenceText, changesLearning, read, get, add, addSentence, update, remove, restore, lookup, migrate, forLesson, bookmarked, togglePreset, exportBackup, importBackup, prepareBackup, lessons, selectStatus, selectPreset, learningFor, beginReview, exposeReview, revealReview, rate, get problem() { return problem; } };
   migrate();
   if (!problem) read().entries.filter(e => kind(e) === 'word' && e.dictionaryStatus === 'pending').forEach(e => lookup(e.id));
   window.addEventListener('storage', event => { if (event.key === KEY) window.dispatchEvent(new CustomEvent('wordbook-change')); });

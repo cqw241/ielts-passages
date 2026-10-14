@@ -59,7 +59,10 @@
     const segments=String(word).trim().split(/\s*\.\.\.\s*/);
     const pattern=segments.map(segment=>{
       const parts=segment.split(/\s+/).map(p=>p.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'));
-      return parts.map((p,i)=>i===parts.length-1?`${p}(?:s|es|ed|ing)?`:p).join('\\s+');
+      return parts.map(p => p === 'be' ? '(?:be|am|is|are|was|were|been|being)' :
+        p.endsWith('s') ? `${p.slice(0,-1)}s?` :
+        p.endsWith('e') ? `${p}(?:s|d)?|${p.slice(0,-1)}ing` : `${p}(?:s|es|ed|ing)?`)
+        .map(p => `(?:${p})`).join('\\s+');
     }).join('\\s+(?:\\S+\\s+){0,12}?');
     return String(text||'').replace(new RegExp(`\\b${pattern}\\b`,'gi'),'_____');
   };

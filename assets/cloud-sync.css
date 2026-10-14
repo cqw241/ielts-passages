@@ -1,0 +1,25 @@
+.passage-sync { margin: 0 0 24px; padding: 14px 18px; border: 1px solid var(--line, #cbd5e1); border-radius: 12px; background: var(--paper, #fff); color: var(--ink, #172b42); font: 15px/1.6 system-ui, sans-serif; }
+.passage-sync summary { cursor: pointer; font-weight: 650; overflow-wrap: anywhere; }
+#sync-status { margin-left: 12px; font-size: 14px; font-weight: 400; }
+.sync-content { padding-top: 12px; }
+.sync-content p { margin: 8px 0 16px; }
+#sync-login { display: flex; align-items: end; gap: 12px; flex-wrap: wrap; }
+#sync-login label { display: grid; gap: 4px; flex: 1 1 180px; }
+#sync-login input { width: 100%; min-width: 0; min-height: 44px; padding: 8px; border: 1px solid #8391a2; border-radius: 6px; font: inherit; }
+.passage-sync button, .passage-sync summary, .sync-migration input { min-height: 44px; }
+.sync-migration { display: grid; gap: 8px; margin-top: 20px; overflow-wrap: anywhere; }
+.sync-migration input { max-width: 100%; }
+#sync-error { color: #a22121; }
+#sync-conflicts fieldset { min-width: 0; margin: 16px 0; border: 1px solid #8391a2; border-radius: 8px; }
+#sync-conflicts label { display: flex; gap: 8px; align-items: center; min-height: 44px; }
+#sync-conflicts pre { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 240px; overflow: auto; background: #f1f5f9; padding: 12px; font-size: 13px; }
+.passage-sync :focus-visible { outline: 3px solid #2966c6; outline-offset: 3px; }
+@media (max-width: 600px) { #sync-status { display: block; margin: 8px 0 0; } .passage-sync { padding: 12px; } #sync-login button { width: 100%; } }
+.workspace > .passage-sync { margin: 20px clamp(16px, 4vw, 64px) 0; }
+.passage-sync [hidden] { display: none !important; }
+.passage-sync summary { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 12px; font-size: 15px; }
+@media (max-width: 600px) {
+  .passage-sync summary { grid-template-columns: minmax(0, 1fr) auto; }
+  .passage-sync summary::after { grid-column: 2; grid-row: 1; }
+  #sync-status { grid-column: 1 / -1; grid-row: 2; margin: 0; }
+}

@@ -10,3 +10,7 @@ findings.md
 progress.md
 .DS_Store
 Thumbs.db
+
+# Personal learning records and local cloud test credentials
+passage-wordbook-*.json
+.env.sync*
