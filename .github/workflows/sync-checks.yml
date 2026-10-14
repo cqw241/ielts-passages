@@ -1,0 +1,38 @@
+name: Cloud sync checks
+on:
+  pull_request:
+  push:
+    branches: [feat/supabase-cloud-sync]
+permissions:
+  contents: read
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+      - name: Build and verify learning and merges
+        run: |
+          node scripts/build-site.mjs
+          node scripts/verify-learning.cjs
+          node scripts/verify-sync-merge.cjs
+      - name: Verify SQL permissions and concurrent writes
+        run: |
+          docker pull postgres:15-alpine
+          node scripts/verify-sync-sql.cjs
+      - name: Install isolated browser test tools
+        run: |
+          npm install --prefix "$RUNNER_TEMP/passage-browser" --no-audit --no-fund playwright@1.64.1
+          "$RUNNER_TEMP/passage-browser/node_modules/.bin/playwright" install --with-deps chromium
+      - name: Verify two-device cloud sync with synthetic records
+        env:
+          PASSAGE_TEST_URL: http://127.0.0.1:8765/_site/
+        run: |
+          export PLAYWRIGHT_MODULE="$RUNNER_TEMP/passage-browser/node_modules/playwright"
+          python3 -m http.server 8765 --bind 127.0.0.1 > "$RUNNER_TEMP/passage-http.log" 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+          node scripts/verify-cloud-sync.cjs

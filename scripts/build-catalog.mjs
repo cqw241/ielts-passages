@@ -62,6 +62,10 @@ const html=`<!doctype html>
 <script defer src="assets/wordbook-markdown.js"></script>
 <script defer src="assets/vocabulary-learning-ui.js"></script>
 <script defer src="assets/wordbook.js"></script>
+<link rel="stylesheet" href="assets/cloud-sync.css">
+<script defer src="assets/sync-config.js"></script>
+<script defer src="assets/cloud-sync-core.js"></script>
+<script defer src="assets/cloud-sync.js"></script>
 </head>
 <body class="catalog-page">
 <a class="skip-link" href="#library">Skip to lessons</a>
