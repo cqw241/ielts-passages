@@ -1,0 +1,2152 @@
+{
+  "format": "passage-wordbook",
+  "version": 3,
+  "exportedAt": "2025-10-09T08:53:20.000Z",
+  "entries": [
+    {
+      "id": "fixture-1",
+      "kind": "word",
+      "key": "synthetic term 1",
+      "term": "synthetic term 1",
+      "definition": "Synthetic definition 1.",
+      "note": "Synthetic note 1.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "ready",
+      "learning": {
+        "status": "active",
+        "startedAt": null,
+        "exposedAt": null,
+        "resetAt": null,
+        "recognition": {
+          "level": 0,
+          "ease": 1,
+          "streak": 1,
+          "lapses": 0,
+          "interval": 1,
+          "due": 1760086400000,
+          "lastAt": 1760000000000,
+          "history": [
+            {
+              "at": 1760000000000,
+              "rating": "good",
+              "lateDays": 0,
+              "gapDays": 0,
+              "answer": "Synthetic recognition answer 1.",
+              "stage": 0
+            }
+          ]
+        },
+        "production": {
+          "level": 0,
+          "ease": 1,
+          "streak": 1,
+          "lapses": 0,
+          "interval": 1,
+          "due": 1760086400000,
+          "lastAt": 1760000000000,
+          "history": [
+            {
+              "at": 1760000000000,
+              "rating": "good",
+              "lateDays": 0,
+              "gapDays": 0,
+              "answer": "Synthetic production answer 1.",
+              "stage": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "fixture-2",
+      "kind": "word",
+      "key": "synthetic term 2",
+      "term": "synthetic term 2",
+      "definition": "Synthetic definition 2.",
+      "note": "Synthetic note 2.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "ready",
+      "learning": {
+        "status": "active",
+        "startedAt": null,
+        "exposedAt": null,
+        "resetAt": null,
+        "recognition": {
+          "level": 0,
+          "ease": 1,
+          "streak": 1,
+          "lapses": 0,
+          "interval": 1,
+          "due": 1760086400000,
+          "lastAt": 1760000000000,
+          "history": [
+            {
+              "at": 1760000000000,
+              "rating": "good",
+              "lateDays": 0,
+              "gapDays": 0,
+              "answer": "Synthetic recognition answer 2.",
+              "stage": 0
+            }
+          ]
+        },
+        "production": {
+          "level": 0,
+          "ease": 1,
+          "streak": 1,
+          "lapses": 0,
+          "interval": 1,
+          "due": 1760086400000,
+          "lastAt": 1760000000000,
+          "history": [
+            {
+              "at": 1760000000000,
+              "rating": "good",
+              "lateDays": 0,
+              "gapDays": 0,
+              "answer": "Synthetic production answer 2.",
+              "stage": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "fixture-3",
+      "kind": "word",
+      "key": "synthetic term 3",
+      "term": "synthetic term 3",
+      "definition": "Synthetic definition 3.",
+      "note": "Synthetic note 3.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "ready",
+      "learning": {
+        "status": "active",
+        "startedAt": null,
+        "exposedAt": null,
+        "resetAt": null,
+        "recognition": {
+          "level": 0,
+          "ease": 1,
+          "streak": 1,
+          "lapses": 0,
+          "interval": 1,
+          "due": 1760086400000,
+          "lastAt": 1760000000000,
+          "history": [
+            {
+              "at": 1760000000000,
+              "rating": "good",
+              "lateDays": 0,
+              "gapDays": 0,
+              "answer": "Synthetic recognition answer 3.",
+              "stage": 0
+            }
+          ]
+        },
+        "production": {
+          "level": 0,
+          "ease": 1,
+          "streak": 1,
+          "lapses": 0,
+          "interval": 1,
+          "due": 1760086400000,
+          "lastAt": 1760000000000,
+          "history": [
+            {
+              "at": 1760000000000,
+              "rating": "good",
+              "lateDays": 0,
+              "gapDays": 0,
+              "answer": "Synthetic production answer 3.",
+              "stage": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "fixture-4",
+      "kind": "word",
+      "key": "synthetic term 4",
+      "term": "synthetic term 4",
+      "definition": "Synthetic definition 4.",
+      "note": "Synthetic note 4.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "ready",
+      "learning": {
+        "status": "active",
+        "startedAt": null,
+        "exposedAt": null,
+        "resetAt": null,
+        "recognition": {
+          "level": 0,
+          "ease": 1,
+          "streak": 1,
+          "lapses": 0,
+          "interval": 1,
+          "due": 1760086400000,
+          "lastAt": 1760000000000,
+          "history": [
+            {
+              "at": 1760000000000,
+              "rating": "good",
+              "lateDays": 0,
+              "gapDays": 0,
+              "answer": "Synthetic recognition answer 4.",
+              "stage": 0
+            }
+          ]
+        },
+        "production": {
+          "level": 0,
+          "ease": 1,
+          "streak": 1,
+          "lapses": 0,
+          "interval": 1,
+          "due": 1760086400000,
+          "lastAt": 1760000000000,
+          "history": [
+            {
+              "at": 1760000000000,
+              "rating": "good",
+              "lateDays": 0,
+              "gapDays": 0,
+              "answer": "Synthetic production answer 4.",
+              "stage": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "fixture-5",
+      "kind": "word",
+      "key": "synthetic term 5",
+      "term": "synthetic term 5",
+      "definition": "Synthetic definition 5.",
+      "note": "Synthetic note 5.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "ready",
+      "learning": {
+        "status": "active",
+        "startedAt": null,
+        "exposedAt": null,
+        "resetAt": null,
+        "recognition": {
+          "level": 0,
+          "ease": 1,
+          "streak": 1,
+          "lapses": 0,
+          "interval": 1,
+          "due": 1760086400000,
+          "lastAt": 1760000000000,
+          "history": [
+            {
+              "at": 1760000000000,
+              "rating": "good",
+              "lateDays": 0,
+              "gapDays": 0,
+              "answer": "Synthetic recognition answer 5.",
+              "stage": 0
+            }
+          ]
+        },
+        "production": {
+          "level": 0,
+          "ease": 1,
+          "streak": 1,
+          "lapses": 0,
+          "interval": 1,
+          "due": 1760086400000,
+          "lastAt": 1760000000000,
+          "history": [
+            {
+              "at": 1760000000000,
+              "rating": "good",
+              "lateDays": 0,
+              "gapDays": 0,
+              "answer": "Synthetic production answer 5.",
+              "stage": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "fixture-6",
+      "kind": "word",
+      "key": "synthetic term 6",
+      "term": "synthetic term 6",
+      "definition": "Synthetic definition 6.",
+      "note": "Synthetic note 6.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "ready",
+      "learning": {
+        "status": "active",
+        "startedAt": null,
+        "exposedAt": null,
+        "resetAt": null,
+        "recognition": {
+          "level": 0,
+          "ease": 1,
+          "streak": 1,
+          "lapses": 0,
+          "interval": 1,
+          "due": 1760086400000,
+          "lastAt": 1760000000000,
+          "history": [
+            {
+              "at": 1760000000000,
+              "rating": "good",
+              "lateDays": 0,
+              "gapDays": 0,
+              "answer": "Synthetic recognition answer 6.",
+              "stage": 0
+            }
+          ]
+        },
+        "production": {
+          "level": 0,
+          "ease": 1,
+          "streak": 1,
+          "lapses": 0,
+          "interval": 1,
+          "due": 1760086400000,
+          "lastAt": 1760000000000,
+          "history": [
+            {
+              "at": 1760000000000,
+              "rating": "good",
+              "lateDays": 0,
+              "gapDays": 0,
+              "answer": "Synthetic production answer 6.",
+              "stage": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "fixture-7",
+      "kind": "word",
+      "key": "synthetic term 7",
+      "term": "synthetic term 7",
+      "definition": "Synthetic definition 7.",
+      "note": "Synthetic note 7.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "ready",
+      "learning": {
+        "status": "active",
+        "startedAt": null,
+        "exposedAt": null,
+        "resetAt": null,
+        "recognition": {
+          "level": 0,
+          "ease": 1,
+          "streak": 1,
+          "lapses": 0,
+          "interval": 1,
+          "due": 1760086400000,
+          "lastAt": 1760000000000,
+          "history": [
+            {
+              "at": 1760000000000,
+              "rating": "good",
+              "lateDays": 0,
+              "gapDays": 0,
+              "answer": "Synthetic recognition answer 7.",
+              "stage": 0
+            }
+          ]
+        },
+        "production": {
+          "level": 0,
+          "ease": 1,
+          "streak": 1,
+          "lapses": 0,
+          "interval": 1,
+          "due": 1760086400000,
+          "lastAt": 1760000000000,
+          "history": [
+            {
+              "at": 1760000000000,
+              "rating": "good",
+              "lateDays": 0,
+              "gapDays": 0,
+              "answer": "Synthetic production answer 7.",
+              "stage": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "fixture-8",
+      "kind": "word",
+      "key": "synthetic term 8",
+      "term": "synthetic term 8",
+      "definition": "Synthetic definition 8.",
+      "note": "Synthetic note 8.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "ready",
+      "learning": {
+        "status": "active",
+        "startedAt": null,
+        "exposedAt": null,
+        "resetAt": null,
+        "recognition": {
+          "level": 0,
+          "ease": 1,
+          "streak": 1,
+          "lapses": 0,
+          "interval": 1,
+          "due": 1760086400000,
+          "lastAt": 1760000000000,
+          "history": [
+            {
+              "at": 1760000000000,
+              "rating": "good",
+              "lateDays": 0,
+              "gapDays": 0,
+              "answer": "Synthetic recognition answer 8.",
+              "stage": 0
+            }
+          ]
+        },
+        "production": {
+          "level": 0,
+          "ease": 1,
+          "streak": 1,
+          "lapses": 0,
+          "interval": 1,
+          "due": 1760086400000,
+          "lastAt": 1760000000000,
+          "history": [
+            {
+              "at": 1760000000000,
+              "rating": "good",
+              "lateDays": 0,
+              "gapDays": 0,
+              "answer": "Synthetic production answer 8.",
+              "stage": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "fixture-9",
+      "kind": "word",
+      "key": "synthetic term 9",
+      "term": "synthetic term 9",
+      "definition": "Synthetic definition 9.",
+      "note": "Synthetic note 9.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "ready",
+      "learning": {
+        "status": "active",
+        "startedAt": null,
+        "exposedAt": null,
+        "resetAt": null,
+        "recognition": {
+          "level": 0,
+          "ease": 1,
+          "streak": 1,
+          "lapses": 0,
+          "interval": 1,
+          "due": 1760086400000,
+          "lastAt": 1760000000000,
+          "history": [
+            {
+              "at": 1760000000000,
+              "rating": "good",
+              "lateDays": 0,
+              "gapDays": 0,
+              "answer": "Synthetic recognition answer 9.",
+              "stage": 0
+            }
+          ]
+        },
+        "production": {
+          "level": 0,
+          "ease": 1,
+          "streak": 1,
+          "lapses": 0,
+          "interval": 1,
+          "due": 1760086400000,
+          "lastAt": 1760000000000,
+          "history": [
+            {
+              "at": 1760000000000,
+              "rating": "good",
+              "lateDays": 0,
+              "gapDays": 0,
+              "answer": "Synthetic production answer 9.",
+              "stage": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "fixture-10",
+      "kind": "word",
+      "key": "synthetic term 10",
+      "term": "synthetic term 10",
+      "definition": "Synthetic definition 10.",
+      "note": "Synthetic note 10.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "ready",
+      "learning": {
+        "status": "active",
+        "startedAt": null,
+        "exposedAt": null,
+        "resetAt": null,
+        "recognition": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        },
+        "production": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        }
+      }
+    },
+    {
+      "id": "fixture-11",
+      "kind": "word",
+      "key": "synthetic term 11",
+      "term": "synthetic term 11",
+      "definition": "Synthetic definition 11.",
+      "note": "Synthetic note 11.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "ready",
+      "learning": {
+        "status": "active",
+        "startedAt": null,
+        "exposedAt": null,
+        "resetAt": null,
+        "recognition": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        },
+        "production": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        }
+      }
+    },
+    {
+      "id": "fixture-12",
+      "kind": "word",
+      "key": "synthetic term 12",
+      "term": "synthetic term 12",
+      "definition": "Synthetic definition 12.",
+      "note": "Synthetic note 12.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "ready",
+      "learning": {
+        "status": "active",
+        "startedAt": null,
+        "exposedAt": null,
+        "resetAt": null,
+        "recognition": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        },
+        "production": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        }
+      }
+    },
+    {
+      "id": "fixture-13",
+      "kind": "word",
+      "key": "synthetic term 13",
+      "term": "synthetic term 13",
+      "definition": "Synthetic definition 13.",
+      "note": "Synthetic note 13.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "ready",
+      "learning": {
+        "status": "active",
+        "startedAt": null,
+        "exposedAt": null,
+        "resetAt": null,
+        "recognition": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        },
+        "production": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        }
+      }
+    },
+    {
+      "id": "fixture-14",
+      "kind": "word",
+      "key": "synthetic term 14",
+      "term": "synthetic term 14",
+      "definition": "Synthetic definition 14.",
+      "note": "Synthetic note 14.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "ready",
+      "learning": {
+        "status": "active",
+        "startedAt": null,
+        "exposedAt": null,
+        "resetAt": null,
+        "recognition": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        },
+        "production": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        }
+      }
+    },
+    {
+      "id": "fixture-15",
+      "kind": "word",
+      "key": "synthetic term 15",
+      "term": "synthetic term 15",
+      "definition": "Synthetic definition 15.",
+      "note": "Synthetic note 15.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "ready",
+      "learning": {
+        "status": "active",
+        "startedAt": null,
+        "exposedAt": null,
+        "resetAt": null,
+        "recognition": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        },
+        "production": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        }
+      }
+    },
+    {
+      "id": "fixture-16",
+      "kind": "word",
+      "key": "synthetic term 16",
+      "term": "synthetic term 16",
+      "definition": "Synthetic definition 16.",
+      "note": "Synthetic note 16.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "ready",
+      "learning": {
+        "status": "active",
+        "startedAt": null,
+        "exposedAt": null,
+        "resetAt": null,
+        "recognition": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        },
+        "production": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        }
+      }
+    },
+    {
+      "id": "fixture-17",
+      "kind": "word",
+      "key": "synthetic term 17",
+      "term": "synthetic term 17",
+      "definition": "Synthetic definition 17.",
+      "note": "Synthetic note 17.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "ready",
+      "learning": {
+        "status": "active",
+        "startedAt": null,
+        "exposedAt": null,
+        "resetAt": null,
+        "recognition": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        },
+        "production": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        }
+      }
+    },
+    {
+      "id": "fixture-18",
+      "kind": "word",
+      "key": "synthetic term 18",
+      "term": "synthetic term 18",
+      "definition": "Synthetic definition 18.",
+      "note": "Synthetic note 18.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "ready",
+      "learning": {
+        "status": "active",
+        "startedAt": null,
+        "exposedAt": null,
+        "resetAt": null,
+        "recognition": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        },
+        "production": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        }
+      }
+    },
+    {
+      "id": "fixture-19",
+      "kind": "word",
+      "key": "synthetic term 19",
+      "term": "synthetic term 19",
+      "definition": "Synthetic definition 19.",
+      "note": "Synthetic note 19.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "ready",
+      "learning": {
+        "status": "active",
+        "startedAt": null,
+        "exposedAt": null,
+        "resetAt": null,
+        "recognition": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        },
+        "production": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        }
+      }
+    },
+    {
+      "id": "fixture-20",
+      "kind": "word",
+      "key": "synthetic term 20",
+      "term": "synthetic term 20",
+      "definition": "Synthetic definition 20.",
+      "note": "Synthetic note 20.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "ready",
+      "learning": {
+        "status": "active",
+        "startedAt": null,
+        "exposedAt": null,
+        "resetAt": null,
+        "recognition": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        },
+        "production": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        }
+      }
+    },
+    {
+      "id": "fixture-21",
+      "kind": "word",
+      "key": "synthetic term 21",
+      "term": "synthetic term 21",
+      "definition": "Synthetic definition 21.",
+      "note": "Synthetic note 21.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "ready",
+      "learning": {
+        "status": "active",
+        "startedAt": null,
+        "exposedAt": null,
+        "resetAt": null,
+        "recognition": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        },
+        "production": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        }
+      }
+    },
+    {
+      "id": "fixture-22",
+      "kind": "word",
+      "key": "synthetic term 22",
+      "term": "synthetic term 22",
+      "definition": "Synthetic definition 22.",
+      "note": "Synthetic note 22.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "ready",
+      "learning": {
+        "status": "active",
+        "startedAt": null,
+        "exposedAt": null,
+        "resetAt": null,
+        "recognition": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        },
+        "production": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        }
+      }
+    },
+    {
+      "id": "fixture-23",
+      "kind": "word",
+      "key": "synthetic term 23",
+      "term": "synthetic term 23",
+      "definition": "Synthetic definition 23.",
+      "note": "Synthetic note 23.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "ready",
+      "learning": {
+        "status": "active",
+        "startedAt": null,
+        "exposedAt": null,
+        "resetAt": null,
+        "recognition": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        },
+        "production": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        }
+      }
+    },
+    {
+      "id": "fixture-24",
+      "kind": "word",
+      "key": "synthetic term 24",
+      "term": "synthetic term 24",
+      "definition": "Synthetic definition 24.",
+      "note": "Synthetic note 24.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "ready",
+      "learning": {
+        "status": "active",
+        "startedAt": null,
+        "exposedAt": null,
+        "resetAt": null,
+        "recognition": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        },
+        "production": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        }
+      }
+    },
+    {
+      "id": "fixture-25",
+      "kind": "word",
+      "key": "synthetic term 25",
+      "term": "synthetic term 25",
+      "definition": "Synthetic definition 25.",
+      "note": "Synthetic note 25.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "ready",
+      "learning": {
+        "status": "active",
+        "startedAt": null,
+        "exposedAt": null,
+        "resetAt": null,
+        "recognition": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        },
+        "production": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        }
+      }
+    },
+    {
+      "id": "fixture-26",
+      "kind": "word",
+      "key": "synthetic term 26",
+      "term": "synthetic term 26",
+      "definition": "Synthetic definition 26.",
+      "note": "Synthetic note 26.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "ready",
+      "learning": {
+        "status": "active",
+        "startedAt": null,
+        "exposedAt": null,
+        "resetAt": null,
+        "recognition": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        },
+        "production": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        }
+      }
+    },
+    {
+      "id": "fixture-27",
+      "kind": "word",
+      "key": "synthetic term 27",
+      "term": "synthetic term 27",
+      "definition": "Synthetic definition 27.",
+      "note": "Synthetic note 27.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "ready",
+      "learning": {
+        "status": "active",
+        "startedAt": null,
+        "exposedAt": null,
+        "resetAt": null,
+        "recognition": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        },
+        "production": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        }
+      }
+    },
+    {
+      "id": "fixture-28",
+      "kind": "word",
+      "key": "synthetic term 28",
+      "term": "synthetic term 28",
+      "definition": "Synthetic definition 28.",
+      "note": "Synthetic note 28.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "ready",
+      "learning": {
+        "status": "active",
+        "startedAt": null,
+        "exposedAt": null,
+        "resetAt": null,
+        "recognition": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        },
+        "production": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        }
+      }
+    },
+    {
+      "id": "fixture-29",
+      "kind": "word",
+      "key": "synthetic term 29",
+      "term": "synthetic term 29",
+      "definition": "Synthetic definition 29.",
+      "note": "Synthetic note 29.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "ready",
+      "learning": {
+        "status": "active",
+        "startedAt": null,
+        "exposedAt": null,
+        "resetAt": null,
+        "recognition": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        },
+        "production": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        }
+      }
+    },
+    {
+      "id": "fixture-30",
+      "kind": "word",
+      "key": "synthetic term 30",
+      "term": "synthetic term 30",
+      "definition": "Synthetic definition 30.",
+      "note": "Synthetic note 30.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "ready",
+      "learning": {
+        "status": "active",
+        "startedAt": null,
+        "exposedAt": null,
+        "resetAt": null,
+        "recognition": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        },
+        "production": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        }
+      }
+    },
+    {
+      "id": "fixture-31",
+      "kind": "word",
+      "key": "synthetic term 31",
+      "term": "synthetic term 31",
+      "definition": "Synthetic definition 31.",
+      "note": "Synthetic note 31.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "ready",
+      "learning": {
+        "status": "active",
+        "startedAt": null,
+        "exposedAt": null,
+        "resetAt": null,
+        "recognition": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        },
+        "production": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        }
+      }
+    },
+    {
+      "id": "fixture-32",
+      "kind": "word",
+      "key": "synthetic term 32",
+      "term": "synthetic term 32",
+      "definition": "Synthetic definition 32.",
+      "note": "Synthetic note 32.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "ready",
+      "learning": {
+        "status": "active",
+        "startedAt": null,
+        "exposedAt": null,
+        "resetAt": null,
+        "recognition": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        },
+        "production": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        }
+      }
+    },
+    {
+      "id": "fixture-33",
+      "kind": "word",
+      "key": "synthetic term 33",
+      "term": "synthetic term 33",
+      "definition": "Synthetic definition 33.",
+      "note": "Synthetic note 33.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "ready",
+      "learning": {
+        "status": "active",
+        "startedAt": null,
+        "exposedAt": null,
+        "resetAt": null,
+        "recognition": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        },
+        "production": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        }
+      }
+    },
+    {
+      "id": "fixture-34",
+      "kind": "word",
+      "key": "synthetic term 34",
+      "term": "synthetic term 34",
+      "definition": "Synthetic definition 34.",
+      "note": "Synthetic note 34.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "ready",
+      "learning": {
+        "status": "active",
+        "startedAt": null,
+        "exposedAt": null,
+        "resetAt": null,
+        "recognition": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        },
+        "production": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        }
+      }
+    },
+    {
+      "id": "fixture-35",
+      "kind": "word",
+      "key": "synthetic term 35",
+      "term": "synthetic term 35",
+      "definition": "Synthetic definition 35.",
+      "note": "Synthetic note 35.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "ready",
+      "learning": {
+        "status": "active",
+        "startedAt": null,
+        "exposedAt": null,
+        "resetAt": null,
+        "recognition": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        },
+        "production": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        }
+      }
+    },
+    {
+      "id": "fixture-36",
+      "kind": "word",
+      "key": "synthetic term 36",
+      "term": "synthetic term 36",
+      "definition": "Synthetic definition 36.",
+      "note": "Synthetic note 36.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "ready",
+      "learning": {
+        "status": "active",
+        "startedAt": null,
+        "exposedAt": null,
+        "resetAt": null,
+        "recognition": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        },
+        "production": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        }
+      }
+    },
+    {
+      "id": "fixture-37",
+      "kind": "word",
+      "key": "synthetic term 37",
+      "term": "synthetic term 37",
+      "definition": "Synthetic definition 37.",
+      "note": "Synthetic note 37.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "ready",
+      "learning": {
+        "status": "active",
+        "startedAt": null,
+        "exposedAt": null,
+        "resetAt": null,
+        "recognition": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        },
+        "production": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        }
+      }
+    },
+    {
+      "id": "fixture-38",
+      "kind": "word",
+      "key": "synthetic term 38",
+      "term": "synthetic term 38",
+      "definition": "Synthetic definition 38.",
+      "note": "Synthetic note 38.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "ready",
+      "learning": {
+        "status": "active",
+        "startedAt": null,
+        "exposedAt": null,
+        "resetAt": null,
+        "recognition": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        },
+        "production": {
+          "level": -1,
+          "ease": 1,
+          "streak": 0,
+          "lapses": 0,
+          "interval": 0,
+          "due": null,
+          "lastAt": null,
+          "history": []
+        }
+      }
+    },
+    {
+      "id": "fixture-39",
+      "kind": "sentence",
+      "key": "synthetic sentence number 1 for testing.",
+      "term": "Synthetic sentence number 1 for testing.",
+      "definition": "",
+      "note": "Synthetic note 39.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "not-applicable"
+    },
+    {
+      "id": "fixture-40",
+      "kind": "sentence",
+      "key": "synthetic sentence number 2 for testing.",
+      "term": "Synthetic sentence number 2 for testing.",
+      "definition": "",
+      "note": "Synthetic note 40.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "not-applicable"
+    },
+    {
+      "id": "fixture-41",
+      "kind": "sentence",
+      "key": "synthetic sentence number 3 for testing.",
+      "term": "Synthetic sentence number 3 for testing.",
+      "definition": "",
+      "note": "Synthetic note 41.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "not-applicable"
+    },
+    {
+      "id": "fixture-42",
+      "kind": "sentence",
+      "key": "synthetic sentence number 4 for testing.",
+      "term": "Synthetic sentence number 4 for testing.",
+      "definition": "",
+      "note": "Synthetic note 42.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "not-applicable"
+    },
+    {
+      "id": "fixture-43",
+      "kind": "sentence",
+      "key": "synthetic sentence number 5 for testing.",
+      "term": "Synthetic sentence number 5 for testing.",
+      "definition": "",
+      "note": "Synthetic note 43.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "not-applicable"
+    },
+    {
+      "id": "fixture-44",
+      "kind": "sentence",
+      "key": "synthetic sentence number 6 for testing.",
+      "term": "Synthetic sentence number 6 for testing.",
+      "definition": "",
+      "note": "Synthetic note 44.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "not-applicable"
+    },
+    {
+      "id": "fixture-45",
+      "kind": "sentence",
+      "key": "synthetic sentence number 7 for testing.",
+      "term": "Synthetic sentence number 7 for testing.",
+      "definition": "",
+      "note": "Synthetic note 45.",
+      "ipa": "",
+      "edited": {
+        "term": false,
+        "definition": true,
+        "note": true
+      },
+      "candidates": [],
+      "sources": [],
+      "attribution": null,
+      "definitionAttribution": null,
+      "createdAt": 1760000000000,
+      "updatedAt": 1760000000000,
+      "dictionaryStatus": "not-applicable"
+    }
+  ],
+  "lessonProgress": {
+    "26.9.6": {
+      "read": [
+        "A"
+      ],
+      "saved": [],
+      "answers": {
+        "q1": "Synthetic answer"
+      },
+      "practice": {
+        "v1": "Synthetic practice"
+      },
+      "writing": "Synthetic draft for 26.9.6.",
+      "challenge": "Synthetic challenge.",
+      "speaking": {},
+      "submitted": false
+    },
+    "26.9.7": {
+      "read": [
+        "A"
+      ],
+      "saved": [],
+      "answers": {
+        "q1": "Synthetic answer"
+      },
+      "practice": {
+        "v1": "Synthetic practice"
+      },
+      "writing": "Synthetic draft for 26.9.7.",
+      "challenge": "Synthetic challenge.",
+      "speaking": {},
+      "submitted": false
+    },
+    "26.10.10": {
+      "read": [
+        "A"
+      ],
+      "saved": [],
+      "answers": {
+        "q1": "Synthetic answer"
+      },
+      "practice": {
+        "v1": "Synthetic practice"
+      },
+      "writing": "Synthetic draft for 26.10.10.",
+      "challenge": "Synthetic challenge.",
+      "speaking": {},
+      "submitted": false
+    }
+  }
+}

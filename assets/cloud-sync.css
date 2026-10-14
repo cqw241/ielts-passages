@@ -23,3 +23,6 @@
   .passage-sync summary::after { grid-column: 2; grid-row: 1; }
   #sync-status { grid-column: 1 / -1; grid-row: 2; margin: 0; }
 }
+
+#sync-migration-summary { overflow-wrap: anywhere; }
+#sync-account > label:has(#sync-migration-confirm) { display: flex; gap: 8px; align-items: start; margin: 16px 0; }

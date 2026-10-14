@@ -206,19 +206,26 @@
     });
     renderAuth(); await sync();
   }
-  async function initialize(file) {
+  async function migrationFile(file) {
+    if (file.name !== 'passage-wordbook-2026-10-14.json' || file.size > 5000000) throw new Error('Choose passage-wordbook-2026-10-14.json.');
+    const bytes = await file.arrayBuffer();
+    const hash = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)), b => b.toString(16).padStart(2, '0')).join('');
+    if (hash !== C.SEED_HASH) throw new Error('This file differs from the approved migration backup. No records were changed.');
+    const raw = new TextDecoder('utf-8', { fatal: true }).decode(bytes);
+    W.prepareBackup(raw);
+    const data = JSON.parse(raw), words = data.entries.filter(e => e.kind !== 'sentence');
+    const histories = track => words.reduce((sum,e) => sum + (e.learning?.[track]?.history?.length || 0), 0);
+    return { raw, summary: `${words.length} words, ${data.entries.length - words.length} sentences, ${histories('recognition')} Recognition reviews, ${histories('production')} Production reviews, ${Object.keys(data.lessonProgress || {}).length} lessons. SHA-256: ${hash}` };
+  }
+  async function initialize(file, confirmed = false) {
+    if (confirmed !== true) throw new Error('Confirm that the approved backup contains the latest records you want to migrate.');
     if (busy) throw new Error('Wait for the current sync to finish, then retry.');
     busy = true;
     try {
       await lock(async () => {
         const s = await session(); if (!s) throw new Error('Sign in before uploading the migration backup.');
         checkAccount(s, parse(META));
-        if (file.name !== 'passage-wordbook-2026-10-14.json' || file.size > 5000000) throw new Error('Choose passage-wordbook-2026-10-14.json.');
-        const bytes = await file.arrayBuffer();
-        const hash = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)), b => b.toString(16).padStart(2, '0')).join('');
-        if (hash !== C.SEED_HASH) throw new Error('This file differs from the approved migration backup. No records were changed.');
-        const raw = new TextDecoder('utf-8', { fatal: true }).decode(bytes);
-        W.prepareBackup(raw);
+        const { raw } = await migrationFile(file);
         setStatus('Uploading migration backup… Local records will change only after cloud read-back succeeds.');
         await request('/rest/v1/rpc/passage_initialize', { p_backup: raw }, s.access_token);
         const verified = await readCloud(s);
@@ -261,7 +268,7 @@
       <div class="sync-content"><p>Keep learning on your computers. Local saving and JSON backups remain available offline.</p>
       <form id="sync-login"><label>Email<input name="email" type="email" autocomplete="username" required></label><label>Password<input name="password" type="password" autocomplete="current-password" required></label><button class="button primary" type="submit">Sign in</button></form>
       <div id="sync-account" hidden><p>Signed in as <span id="sync-email-display"></span></p><button class="button secondary" id="sync-now">Sync now</button> <button class="text-button" id="sync-signout">Sign out</button>
-      <label class="sync-migration">First migration only: passage-wordbook-2026-10-14.json<input id="sync-migrate" type="file" accept=".json,application/json"></label><p>The exact approved backup is uploaded first. This device downloads only after Supabase confirms it.</p></div>
+      <label class="sync-migration">First migration only: passage-wordbook-2026-10-14.json<input id="sync-migrate" type="file" accept=".json,application/json"></label><p>The exact approved backup is uploaded first. This device downloads only after Supabase confirms it.</p><p id="sync-migration-summary"></p><label><input id="sync-migration-confirm" type="checkbox">I have checked this original backup against my Windows records. It contains the latest records I want to migrate.</label><button class="button primary" id="sync-migration-upload" disabled>Upload confirmed backup</button></div>
       <button class="text-button" id="sync-recovery">Export recovery copies</button><p id="sync-error" role="alert"></p><form id="sync-conflicts"></form></div></details>`;
     const main = document.querySelector('main');
     if (main?.id === 'main') main.before(section);
@@ -286,7 +293,24 @@
       });
       renderAuth(); renderConflicts(); setStatus('Signed out · Changes remain saved in this browser.');
     }));
-    section.querySelector('#sync-migrate').addEventListener('change', e => { const file = e.target.files[0]; if (file) action(() => initialize(file)); e.target.value = ''; });
+    let migration;
+    const upload = section.querySelector('#sync-migration-upload'), confirmation = section.querySelector('#sync-migration-confirm');
+    section.querySelector('#sync-migrate').addEventListener('change', e => {
+      const file = e.target.files[0]; migration = null; confirmation.checked = false; upload.disabled = true;
+      section.querySelector('#sync-migration-summary').textContent = '';
+      if (file) action(async () => {
+        const checked = await migrationFile(file);
+        if (e.target.files[0] !== file) return;
+        migration = file; section.querySelector('#sync-migration-summary').textContent = checked.summary;
+        upload.disabled = !confirmation.checked;
+      });
+    });
+    confirmation.addEventListener('change', () => { upload.disabled = !migration || !confirmation.checked; });
+    upload.addEventListener('click', () => {
+      if (!migration || !confirmation.checked) return;
+      upload.disabled = true;
+      action(() => initialize(migration, true)).finally(() => { upload.disabled = !migration || !confirmation.checked; });
+    });
     section.querySelector('#sync-recovery').addEventListener('click', () => action(() => {
       const copies = {};
       for (let i = 0; i < localStorage.length; i++) { const key = localStorage.key(i); if (key.startsWith(ARCHIVE + '-')) copies[key] = parse(key); }

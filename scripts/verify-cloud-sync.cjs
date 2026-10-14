@@ -3,8 +3,7 @@
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
 const fs=require('node:fs'),assert=require('node:assert/strict'),crypto=require('node:crypto');
 const base=(process.env.PASSAGE_TEST_URL||'http://127.0.0.1:8765/_site/').replace(/\/?$/,'/');
-const backup=fs.readFileSync('passage-wordbook-2026-10-14.json','utf8'),seed=JSON.parse(backup);
-const hash=crypto.createHash('sha256').update(backup).digest('hex');
+const {backup,hash,core}=require('./sync-test-fixture.cjs'),seed=JSON.parse(backup);
 const clone=x=>structuredClone(x);
 let cloud=null,versions=[],failRead=false,failSave=false,loseReply=false,forceRace=false,puts=0,refreshes=0,holdSave=null;
 const seedSnapshot=()=>({schema:1,entries:Object.fromEntries(seed.entries.map(e=>[e.id,e])),lessonProgress:Object.fromEntries(Object.entries(seed.lessonProgress).map(([f,p])=>[f,Object.fromEntries(Object.entries(p).filter(([k])=>!['saved','recall','recalled'].includes(k)))]))});
@@ -12,6 +11,7 @@ async function setup(browser){
  const context=await browser.newContext({viewport:{width:1280,height:900}}),errors=[];
  context.on('page',p=>p.on('pageerror',e=>errors.push(e.message)));
  await context.route('**/assets/sync-config.js',r=>r.fulfill({contentType:'application/javascript',body:"window.PASSAGE_SYNC_CONFIG={url:'https://test.supabase.co',publishableKey:'sb_publishable_test'};"}));
+ await context.route('**/assets/cloud-sync-core.js',r=>r.fulfill({contentType:'application/javascript',body:core}));
  await context.route('https://freedictionaryapi.com/**',r=>r.fulfill({json:{entries:[]}}));
  await context.route('https://test.supabase.co/**',async r=>{
   const path=new URL(r.request().url()).pathname,body=r.request().postDataJSON();
@@ -54,9 +54,18 @@ const note=(page,id,text)=>page.evaluate(({id,text})=>Wordbook.update(id,{note:t
  try {
   const a=await setup(browser),b=await setup(browser);
   await login(a.page);assert.equal(await a.page.locator('#sync-login').isHidden(),true);assert.equal(cloud,null);assert.equal(Object.keys((await snap(a.page)).entries).length,0);assert.equal(puts,0,'Blank Ubuntu cannot initialize');
-  await assert.rejects(a.page.evaluate(()=>PassageSync.initialize(new File(['{}'],'passage-wordbook-2026-10-14.json'))),/differs/);
+  await assert.rejects(a.page.evaluate(()=>PassageSync.initialize(new File(['{}'],'passage-wordbook-2026-10-14.json'),true)),/differs/);
+  await assert.rejects(a.page.evaluate(raw=>PassageSync.initialize(new File([raw],'passage-wordbook-2026-10-14.json')),backup),/Confirm/);
+  assert.equal(cloud,null,'Explicit confirmation required before cloud initialization');
+  await a.page.locator('#sync-panel').evaluate(el=>el.open=true);
+  await a.page.locator('#sync-migrate').setInputFiles({name:'passage-wordbook-2026-10-14.json',mimeType:'application/json',buffer:Buffer.from(backup)});
+  await a.page.waitForFunction(()=>document.querySelector('#sync-migration-summary').textContent.includes('38 words')) ;
+  assert.equal(await a.page.locator('#sync-migration-upload').isDisabled(),true);
+  assert.equal(cloud,null,'Selecting a file only previews it');
+  await a.page.locator('#sync-migration-confirm').check();
+  assert.equal(await a.page.locator('#sync-migration-upload').isEnabled(),true);
   failRead=true;
-  await assert.rejects(a.page.evaluate(raw=>PassageSync.initialize(new File([raw],'passage-wordbook-2026-10-14.json')),backup),/Cloud request failed/);
+  await assert.rejects(a.page.evaluate(raw=>PassageSync.initialize(new File([raw],'passage-wordbook-2026-10-14.json'),true),backup),/Cloud request failed/);
   assert.equal(Object.keys((await snap(a.page)).entries).length,0,'No download before successful cloud read-back');
   assert.equal(cloud.version,1,'Upload was committed to cloud');
   await sync(a.page);assert.equal(Object.keys((await snap(a.page)).entries).length,45);
