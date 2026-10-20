@@ -215,7 +215,7 @@
     W.prepareBackup(raw);
     const data = JSON.parse(raw), words = data.entries.filter(e => e.kind !== 'sentence');
     const histories = track => words.reduce((sum,e) => sum + (e.learning?.[track]?.history?.length || 0), 0);
-    return { raw, summary: `${words.length} words, ${data.entries.length - words.length} sentences, ${histories('recognition')} Recognition reviews, ${histories('production')} Production reviews, ${Object.keys(data.lessonProgress || {}).length} lessons. SHA-256: ${hash}` };
+    return { raw, summary: `${words.length} words, ${data.entries.length - words.length} sentences, ${histories('recognition')} Recognition reviews, ${histories('production')} Production reviews, ${Object.keys(data.lessonProgress || {}).length} lessons.` };
   }
   async function initialize(file, confirmed = false) {
     if (confirmed !== true) throw new Error('Confirm that the approved backup contains the latest records you want to migrate.');
@@ -265,10 +265,10 @@
   function mount() {
     const section = document.createElement('section'); section.className = 'passage-sync'; section.setAttribute('aria-label', 'Cloud sync');
     section.innerHTML = `<details id="sync-panel"><summary>Cloud sync <span id="sync-status" role="status" aria-live="polite"></span></summary>
-      <div class="sync-content"><p>Keep learning on your computers. Local saving and JSON backups remain available offline.</p>
+      <div class="sync-content">
       <form id="sync-login"><label>Email<input name="email" type="email" autocomplete="username" required></label><label>Password<input name="password" type="password" autocomplete="current-password" required></label><button class="button primary" type="submit">Sign in</button></form>
       <div id="sync-account" hidden><p>Signed in as <span id="sync-email-display"></span></p><button class="button secondary" id="sync-now">Sync now</button> <button class="text-button" id="sync-signout">Sign out</button>
-      <label class="sync-migration">First migration only: passage-wordbook-2026-10-14.json<input id="sync-migrate" type="file" accept=".json,application/json"></label><p>The exact approved backup is uploaded first. This device downloads only after Supabase confirms it.</p><p id="sync-migration-summary"></p><label><input id="sync-migration-confirm" type="checkbox">I have checked this original backup against my Windows records. It contains the latest records I want to migrate.</label><button class="button primary" id="sync-migration-upload" disabled>Upload confirmed backup</button></div>
+      <label class="sync-migration">First migration only: passage-wordbook-2026-10-14.json<input id="sync-migrate" type="file" accept=".json,application/json"></label><p id="sync-migration-summary"></p><label><input id="sync-migration-confirm" type="checkbox">I have checked this original backup against my Windows records. It contains the latest records I want to migrate.</label><button class="button primary" id="sync-migration-upload" disabled>Upload confirmed backup</button></div>
       <button class="text-button" id="sync-recovery">Export recovery copies</button><p id="sync-error" role="alert"></p><form id="sync-conflicts"></form></div></details>`;
     const main = document.querySelector('main');
     if (main?.id === 'main') main.before(section);
