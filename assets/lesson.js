@@ -62,7 +62,7 @@
   }
   function save() {
     syncSaved();
-    try { localStorage.setItem(key, JSON.stringify(state)); } catch { toast('This browser cannot save your progress. Export your study notes to keep a copy.'); }
+    try { localStorage.setItem(key, JSON.stringify(state)); window.dispatchEvent(new CustomEvent('passage-local-change')); } catch { toast('This browser cannot save your progress. Export your study notes to keep a copy.'); }
   }
   function toast(text) { const el = document.querySelector('#toast'); el.textContent = text; el.classList.add('visible'); clearTimeout(toast.timeout); toast.timeout=setTimeout(()=>el.classList.remove('visible'),3000); }
   const views = [
@@ -226,6 +226,17 @@
     if(['wage-range','price-range'].includes(el.id)){const wage=Number(document.querySelector('#wage-range').value),price=Number(document.querySelector('#price-range').value),real=((1+wage/100)/(1+price/100)-1)*100;document.querySelector('#wage-label').textContent=wage+'%';document.querySelector('#price-label').textContent=price+'%';const result=document.querySelector('#real-change');result.textContent=(real>0?'+':real<0?'−':'')+Math.abs(real).toFixed(2)+'%';result.classList.toggle('positive',real>0);document.querySelector('#real-meaning').textContent=real>0?'Wages have outpaced prices, so purchasing power has increased.':real<0?'Pay has risen, but it buys less.':'Wages and prices have risen at the same rate; purchasing power is unchanged.';}
   });
   app.addEventListener('submit',event=>{if(event.target.id==='reading-form'){event.preventDefault();state.submitted=true;save();L.reading.forEach(q=>{const f=document.querySelector('#feedback-'+q.id);f.innerHTML=answerFeedback(q);f.hidden=false;});document.querySelector('#reading-score').textContent=scoreText();toast('Answers checked. Follow a paragraph link to review the evidence.');}});
+  function refreshProgress() {
+    const stored = JSON.parse(localStorage.getItem(key) || '{}');
+    const next = Object.fromEntries(Object.entries(defaults).map(([field,value])=>[field,stored[field] ?? value]));
+    if (JSON.stringify(next) === JSON.stringify(state)) return;
+    state = next; syncSaved();
+    document.querySelector('#read-count').textContent = `${state.read.length} / 10`;
+    document.querySelector('#read-progress').style.width = state.read.length * 10 + '%';
+    current = ''; route(false);
+  }
+  window.addEventListener('passage-cloud-applied', refreshProgress);
+  window.addEventListener('storage', event => { if (event.key === key || event.key === null) refreshProgress(); });
   window.addEventListener('hashchange',()=>route());
   window.addEventListener('wordbook-change',()=>{
     syncSaved();

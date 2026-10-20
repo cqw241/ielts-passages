@@ -13,7 +13,7 @@ Passage is a lightweight, browser-based English reading and vocabulary-learning 
 - **Two-track spaced repetition:** independent Recognition and Production progress, adaptive scheduling, and Again / Hard / Good / Easy self-assessment.
 - **Active output practice:** retrieve expressions, complete new contexts, rewrite sentences, and create your own examples.
 - **Wordbook and saved sentences:** preserve reading context, add English explanations and Markdown notes, and export/import JSON backups.
-- **Browser-first:** responsive static pages, no account or backend, and no package installation for the website.
+- **Browser-first:** responsive static pages, optional single-account Supabase cloud sync, offline local saving, and no package installation for the website.
 
 Personal meanings and notes support Markdown headings, tables, horizontal rules, bold, italic, lists, quotes, inline code and links, with Preview / Edit controls. Raw HTML and images are disabled. Original Markdown stays editable and survives JSON backups; reviews use its plain text, and formatting-only edits preserve review progress.
 
@@ -67,4 +67,4 @@ Browser integration checks include `scripts/verify-wordbook.cjs`, `scripts/verif
 
 ## Data and acknowledgements
 
-Learning records are stored in your **browser's localStorage**, separately for each browser and website origin. There is no account sync: use the Wordbook's **Export / Import JSON** controls to back up or transfer records. Dictionary lookup uses [FreeDictionaryAPI.com](https://freedictionaryapi.com/), with definitions sourced from Wiktionary (CC BY-SA 4.0). Markdown rendering uses [markdown-it](https://github.com/markdown-it/markdown-it), distributed under its [MIT license](assets/markdown-it.LICENSE.txt).
+Learning records are stored in your **browser's localStorage**, separately for each browser and website origin. Optional Supabase Auth + versioned PostgreSQL snapshots sync the same account across computers, with explicit conflict resolution. Follow [the first-time cloud setup](supabase/README.md); the first migration must use `passage-wordbook-2026-10-14.json` and is verified in the cloud before any device downloads it. The Wordbook's **Export / Import JSON** controls remain available for backups and older records. Dictionary lookup uses [FreeDictionaryAPI.com](https://freedictionaryapi.com/), with definitions sourced from Wiktionary (CC BY-SA 4.0). Markdown rendering uses [markdown-it](https://github.com/markdown-it/markdown-it), distributed under its [MIT license](assets/markdown-it.LICENSE.txt).
