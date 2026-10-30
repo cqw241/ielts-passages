@@ -51,7 +51,8 @@ Open **http://127.0.0.1:8765/_site/**. The build generates the registered lesson
 1. Follow an existing lesson folder: add one source file named `26-MM-DD-Title.md`, an `index.html` page shell, `lesson-notes.js`, and any WebP illustrations.
 2. Register its `folder`, `shortTitle`, `summary`, and `image` in `lessons.json`.
 3. In `lesson-notes.js`, provide editorial `learningRecommendations` with a `goal` and `reason` for suggested Active and Recognition terms. Aim for 5–6 Active and 8–12 Recognition recommendations; learners choose whether to enrol.
-4. Run `node scripts/build-site.mjs`, preview `_site/`, and commit the lesson sources, registry, and regenerated lesson/catalog data.
+4. Generate the article audio: put `DASHSCOPE_API_KEY` in a local `.env.tts` file (ignored by Git) and run `node --env-file=.env.tts scripts/generate-audio.mjs <folder>`. The script writes `<folder>/audio/article.mp3` and `audio/meta.json`; commit both. The Reading page shows the player only when `audio/article.mp3` exists.
+5. Run `node scripts/build-site.mjs`, preview `_site/`, and commit the lesson sources, registry, audio, and regenerated lesson/catalog data.
 
 See [AGENTS.md](AGENTS.md) for development conventions. Pushes to `main` build and deploy the site to GitHub Pages via [GitHub Actions](.github/workflows/pages.yml).
 

@@ -780,5 +780,6 @@ window.LESSON = {
       "description": "Write original sentences before opening the model. More than one response can work."
     }
   ],
-  "storageKey": "passage-2026-10-12-v1"
+  "storageKey": "passage-2026-10-12-v1",
+  "audio": "audio/article.mp3"
 };

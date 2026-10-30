@@ -959,6 +959,104 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
   height:15px
 }
 
+.reading-audio {
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:11px 15px;
+  margin-bottom:14px;
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:7px
+}
+
+.audio-toggle {
+  display:grid;
+  place-items:center;
+  width:40px;
+  height:40px;
+  flex-shrink:0;
+  border-radius:50%;
+  background:var(--blue);
+  color:white
+}
+
+.audio-toggle:hover {
+  background:#2158ae
+}
+
+.audio-toggle .icon {
+  width:18px;
+  height:18px
+}
+
+.audio-copy {
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+  min-width:150px
+}
+
+.audio-copy strong {
+  font-size:10px;
+  font-weight:650;
+  letter-spacing:1.2px;
+  text-transform:uppercase
+}
+
+.audio-copy span {
+  font-size:11px;
+  color:var(--slate);
+  font-variant-numeric:tabular-nums
+}
+
+.audio-seek {
+  flex:1;
+  min-width:90px;
+  accent-color:var(--blue);
+  cursor:pointer
+}
+
+.audio-seek:disabled {
+  opacity:.4;
+  cursor:default
+}
+
+.audio-rate {
+  min-width:40px;
+  padding:6px 8px;
+  border:1px solid var(--line);
+  border-radius:5px;
+  font-size:11px;
+  font-weight:600;
+  color:var(--slate)
+}
+
+.audio-rate:hover {
+  color:var(--blue);
+  border-color:var(--blue);
+  background:var(--blue-soft)
+}
+
+@media(max-width:520px) {
+  .reading-audio {
+    flex-wrap:wrap;
+    gap:10px;
+    padding:10px 12px
+  }
+  .audio-copy {
+    flex:1;
+    min-width:0
+  }
+  .audio-seek {
+    order:4;
+    flex-basis:100%
+  }
+  .audio-rate {
+    margin-left:auto
+  }
+}
+
 .reading-layout {
   display:grid;
   grid-template-columns:minmax(0,1fr) 190px;
@@ -4062,7 +4160,7 @@ dialog::backdrop {
 }
 
 @media print {
-  .sidebar,.topbar,.page-footer,.reading-aside,.read-button,.hero-actions,.mobile-backdrop,#toast,dialog {
+  .sidebar,.topbar,.page-footer,.reading-aside,.read-button,.reading-audio,.hero-actions,.mobile-backdrop,#toast,dialog {
     display:none!important
   }
   .workspace {

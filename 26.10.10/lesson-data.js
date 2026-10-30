@@ -794,5 +794,6 @@ window.LESSON = {
     "images/reference-6.webp"
   ],
   "sourceFile": "26-10-10-A Switch Made of Light - When a Scientific Breakthrough Meets Patients.md",
-  "storageKey": "passage-2026-10-10-v1"
+  "storageKey": "passage-2026-10-10-v1",
+  "audio": "audio/article.mp3"
 };

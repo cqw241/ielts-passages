@@ -1108,5 +1108,6 @@ window.LESSON = {
     "images/reference-10.webp"
   ],
   "sourceFile": "26-09-06-When More Jobs Are Only Part of the Story.md",
+  "audio": "audio/article.mp3",
   "storageKey": "passage-2026-09-06-v1"
 };

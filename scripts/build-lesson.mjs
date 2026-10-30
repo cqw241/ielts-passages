@@ -20,6 +20,7 @@ if (sections['Main Reading Article'] || sections['1. Main Reading Article']) {
   if (!day) throw new Error(`Register ${lessonId} in lessons.json before building`);
   const images = fs.readdirSync(path.join(folder,'images')).filter(p => /^reference-\d+\.webp$/.test(p)).sort((a,b) => Number(a.match(/\d+/)[0])-Number(b.match(/\d+/)[0])).map(p => 'images/'+p);
   const lesson = extractStructuredLesson({raw,sections,lessonId,sourceFile,images,day});
+  if (fs.existsSync(path.join(folder,'audio/article.mp3'))) lesson.audio = 'audio/article.mp3';
   fs.writeFileSync(path.join(folder,'lesson-data.js'),'window.LESSON = '+JSON.stringify(lesson,null,2)+';\n');
   console.log(`Extracted ${lesson.paragraphs.length} paragraphs, ${lesson.vocabulary.length} words, ${lesson.grammar.length} sentence analyses, ${lesson.reading.length} reading questions and ${lesson.practice.length} vocabulary exercises.`);
   process.exit(0);
@@ -136,6 +137,7 @@ const practice = extractPractice(sections['NEW VOCABULARY PRACTICE']);
 for (const heading of Object.keys(sections)) if (/^SPACED-REPETITION REVIEW|^VOCABULARY REVIEW LEDGER/.test(heading)) delete sections[heading];
 const images=fs.readdirSync(path.join(folder,'images')).filter(p=>/^reference-\d+\.webp$/.test(p)).sort((a,b)=>Number(a.match(/\d+/)[0])-Number(b.match(/\d+/)[0])).map(p=>'images/'+p);
 const lesson={title,date:raw.match(/^Date: (.+?) — /m)[1],day:Number(raw.match(/^(?:Course day|Lesson): (\d+)/m)[1]),topic:raw.match(/^Topic Area: (.+)$/m)[1].trim(),paragraphs,vocabulary,grammar,reading,practice,summary,speaking:blocks(sections['IELTS SPEAKING PART 3']),sections,images,sourceFile};
+if (fs.existsSync(path.join(folder,'audio/article.mp3'))) lesson.audio = 'audio/article.mp3';
 lesson.storageKey = 'passage-' + new Date(lesson.date + ' 12:00 UTC').toISOString().slice(0,10) + '-v1';
 if (paragraphs.length!==10||vocabulary.length!==30||grammar.length!==5||reading.length!==15||practice.length!==30) throw new Error('Incomplete lesson extraction');
 fs.writeFileSync(path.join(folder,'lesson-data.js'),'window.LESSON = '+JSON.stringify(lesson,null,2)+';\n');

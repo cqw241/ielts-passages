@@ -7,7 +7,7 @@
   const defaults = { read: [], saved: [], answers: {}, practice: {}, writing: '', challenge: '', speaking: {}, submitted: false };
   let state;
   try { const stored = JSON.parse(localStorage.getItem(key) || '{}'); state = Object.fromEntries(Object.entries(defaults).map(([field,value])=>[field,stored[field] ?? value])); } catch { state = { ...defaults }; }
-  let current = 'overview', filter = 'all', search = '', timer = null, remaining = 0, wordOpenTimer = null;
+  let current = 'overview', filter = 'all', search = '', timer = null, remaining = 0, wordOpenTimer = null, articleAudio = null, audioRate = 1;
   const lessonFolder = window.COURSE_VOCABULARY.find(item=>item.storageKey===key).folder;
   function syncSaved() {
     if(window.Wordbook.problem)return;
@@ -30,6 +30,8 @@
     menu: '<path d="M4 6h16M4 12h16M4 18h16"/>',
     close: '<path d="m6 6 12 12M6 18 18 6"/>',
     sound: '<path d="M4 9h4l5-4v14l-5-4H4zM17 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/>',
+    play: '<path d="M8 5.5v13l10-6.5z" fill="currentColor" stroke="none"/>',
+    pause: '<path d="M8 5.5v13M16 5.5v13" stroke-width="3"/>',
     clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
     search: '<circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/>',
     light: '<path d="M9 18h6m-5 3h4M8 14a6 6 0 1 1 8 0l-1 2H9z"/>',
@@ -65,6 +67,66 @@
     try { localStorage.setItem(key, JSON.stringify(state)); window.dispatchEvent(new CustomEvent('passage-local-change')); } catch { toast('This browser cannot save your progress. Export your study notes to keep a copy.'); }
   }
   function toast(text) { const el = document.querySelector('#toast'); el.textContent = text; el.classList.add('visible'); clearTimeout(toast.timeout); toast.timeout=setTimeout(()=>el.classList.remove('visible'),3000); }
+  function formatAudioTime(seconds) {
+    const whole = Number.isFinite(seconds) && seconds > 0 ? Math.floor(seconds) : 0;
+    return `${Math.floor(whole / 60)}:${String(whole % 60).padStart(2, '0')}`;
+  }
+  function audioElement() {
+    if (articleAudio) return articleAudio;
+    articleAudio = new Audio();
+    articleAudio.preload = 'metadata';
+    for (const event of ['timeupdate', 'play', 'pause', 'ended', 'loadedmetadata']) articleAudio.addEventListener(event, syncArticleAudio);
+    articleAudio.addEventListener('error', () => toast('Article audio is unavailable right now. Please try again later.'));
+    return articleAudio;
+  }
+  function articleAudioBar() {
+    if (!L.audio) return '';
+    return `<div class="reading-audio"><button class="audio-toggle" data-action="audio-toggle" aria-label="Play article audio" aria-pressed="false">${icon('play')}</button><div class="audio-copy"><strong>Listen to this article</strong><span data-audio-time>0:00 / 0:00</span></div><input class="audio-seek" data-audio-seek type="range" min="0" max="1000" value="0" step="1" aria-label="Audio position"><button class="audio-rate" data-action="audio-rate" aria-label="Playback speed">1×</button></div>`;
+  }
+  function setupArticleAudio() {
+    const audio = audioElement();
+    if (audio.getAttribute('src') !== L.audio) { audio.src = L.audio; audio.load(); }
+    audio.playbackRate = audioRate;
+    syncArticleAudio();
+  }
+  function syncArticleAudio() {
+    const bar = document.querySelector('.reading-audio');
+    if (!bar || !articleAudio) return;
+    const playing = !articleAudio.paused && !articleAudio.ended;
+    const button = bar.querySelector('[data-action="audio-toggle"]');
+    const wanted = playing ? 'pause' : 'play';
+    if (button.dataset.icon !== wanted) { button.dataset.icon = wanted; button.innerHTML = icon(wanted); }
+    button.setAttribute('aria-label', playing ? 'Pause article audio' : 'Play article audio');
+    button.setAttribute('aria-pressed', String(playing));
+    const duration = Number.isFinite(articleAudio.duration) ? articleAudio.duration : 0;
+    bar.querySelector('[data-audio-time]').textContent = `${formatAudioTime(articleAudio.currentTime)} / ${formatAudioTime(duration)}`;
+    const seek = bar.querySelector('[data-audio-seek]');
+    seek.disabled = !duration;
+    seek.value = duration ? Math.round(articleAudio.currentTime / duration * 1000) : 0;
+    seek.setAttribute('aria-valuetext', `${formatAudioTime(articleAudio.currentTime)} of ${formatAudioTime(duration)}`);
+    const rateButton = bar.querySelector('[data-action="audio-rate"]');
+    rateButton.textContent = `${audioRate}×`;
+    rateButton.setAttribute('aria-label', `Playback speed: ${audioRate} times`);
+  }
+  function toggleArticleAudio() {
+    const audio = audioElement();
+    if (audio.paused || audio.ended) {
+      audio.playbackRate = audioRate;
+      const attempt = audio.play();
+      if (attempt) attempt.catch(() => toast('Article audio could not start. Check your connection and try again.'));
+    } else audio.pause();
+  }
+  function cycleAudioRate() {
+    const rates = [0.75, 1, 1.25];
+    audioRate = rates[(rates.indexOf(audioRate) + 1) % rates.length];
+    if (articleAudio) articleAudio.playbackRate = audioRate;
+    syncArticleAudio();
+  }
+  function seekArticleAudio(value) {
+    if (!articleAudio || !Number.isFinite(articleAudio.duration)) return;
+    articleAudio.currentTime = Math.max(0, Math.min(1, value / 1000)) * articleAudio.duration;
+    syncArticleAudio();
+  }
   const views = [
     ['overview','overview','Overview','Start here'],['reading','book','Reading','Explore A–J'],['vocabulary','words','Vocabulary','Words in context'],['grammar','grammar','Sentence lab','Structure and meaning'],['exercises','exercise','Practice','Check your understanding'],['writing','pen','Writing','Build an argument'],['speaking','mic','Speaking','Develop your ideas'],['review','bookmark','My collection','Notes and progress']
   ];
@@ -100,7 +162,7 @@
     return html+esc(text.slice(last));
   }
   function reading() {
-    return pageHeading('READ THE STORY',P.readingTitle,'Read the original A–J paragraphs. Click highlighted words for meanings and open explanations when you need them.',`<button class="button secondary compact" data-action="explanations">${icon('layers')} Expand all explanations</button>`)+
+    return pageHeading('READ THE STORY',P.readingTitle,'Read the original A–J paragraphs. Click highlighted words for meanings and open explanations when you need them.',`<button class="button secondary compact" data-action="explanations">${icon('layers')} Expand all explanations</button>`)+articleAudioBar()+
       `<div class="reading-toolbar"><div class="paragraph-jumps" aria-label="Jump to a paragraph">${L.paragraphs.map(p=>`<a href="#reading-${p.id}" class="${state.read.includes(p.id)?'done':''}">${p.id}</a>`).join('')}</div><span class="subtle">${icon('words')} Select a word or sentence to save</span></div><div class="reading-layout"><div class="article-stream">${L.paragraphs.map((p,i)=>{const n=N.paragraphs[i];return `<article class="paragraph" id="paragraph-${p.id}"><div class="paragraph-heading"><div class="paragraph-letter">${p.id}</div><div><span class="paragraph-tag">${n.tag}</span><h2>${n.title}</h2></div><button class="read-button ${state.read.includes(p.id)?'is-read':''}" data-action="read" data-id="${p.id}" aria-pressed="${state.read.includes(p.id)}">${icon('check')}<span>${state.read.includes(p.id)?'Read':'Mark as read'}</span></button></div><p class="english-passage" lang="en">${marked(p.text)}</p><div class="takeaway">${icon('light')}<p>${n.takeaway}</p></div>${diagram(p.id)}<details class="explanation"><summary>Plain-English explanation and quick check ${icon('chevron')}</summary><div class="explanation-content"><p>${n.explanation}</p><div class="retrieval"><strong>Think about it · ${n.question}</strong><details><summary>Show the reasoning</summary><p>${n.answer}</p></details></div></div></details>${figure(n.image,n.title+' · Concept illustration',n.imageAlt)}</article>`;}).join('')}<div class="next-section"><div><span class="eyebrow">NEXT · VOCABULARY</span><h3>Make the expressions you just read your own</h3></div>${btn('Explore vocabulary','vocabulary')}</div></div><aside class="reading-aside"><p class="eyebrow">READING COMPASS</p><h3>Read the words.<br>Question the claims.</h3><div class="evidence-key"><span class="evidence-dot blue"></span><div><strong>Facts and definitions</strong><p>${P.facts}</p></div></div><div class="evidence-key"><span class="evidence-dot amber"></span><div><strong>Interpretation and possibility</strong><p>May, could and if signal conditional claims.</p></div></div><div class="evidence-key"><span class="evidence-dot teal"></span><div><strong>Examples and viewpoints</strong><p>${P.examples}</p></div></div><blockquote>${P.compass.join('<br>')}</blockquote><p class="subtle">Three questions to keep asking</p></aside></div>`;
   }
   function diagram(id) {
@@ -163,6 +225,7 @@
   const renderers={overview,reading,vocabulary,grammar,exercises,writing,speaking,review};
   function navigate(view,paragraph,shouldFocus=false) {
     if(!renderers[view] || !views.some(v=>v[0]===view))view='overview';
+    if(current==='reading'&&view!=='reading')articleAudio?.pause();
     if(current!==view || !document.querySelector('#main').children.length) {
       stopTimer(false);current=view;document.querySelector('#main').innerHTML=renderers[view]();
       document.querySelectorAll('[data-view]').forEach(el=>{const active=el.dataset.view===view;el.classList.toggle('active',active);if(active)el.setAttribute('aria-current','page');else el.removeAttribute('aria-current');});
@@ -170,6 +233,7 @@
       document.title=`${views.find(v=>v[0]===view)[2]} · ${L.title} · Passage`;
       window.scrollTo(0,0);if(shouldFocus)document.querySelector('#main').focus({preventScroll:true});
     }
+    if(view==='reading'&&L.audio)setupArticleAudio();
     closeNav();
     if(paragraph) { const target=document.querySelector('#paragraph-'+paragraph);if(target)target.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'}); }
     if(view==='writing'||view==='speaking')updateChallenge();
@@ -203,6 +267,8 @@
     else if(action==='save-word'){try{const linked=window.Wordbook.togglePreset(lessonFolder,el.dataset.id);toast(linked?'Added to wordbook':'Bookmark removed; word remains in Wordbook.');}catch(error){toast(error.message);}}
     else if(action==='filter'){filter=el.dataset.value;document.querySelectorAll('[data-action="filter"]').forEach(b=>{b.classList.toggle('active',b===el);b.setAttribute('aria-pressed',b===el);});document.querySelector('#vocab-list').innerHTML=wordList();}
     else if(action==='speak'){if(!('speechSynthesis' in window)){toast('Speech is not supported in this browser. Use the IPA pronunciation guide.');return;}speechSynthesis.cancel();const utterance=new SpeechSynthesisUtterance(L.vocabulary.find(v=>v.id===el.dataset.id).word);utterance.lang='en-GB';utterance.rate=.85;utterance.onerror=()=>toast('Speech is unavailable right now. Use the IPA pronunciation guide.');speechSynthesis.speak(utterance);}
+    else if(action==='audio-toggle')toggleArticleAudio();
+    else if(action==='audio-rate')cycleAudioRate();
     else if(action==='image')openDialog(el.dataset.caption,`<img class="full-image" src="images/reference-${el.dataset.index}.webp" alt="${esc(el.dataset.caption)}">`,'image-dialog');
     else if(action==='explanations'){const ds=[...document.querySelectorAll('.explanation')];const open=ds.some(d=>!d.open);ds.forEach(d=>d.open=open);el.innerHTML=icon('layers')+(open?' Collapse all explanations':' Expand all explanations');}
     else if(action==='chunk'){document.querySelectorAll(`[data-grammar="${el.dataset.grammar}"]`).forEach(b=>b.classList.toggle('selected',b===el));const n=N.grammar[el.dataset.grammar];document.querySelector('#grammar-tip-'+el.dataset.grammar).textContent=n.roles[el.dataset.index]+' · '+n.tip;}
@@ -216,6 +282,7 @@
   });
   app.addEventListener('input',event=>{
     const el=event.target;
+    if(el.hasAttribute('data-audio-seek'))seekArticleAudio(Number(el.value));
     if(el.dataset.coverage){updateCoverage();}
     if(el.id==='vocab-search'){search=el.value;document.querySelector('#vocab-list').innerHTML=wordList();}
     if(el.name?.match(/^q\d+$/)){state.answers[el.name.slice(1)]=el.value;state.submitted=false;save();document.querySelector('#answer-progress').textContent=`Answered ${Object.values(state.answers).filter(Boolean).length} / ${L.reading.length}`;document.querySelectorAll('.feedback').forEach(f=>f.hidden=true);document.querySelector('#reading-score').textContent='';}

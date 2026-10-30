@@ -35,6 +35,7 @@ for(const {folder} of manifest.lessons){
  const lesson=context.window.LESSON;
  for(const name of ['index.html','lesson-data.js','lesson-notes.js',lesson.sourceFile])copy(folder+'/'+name);
  for(const name of fs.readdirSync(path.join(root,folder,'images')))if(name.endsWith('.webp'))copy(folder+'/images/'+name);
+ if(lesson.audio)copy(folder+'/'+lesson.audio);
 }
 // Only public Supabase configuration is emitted. Never bundle private backups.
 const localSync = {window:{}};

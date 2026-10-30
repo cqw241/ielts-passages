@@ -1185,5 +1185,6 @@ window.LESSON = {
     "images/reference-8.webp"
   ],
   "sourceFile": "26-09-07-The Work That Continues After a Disease Milestone.md",
+  "audio": "audio/article.mp3",
   "storageKey": "passage-2026-09-07-v1"
 };
