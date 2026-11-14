@@ -3,7 +3,7 @@ export function extractReadingPassage({raw, sections, lessonId, sourceFile, imag
  const sec = n => sections[Object.keys(sections).find(k=>k.startsWith(n+'. '))] || '';
  const blocks=(s,r)=>[...s.matchAll(r)];
  const title=raw.match(/^# (.+)$/m)[1];
- const paragraphs=blocks(sec(1),/^### ([A-J])\n\n([\s\S]*?)(?=^### |^---|$(?![\s\S]))/gm).map(m=>({id:m[1],text:m[2].trim()}));
+ const paragraphs=blocks(sec(1),/^### ([A-J])\n\n([\s\S]*?)(?=^### |^---|$(?![\s\S]))/gm).map(m=>({id:m[1],text:m[2].replace(/(?:\s*\[\d+\])+\s*$/g, '').trim()}));
  const vocabulary=blocks(sec(2),/^\*\*(\d+)\. (.*?)\*\* \*\((.+?)\)\*\s*\n([\s\S]*?)(?=^\*\*\d+\. |^### |^---|$(?![\s\S]))/gm).map(m=>{
   const f=Object.fromEntries(blocks(m[4],/^- \*\*([^*]+):\*\* (.+)$/gm).map(x=>[x[1],x[2].trim()]));
   return {id:m[1].padStart(2,'0'),word:m[2].replace(/^★ CORE VOCABULARY — /,''),core:m[2].includes('CORE VOCABULARY'),priority:+m[1]<=6?'Suggested active':+m[1]<=16?'Suggested recognition':'Exposure','IPA / part of speech':m[3],Definition:f.Definition,Article:f[Object.keys(f).find(k=>k.startsWith('From the text'))],Collocation:f.Pattern,'In context':f['In this article'],'Additional example':f['New example']};
