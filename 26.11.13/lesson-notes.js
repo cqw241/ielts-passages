@@ -107,8 +107,8 @@ window.LESSON_NOTES = {
       "explanation": "A resignation raises questions about corporate influence and public responsibility.",
       "question": "What makes this more than a company story?",
       "answer": "The company supplies AI technology and its former leader had access to political decision-makers.",
-      "image": 0,
-      "imageAlt": "Concept illustration of a technology leader at a crossroads"
+      "image": 1,
+      "imageAlt": "Concept illustration of Jensen Huang leaving NVIDIA as the company continues its work"
     },
     {
       "id": "B",
@@ -128,7 +128,9 @@ window.LESSON_NOTES = {
       "takeaway": "Meetings justify scrutiny but do not prove an improper licence.",
       "explanation": "Meetings justify scrutiny but do not prove an improper licence.",
       "question": "What would investigators need to examine?",
-      "answer": "Decisions, records and explanations, rather than photographs alone."
+      "answer": "Decisions, records and explanations, rather than photographs alone.",
+      "image": 7,
+      "imageAlt": "Concept illustration connecting the White House, Congress and an AI chip"
     },
     {
       "id": "D",
@@ -249,6 +251,7 @@ window.LESSON_NOTES = {
       "tip": "Hinge on introduces the decisive condition; not on contrasts an unsuitable criterion."
     }
   ],
+  "diagrams": {},
   "presentation": {
     "topic": "TECHNOLOGY, POLITICS & MEDIA LITERACY",
     "footerTopic": "Power, politics and identity",

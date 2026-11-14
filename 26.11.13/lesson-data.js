@@ -727,7 +727,8 @@ window.LESSON = {
     "images/reference-3.webp",
     "images/reference-4.webp",
     "images/reference-5.webp",
-    "images/reference-6.webp"
+    "images/reference-6.webp",
+    "images/reference-7.webp"
   ],
   "sourceFile": "26-11-13-When Business Politics and Identity Collide.md",
   "sections": {
