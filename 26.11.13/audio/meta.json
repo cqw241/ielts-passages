@@ -1,0 +1,9 @@
+{
+  "hash": "5a2b5a1eeca7102aa830f2e980f8a318ca0feb3523e75effc3ff6b0eea988b19",
+  "model": "qwen-audio-3.1-tts-flash",
+  "voice": "Emily_v3.1",
+  "format": "mp3",
+  "sampleRate": 24000,
+  "chars": 8104,
+  "generatedAt": "2026-11-14T09:41:37.477Z"
+}

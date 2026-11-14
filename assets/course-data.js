@@ -43,6 +43,17 @@ window.COURSE = {
       "date": "12 October 2026",
       "topic": "Education, Gender Equality and Public Policy",
       "sourceFile": "26-10-12-The Numbers Are Equal. The Chances Are Not.md"
+    },
+    {
+      "folder": "26.11.13",
+      "shortTitle": "Power, politics and identity",
+      "summary": "Examine evidence, political access and fair scrutiny in a technology leadership crisis.",
+      "image": "images/reference-0.webp",
+      "title": "When Business, Politics and Identity Collide",
+      "day": 5,
+      "date": "13 November 2026",
+      "topic": "Technology, US Politics, Corporate Power and Media Literacy",
+      "sourceFile": "26-11-13-When Business Politics and Identity Collide.md"
     }
   ]
 };
