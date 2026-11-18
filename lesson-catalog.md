@@ -1,3 +1,39 @@
+## 26.11.13
+
+**Title:** When Business, Politics and Identity Collide
+**Topic:** Technology, US Politics, Corporate Power and Media Literacy
+
+1. come under scrutiny
+2. fuel speculation
+3. draw a distinction between
+4. guard against
+5. hold someone accountable
+6. hinge on
+7. bipartisan
+8. export controls
+9. conflict of interest
+10. racial profiling
+11. electoral mandate
+12. institutional oversight
+13. national security
+14. strategic dependence
+15. public record
+16. procedural fairness
+17. regulatory filing
+18. interim chief executive
+19. independent inquiry
+20. intelligence effort
+21. allegations
+22. diplomatic access
+23. export licence
+24. partisan
+25. political leverage
+26. due process
+27. media framing
+28. stereotype
+29. reputational risk
+30. trade-off
+
 ## 26.10.12
 
 **Title:** The Numbers Are Equal. The Chances Are Not.
