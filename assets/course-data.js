@@ -9,7 +9,8 @@ window.COURSE = {
       "day": 1,
       "date": "6 September 2026",
       "topic": "Employment, Economics and Social Policy",
-      "sourceFile": "26-09-06-When More Jobs Are Only Part of the Story.md"
+      "sourceFile": "26-09-06-When More Jobs Are Only Part of the Story.md",
+      "paragraphCount": 10
     },
     {
       "folder": "26.9.7",
@@ -20,7 +21,8 @@ window.COURSE = {
       "day": 2,
       "date": "7 September 2026",
       "topic": "Public Health, Animal Health and Public Services",
-      "sourceFile": "26-09-07-The Work That Continues After a Disease Milestone.md"
+      "sourceFile": "26-09-07-The Work That Continues After a Disease Milestone.md",
+      "paragraphCount": 10
     },
     {
       "folder": "26.10.10",
@@ -31,7 +33,8 @@ window.COURSE = {
       "day": 3,
       "date": "10 October 2026",
       "topic": "Neuroscience, Medical Innovation and Scientific Evidence",
-      "sourceFile": "26-10-10-A Switch Made of Light - When a Scientific Breakthrough Meets Patients.md"
+      "sourceFile": "26-10-10-A Switch Made of Light - When a Scientific Breakthrough Meets Patients.md",
+      "paragraphCount": 10
     },
     {
       "folder": "26.10.12",
@@ -42,7 +45,20 @@ window.COURSE = {
       "day": 4,
       "date": "12 October 2026",
       "topic": "Education, Gender Equality and Public Policy",
-      "sourceFile": "26-10-12-The Numbers Are Equal. The Chances Are Not.md"
+      "sourceFile": "26-10-12-The Numbers Are Equal. The Chances Are Not.md",
+      "paragraphCount": 10
+    },
+    {
+      "folder": "26.11.22",
+      "shortTitle": "When a founder steps down",
+      "summary": "Use Nvidia’s leadership transition to explore succession, independent oversight and public trust.",
+      "image": "images/reference-0.webp",
+      "title": "When a Founder Becomes a Governance Test",
+      "day": 5,
+      "date": "22 November 2026",
+      "topic": "Corporate Governance, Leadership and Public Trust",
+      "sourceFile": "26-11-22-When a Founder Becomes a Governance Test.md",
+      "paragraphCount": 12
     }
   ]
 };

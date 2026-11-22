@@ -11,8 +11,10 @@ const sourceFile = sources[0];
 const raw = fs.readFileSync(path.join(folder, sourceFile), 'utf8').replace(/\r/g, '');
 const sections = {};
 for (const match of raw.matchAll(/^## (.+)\n([\s\S]*?)(?=^## |$(?![\s\S]))/gm)) sections[match[1]] = match[2].trim();
-if (sections['Main Reading Article'] || sections['1. Main Reading Article']) {
-  const {extractStructuredLesson} = sections['1. Main Reading Article']
+if (sections['Main Reading Article'] || sections['1. Main Reading Article'] || sections['1. Main Reading']) {
+  const {extractStructuredLesson} = sections['1. Main Reading']
+    ? await import('./extract-passage-lesson.mjs')
+    : sections['1. Main Reading Article']
     ? await import('./extract-numbered-lesson.mjs')
     : await import('./extract-structured-lesson.mjs');
   const manifest = JSON.parse(fs.readFileSync(path.join(root,'lessons.json'),'utf8'));

@@ -11,6 +11,7 @@ const digest=bytes=>crypto.createHash('sha256').update(bytes.toString('utf8').re
   const context=await browser.newContext({viewport:{width:1440,height:1000}}),page=await context.newPage(),errors=[];
   page.on('pageerror',e=>errors.push(e.message));
   await page.goto(base);assert.equal(await page.locator('.library-lesson').count(),lessons.length);
+  const paragraphCounts=await page.evaluate(()=>Object.fromEntries(COURSE.lessons.map(lesson=>[lesson.folder,lesson.paragraphCount])));
   // Use the learner's browser network path (including system proxy settings).
   const files=['assets/vocabulary-learning.js','assets/vocabulary-learning-ui.js','assets/wordbook-store.js','assets/course-vocabulary.js','assets/lesson.js','assets/wordbook.js','review.html',...lessons.flatMap(l=>[`${l.folder}/lesson-data.js`,`${l.folder}/lesson-notes.js`])];
   const published=await page.evaluate(async files=>Promise.all(files.map(async file=>{
@@ -21,7 +22,7 @@ const digest=bytes=>crypto.createHash('sha256').update(bytes.toString('utf8').re
   for(const {file,status,hash} of published) { assert.equal(status,200,file);assert.equal(hash,digest(fs.readFileSync('_site/'+file)),`Published ${file} matches the local build`); }
   assert.equal(await page.locator('#learning-dashboard').count(),1);
   for(const folder of lessons.map(l=>l.folder)) {
-   await page.goto(base+folder+'/index.html#reading');assert.equal(await page.locator('.english-passage').count(),10);
+   await page.goto(base+folder+'/index.html#reading');assert.equal(await page.locator('.english-passage').count(),paragraphCounts[folder]);
   }
   await page.goto(base+'26.9.6/index.html#vocabulary');
   await page.locator('[data-learning="status"][data-word="01"]').selectOption('active');

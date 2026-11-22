@@ -67,7 +67,7 @@
   function validSource(s, type = 'word') {
     if (!s || !lessons.some(l => l.folder === s.folder)) return null;
     const lesson = lessons.find(l => l.folder === s.folder);
-    const location = /^(overview|reading(?:-[A-J])?|vocabulary|grammar|exercises|writing|speaking|review)$/.test(s.location) ? s.location : 'reading';
+    const location = /^(overview|reading(?:-(?:[A-J]|P[1-9]\d*))?|vocabulary|grammar|exercises|writing|speaking|review)$/.test(s.location) ? s.location : 'reading';
     return { folder: lesson.folder, lessonTitle: lesson.title, location, label: clean(s.label || 'Lesson context', 120), quote: clean(s.quote), selectedText: clean(s.selectedText, type === 'sentence' ? 3000 : 100) };
   }
   function combineSources(a, b, type = 'word') {
