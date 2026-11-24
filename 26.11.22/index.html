@@ -28,6 +28,24 @@
 <body>
   <a class="skip-link" href="#main">Skip to lesson content</a>
   <div id="app"><p class="loading">Opening your lesson…</p></div>
+  <template id="editors-note">
+<div style="border-left: 4px solid #76B900; background-color: #f4f7f0; padding: 14px 18px; margin: 20px 0; border-radius: 4px; font-size: 0.95em; line-height: 1.6;">
+  <strong>Editor's Note (Updated 23 November 2026):</strong> On 23 November—one day after this passage was prepared—Nvidia announced that its board had voted unanimously on 22 November to reinstate Jensen Huang as president, CEO and board director, effective immediately. Colette Kress returned to her role as CFO, while Harvey Jones remained chairman. The board said its independent investigation would continue and announced a search for a Chief Compliance Officer. This lesson is preserved as a snapshot of the governance debate as it stood on 22 November.
+</div>
+  </template>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const main = document.querySelector('#main');
+      if (!main) return;
+      const note = document.querySelector('#editors-note').content.firstElementChild.cloneNode(true);
+      const showNote = () => {
+        // The lesson replaces the contents of main when switching views.
+        if (main.querySelector('.reading-layout') && !note.isConnected) main.prepend(note);
+      };
+      new MutationObserver(showNote).observe(main, { childList: true });
+      showNote();
+    });
+  </script>
   <noscript>Enable JavaScript to use this interactive lesson, or <a href="26-11-22-When%20a%20Founder%20Becomes%20a%20Governance%20Test.md">read the complete original lesson</a>.</noscript>
 </body>
 </html>
