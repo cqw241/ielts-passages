@@ -1,0 +1,9 @@
+{
+  "hash": "7ea933a74474adadba2fef6598349cc71143ae7d451bba0af1e7f9b0f3441e9a",
+  "model": "qwen-audio-3.1-tts-plus",
+  "voice": "longanlingxin_v3.1",
+  "format": "mp3",
+  "sampleRate": 24000,
+  "chars": 6665,
+  "generatedAt": "2026-11-24T04:08:09.763Z"
+}

@@ -832,5 +832,6 @@ window.LESSON = {
       "description": "Write two or three original sentences per scenario before opening the model."
     }
   ],
-  "storageKey": "passage-2026-11-24-v1"
+  "storageKey": "passage-2026-11-24-v1",
+  "audio": "audio/article.mp3"
 };
