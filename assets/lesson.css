@@ -890,6 +890,57 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
   font-family:var(--serif)
 }
 
+.related-lesson {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  margin:0 0 18px;
+  padding:14px 18px;
+  border:1px solid #c8daf2;
+  border-left:3px solid var(--blue);
+  border-radius:6px;
+  background:#f3f7fd;
+  color:var(--ink);
+  text-decoration:none
+}
+
+.related-lesson:hover,
+.related-lesson:focus-visible {
+  border-color:var(--blue);
+  background:var(--blue-soft)
+}
+
+.related-lesson-label,
+.related-lesson-description,
+.related-lesson strong {
+  display:block
+}
+
+.related-lesson-label {
+  margin-bottom:3px;
+  color:var(--blue);
+  font-size:11px;
+  font-weight:700
+}
+
+.related-lesson strong {
+  font-size:16px
+}
+
+.related-lesson-description {
+  margin-top:3px;
+  color:#465974;
+  font-size:13px
+}
+
+.related-lesson>.icon {
+  flex:none;
+  width:18px;
+  height:18px;
+  color:var(--blue)
+}
+
 .page-heading {
   display:flex;
   justify-content:space-between;

@@ -41,6 +41,12 @@ window.LESSON_NOTES = {
     "A plan for an unexpected event", "Knowledge accumulated within an organisation", "Motives that point towards conflicting goals", "Put an idea or promise into practice"
   ],
   presentation: {
+    relatedLesson: {
+      folder: "26.11.24",
+      label: "Continue the story · 24 November 2026",
+      title: "When the Board Blinks",
+      description: "The board brought Jensen Huang back. See how market pressure and political intervention changed the story."
+    },
     topic: "Corporate governance · Leadership · Public trust",
     heroTitle: "When a Founder Becomes a Governance Test",
     subtitle: "Nvidia after Jensen Huang",

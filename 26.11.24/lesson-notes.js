@@ -42,6 +42,12 @@ window.LESSON_NOTES = {
     "The estimated financial value of something", "An agreement or trade-off"
   ],
   presentation: {
+    relatedLesson: {
+      folder: "26.11.22",
+      label: "Start at the beginning · 22 November 2026",
+      title: "When a Founder Becomes a Governance Test",
+      description: "Read why Nvidia’s board initially ruled out Huang’s return, and what that decision put at stake."
+    },
     topic: "Corporate governance · Political intervention · Market pressure",
     heroTitle: "When the Board Blinks",
     subtitle: "Jensen Huang’s return and the limits of corporate independence",
