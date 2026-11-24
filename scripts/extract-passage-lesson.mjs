@@ -27,8 +27,8 @@ export function extractStructuredLesson({raw, sections, lessonId, sourceFile, im
 
   const [recall, production, readingPrompts] = splitHeadings(section('Exercises')).map(match => match[2]);
   const [recallAnswers, productionAnswers, readingAnswers] = splitHeadings(section('Answers and Explanations')).map(match => match[2]);
-  const recallKeys = new Map([...recallAnswers.matchAll(/^(\d+)\. \*\*(.+?)\*\* — (.+)$/gm)]
-    .map(([, id, answer, reason]) => [id, {answer, explanation:'**' + answer + '** — ' + reason}]));
+  const recallKeys = new Map([...recallAnswers.matchAll(/^(\d+)\. (\*\*.+?\*\*(?: \(or \*\*.+?\*\*\))?) — (.+)$/gm)]
+    .map(([, id, answer, reason]) => [id, {answer:answer.match(/\*\*(.+?)\*\*/)[1], explanation:answer + ' — ' + reason}]));
   const modelKeys = new Map([...productionAnswers.matchAll(/^\*\*Task (\d+):\*\* (.+)\n\*\*Why it works:\*\* (.+)$/gm)]
     .map(([, id, model, reason]) => [id, {answer:plain(model.trim()), explanation:model.trim() + ' **Why it works:** ' + reason}]));
   const practice = [
@@ -58,7 +58,9 @@ export function extractStructuredLesson({raw, sections, lessonId, sourceFile, im
     return {...common, type:'Short answers', instruction:'Answer in no more than 25 words.', options:[],
       marking:'self-check', placeholder:'Write up to 25 words',
       answer:'Compare with the model and evidence', explanation:'**Suggested answer:** ' + key.model + ' ' + key.explanation,
-      selfCheckInstruction:'Check that you distinguished sales performance from the quality of oversight. This response is excluded from the automatic score.'};
+      selfCheckInstruction:(lessonId === '26.11.22'
+        ? 'Check that you distinguished sales performance from the quality of oversight.'
+        : 'Check that your answer captures the contrast in the model and uses no more than 25 words.') + ' This response is excluded from the automatic score.'};
   });
 
   const grammar = splitHeadings(section('Deep Sentence Analysis')).map(([, name, body]) => {

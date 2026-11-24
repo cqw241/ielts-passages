@@ -59,6 +59,18 @@ window.COURSE = {
       "topic": "Corporate Governance, Leadership and Public Trust",
       "sourceFile": "26-11-22-When a Founder Becomes a Governance Test.md",
       "paragraphCount": 12
+    },
+    {
+      "folder": "26.11.24",
+      "shortTitle": "When the board blinks",
+      "summary": "Follow Jensen Huang’s return to Nvidia and weigh how market pressure and political intervention test board independence.",
+      "image": "images/reference-0.webp",
+      "title": "When the Board Blinks",
+      "day": 6,
+      "date": "24 November 2026",
+      "topic": "Corporate Governance, Political Intervention and Market Pressure",
+      "sourceFile": "26-11-24-When the Board Blinks.md",
+      "paragraphCount": 10
     }
   ]
 };
